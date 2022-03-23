@@ -1,0 +1,50 @@
+version: "3.6"
+services:
+  nginx:
+    image: nginx:latest
+    container_name: border-forensics-nginx
+    ports:
+      - "8082:80"
+    volumes:
+      - ./docker/nginx/config:/etc/nginx/conf.d
+      - ./:/var/www/html:rw,cached
+      - ./docker/nginx/certs:/etc/certs
+    depends_on:
+      - wordpress
+    restart: always
+
+  mysql:
+    image: mariadb
+    container_name: border-forensics-mysql
+    volumes:
+      - "./docker/mysql/data:/var/lib/mysql:delegated"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=platform
+    restart: always
+    ports:
+      - "3308:3306"
+
+  wordpress:
+    container_name: border-forensics-wordpress
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/var/www/html:rw,cached
+      - ./docker/wordpress/php.ini:/usr/local/etc/php/conf.d/php.ini
+    environment:
+      - WORDPRESS_DB_NAME=platform
+      - WORDPRESS_TABLE_PREFIX=wp_
+      - WORDPRESS_DB_HOST=mysql
+      - WORDPRESS_DB_PASSWORD=password
+    depends_on:
+      - mysql
+    restart: always
+
+  composer:
+    image: prooph/composer:7.3
+    working_dir: /var/www/html
+    restart: "no"
+    volumes:
+      - ./:/var/www/html:rw,cached
