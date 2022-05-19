@@ -51,7 +51,8 @@
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^3.6.2",
-    "roave/security-advisories": "dev-latest"
+    "roave/security-advisories": "dev-latest",
+    "smgladkovskiy/phpcs-git-pre-commit": "dev-master"
   },
   "config": {
     "optimize-autoloader": true,
@@ -78,6 +79,9 @@
     "wordpress-install-dir": "web/wp"
   },
   "scripts": {
+    "install-hooks": ["sh ./vendor/smgladkovskiy/phpcs-git-pre-commit/src/setup.sh"],
+    "post-install-cmd": ["@install-hooks"],
+    "post-update-cmd": ["@install-hooks"],
     "post-root-package-install": [
       "php -r \"copy('.env.example', '.env');\""
     ],
