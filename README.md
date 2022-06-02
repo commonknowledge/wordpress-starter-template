@@ -18,10 +18,10 @@ This folder structure uses the [Bedrock](https://roots.io/bedrock/) pattern, a m
 4. Start up all containers in the background with:
 
 ```
-docker compose up -d
+docker-compose up -d
 ```
 
-6. You can access the site at [http://localhost:8082](http://localhost:8082). You can view logs by running `docker compose logs`.
+6. You can access the site at [http://localhost:8082](http://localhost:8082). You can view logs by running `docker-compose logs`.
 
 # Full development documentation
 
