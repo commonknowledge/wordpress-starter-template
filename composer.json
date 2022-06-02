@@ -80,9 +80,15 @@
     "wordpress-install-dir": "web/wp"
   },
   "scripts": {
-    "install-hooks": ["sh ./vendor/smgladkovskiy/phpcs-git-pre-commit/src/setup.sh"],
-    "post-install-cmd": ["@install-hooks"],
-    "post-update-cmd": ["@install-hooks"],
+    "install-hooks": [
+      "sh ./vendor/smgladkovskiy/phpcs-git-pre-commit/src/setup.sh"
+    ],
+    "post-install-cmd": [
+      "@install-hooks"
+    ],
+    "post-update-cmd": [
+      "@install-hooks"
+    ],
     "post-root-package-install": [
       "php -r \"copy('.env.example', '.env');\""
     ],
