@@ -1,6 +1,6 @@
 # WordPress Starter
 
-A starter repository for [WordPress](https://wordpress.org) websites, for organisers, campaigns and anyone else who finds it useful.
+A starter repository for [WordPress](https://wordpress.org) websites for organisers, campaigns and anyone else who finds it useful.
 
 This folder structure uses the [Bedrock](https://roots.io/bedrock/) pattern, a modern WordPress stack.
 
