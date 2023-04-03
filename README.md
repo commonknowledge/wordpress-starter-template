@@ -25,12 +25,6 @@ docker-compose up -d
 
 # Full development documentation
 
-## MySQL
-
-MySQL is provided by MariaDB.
-
-MySQL data is persisted between Docker Compose ups and downs. To start again, you can run `composer run-script clear-database`.
-
 ## WP-CLI
 
 [WP-CLI](https://wp-cli.org/) is installed in the `wordpress` container.
