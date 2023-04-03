@@ -17,7 +17,7 @@ services:
     image: mariadb
     container_name: wordpress-starter-template-mysql
     volumes:
-      - "./docker/mysql/data:/var/lib/mysql:delegated"
+      - wordpress-starter-mysql:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=wordpress-starter-template
@@ -48,3 +48,6 @@ services:
     restart: "no"
     volumes:
       - ./:/var/www/html:rw,cached
+
+volumes:
+  wordpress-starter-mysql:
