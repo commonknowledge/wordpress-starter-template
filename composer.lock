@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "15aab4fc5d457b54c6744d3f6462aa3a",
+    "content-hash": "597a74a0713bc6aa51206900ef022235",
     "packages": [
         {
             "name": "composer/installers",
@@ -413,22 +413,22 @@
         },
         {
             "name": "roots/wordpress-no-content",
-            "version": "6.0.1",
+            "version": "6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/WordPress/WordPress.git",
-                "reference": "6.0.1"
+                "reference": "6.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/release/wordpress-6.0.1-no-content.zip",
-                "shasum": "bd78fc2bea7f04683218c679f9e6b606eedf23bc"
+                "url": "https://downloads.wordpress.org/release/wordpress-6.2-no-content.zip",
+                "shasum": "f584c96734b9b7d3f770dbc176740cf92e54aa6c"
             },
             "require": {
                 "php": ">= 5.6.20"
             },
             "provide": {
-                "wordpress/core-implementation": "6.0.1"
+                "wordpress/core-implementation": "6.2"
             },
             "suggest": {
                 "ext-curl": "Performs remote request operations.",
@@ -479,7 +479,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2022-07-12T16:30:11+00:00"
+            "time": "2023-03-29T18:03:09+00:00"
         },
         {
             "name": "roots/wp-config",
