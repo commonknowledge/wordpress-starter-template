@@ -20,7 +20,7 @@ services:
       - "./docker/mysql/data:/var/lib/mysql:delegated"
     environment:
       - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_DATABASE=platform
+      - MYSQL_DATABASE=wordpress-starter-template
     restart: always
     ports:
       - "3308:3306"
@@ -34,7 +34,7 @@ services:
       - ./:/var/www/html:rw,cached
       - ./docker/wordpress/php.ini:/usr/local/etc/php/conf.d/php.ini
     environment:
-      - WORDPRESS_DB_NAME=platform
+      - WORDPRESS_DB_NAME=wordpress-starter-template
       - WORDPRESS_TABLE_PREFIX=wp_
       - WORDPRESS_DB_HOST=mysql
       - WORDPRESS_DB_PASSWORD=password
