@@ -7,20 +7,20 @@ This folder structure uses the [Bedrock](https://roots.io/bedrock/) pattern, a m
 ## Requirements
 
 - Docker [installed](https://docs.docker.com/install/)
-- PHP and Composer installed locally. If not, you can use them in containers provided, prefixing all Composer commands below with `docker-compose run composer <command>`
+- PHP and Composer installed locally. If not, you can use them in containers provided, prefixing all Composer commands below with `docker compose run composer <command>`
 
 ## Run locally
 
 1. [Generate a repository](https://github.com/commonknowledge/groundwork-starter-template/generate) from this template
-2. If you have PHP and Composer installed locally you can run from this directory `composer install`. Otherwise run `composer install` via Docker with `docker-compose run composer install`.
+2. If you have PHP and Composer installed locally you can run from this directory `composer install`. Otherwise run `composer install` via Docker with `docker compose run composer install`.
 3. Copy `.env.example` to `.env`, running `cp .env.example .env`. The example file contains variables required for this Docker Compose setup but modify details appropriately [as per the Bedrock documentation](https://roots.io/bedrock/docs/environment-variables/) as required.
 4. Start up all containers with:
 
 ```
-docker-compose up
+docker compose up
 ```
 
-6. You can access the site at [http://localhost:8082](http://localhost:8082). You can install WordPress automatically by running `docker-compose run wordpress wp --allow-root core install --url=http://localhost:8082 --title='WordPress Starter Template' --admin_user=ck_admin --admin_email=hello@commonknowledge.coop`.
+6. You can access the site at [http://localhost:8082](http://localhost:8082). You can install WordPress automatically by running `docker compose run wordpress wp --allow-root core install --url=http://localhost:8082 --title='WordPress Starter Template' --admin_user=ck_admin --admin_email=hello@commonknowledge.coop`.
 
 # Full development documentation
 
@@ -36,7 +36,7 @@ docker-compose up
 
 ```
 
-docker-compose run wordpress wp --allow-root <command>
+docker compose run wordpress wp --allow-root <command>
 
 ```
 
@@ -44,7 +44,7 @@ Note WP-CLI will not work on the host machine, as WordPress configuration refers
 
 ## Adding WordPress Plugins
 
-Run `docker-compose run composer require wpackagist-plugin/plugin-name`.
+Run `docker compose run composer require wpackagist-plugin/plugin-name`.
 
 ## Further Documentation
 
