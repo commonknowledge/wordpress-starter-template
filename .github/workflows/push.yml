@@ -14,4 +14,4 @@ jobs:
         run: docker-compose up -d
 
       - name: Test
-        run: docker run appropriate/curl -s --retry 10 --retry-connrefused http://localhost:8082/
+        run: curl -s --retry 10 --retry-connrefused http://localhost:8082/
