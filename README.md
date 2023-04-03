@@ -25,6 +25,12 @@ docker-compose up -d
 
 # Full development documentation
 
+## Updating WordPress
+
+1. Update WordPress in the `composer.json` file by increasing the version on the `roots/wordpress-no-content` line.
+2. Run `composer update roots/wordpress-no-content`. This will update the `composer.lock` file as needed.
+3. Push the change to GitHub.
+
 ## WP-CLI
 
 [WP-CLI](https://wp-cli.org/) is installed in the `wordpress` container.
