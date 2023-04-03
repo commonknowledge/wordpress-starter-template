@@ -11,7 +11,7 @@ jobs:
         uses: php-actions/composer@v6
 
       - name: Build the stack
-        run: docker-compose up -d
+        run: docker compose up -d
 
       - name: Setup environment file with database settings
         run: cp .env.example .env
