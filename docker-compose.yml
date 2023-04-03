@@ -50,4 +50,4 @@ services:
       - ./:/var/www/html:rw,cached
 
 volumes:
-  wordpress-starter-mysql:
+  wordpress-starter-template-mysql:
