@@ -43,16 +43,6 @@ docker-compose run wordpress wp --allow-root <command>
 
 Note WP-CLI will not work on the host machine, as WordPress configuration refers to databases within the Docker network, not the host machine.
 
-## Updating Wordpress
-
-Update `composer.json` with the version you want for `roots/wordpress` and then run:
-
-```
-
-docker-compose run composer update roots/wordpress
-
-```
-
 ## Adding WordPress Plugins
 
 Run `docker-compose run composer require wpackagist-plugin/plugin-name`.
