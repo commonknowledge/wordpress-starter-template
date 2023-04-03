@@ -15,13 +15,13 @@ This folder structure uses the [Bedrock](https://roots.io/bedrock/) pattern, a m
 1. [Generate a repository](https://github.com/commonknowledge/groundwork-starter-template/generate) from this template
 2. If you have PHP and Composer installed locally you can run from this directory `composer install`. Otherwise run `composer install` via Docker with `docker-compose run composer install`.
 3. Copy `.env.example` to `.env`, running `cp .env.example .env`. The example file contains variables required for this Docker Compose setup but modify details appropriately [as per the Bedrock documentation](https://roots.io/bedrock/docs/environment-variables/) as required.
-4. Start up all containers in the background with:
+4. Start up all containers with:
 
 ```
-docker-compose up -d
+docker-compose up
 ```
 
-6. You can access the site at [http://localhost:8082](http://localhost:8082). You can view logs by running `docker-compose logs`.
+6. You can access the site at [http://localhost:8082](http://localhost:8082).
 
 # Full development documentation
 
