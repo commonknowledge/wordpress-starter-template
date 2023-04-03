@@ -7,7 +7,6 @@ This folder structure uses the [Bedrock](https://roots.io/bedrock/) pattern, a m
 ## Requirements
 
 - Docker [installed](https://docs.docker.com/install/)
-- Node.js - LTS version, 14.17.1. If using NVM, you can use `nvm use` in this directory.
 - PHP and Composer installed locally. If not, you can use them in containers provided, prefixing all Composer commands below with `docker-compose run composer <command>`
 
 ## Run locally
