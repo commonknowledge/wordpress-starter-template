@@ -17,7 +17,7 @@ services:
     image: mariadb
     container_name: wordpress-starter-template-mysql
     volumes:
-      - wordpress-starter-mysql:/var/lib/mysql
+      - wordpress-starter-template-mysql:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=wordpress-starter-template
