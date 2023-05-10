@@ -40,6 +40,8 @@ services:
       - WORDPRESS_DB_PASSWORD=password
     depends_on:
       - mysql
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: always
 
   composer:
