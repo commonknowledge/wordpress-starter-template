@@ -30,7 +30,11 @@
   "require-dev": {
     "squizlabs/php_codesniffer": "^3.7.2",
     "roave/security-advisories": "dev-latest",
-    "smgladkovskiy/phpcs-git-pre-commit": "dev-master"
+    "smgladkovskiy/phpcs-git-pre-commit": "dev-master",
+    "wpackagist-plugin/create-block-theme": "^1.13",
+    "wpackagist-plugin/pattern-manager": "^0.3.0",
+    "wpackagist-plugin/duplicate-post": "^4.5",
+    "wpackagist-plugin/fakerpress": "^0.6.1"
   },
   "config": {
     "optimize-autoloader": true,
