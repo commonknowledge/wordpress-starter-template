@@ -18,17 +18,17 @@
     "composer/installers": "^2.2",
     "vlucas/phpdotenv": "^5.5",
     "oscarotero/env": "^2.1",
-    "roots/bedrock-autoloader": "^1.0",
+    "roots/bedrock-autoloader": "^1.0.4",
     "roots/bedrock-disallow-indexing": "^2.0",
-    "roots/wordpress": "6.2",
+    "roots/wordpress": "6.2.2",
     "roots/wp-config": "1.0.0",
     "roots/wp-password-bcrypt": "1.1.0",
     "wpackagist-plugin/wordpress-importer": "^0.7.0",
-    "wpackagist-plugin/wordfence": "^7.6",
-    "wpackagist-plugin/safe-svg": "^2.0"
+    "wpackagist-plugin/wordfence": "^7.10",
+    "wpackagist-plugin/safe-svg": "^2.1.1"
   },
   "require-dev": {
-    "squizlabs/php_codesniffer": "^3.6.2",
+    "squizlabs/php_codesniffer": "^3.7.2",
     "roave/security-advisories": "dev-latest",
     "smgladkovskiy/phpcs-git-pre-commit": "dev-master"
   },

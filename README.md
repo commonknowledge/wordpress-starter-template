@@ -24,11 +24,13 @@ docker compose up
 
 # Full development documentation
 
-## Updating WordPress
+## Updating WordPress and other dependencies
 
-1. Update WordPress in the `composer.json` file by increasing the version on the `roots/wordpress-no-content` line.
-2. Run `composer update roots/wordpress`. This will update the `composer.lock` file as needed.
-3. Push the change to GitHub.
+1. Run `composer outdated` to verify any dependencies that require updating.
+2. Run `composer bump` to bump minor versions.
+3. Update withing `composer.json`. For example the `wordpress` package.
+4. Run `composer update`.
+5. Commit the result.
 
 ## WP-CLI
 
