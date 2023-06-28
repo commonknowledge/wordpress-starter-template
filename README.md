@@ -22,7 +22,7 @@ docker compose up
 
 6. You can access the site at [http://localhost:8082](http://localhost:8082). You can install WordPress automatically by running `docker compose run wordpress wp --allow-root core install --url=http://localhost:8082 --title='WordPress Starter Template' --admin_user=ck_admin --admin_email=hello@commonknowledge.coop`.
 
-# Full development documentation
+## Development Documentation
 
 ### Development Tools
 
@@ -44,7 +44,7 @@ Generate a lot of dummy content to see how the website looks and feels with full
 
 Again for creating dummy data, this allows quick duplication of posts to fill things out.
 
-## Updating WordPress and other dependencies
+### Updating WordPress and other dependencies
 
 1. Run `composer outdated` to verify any dependencies that require updating.
 2. Run `composer bump` to bump minor versions.
@@ -52,7 +52,7 @@ Again for creating dummy data, this allows quick duplication of posts to fill th
 4. Run `composer update`.
 5. Commit the result.
 
-## WP-CLI
+### WP-CLI
 
 [WP-CLI](https://wp-cli.org/) is installed in the `wordpress` container.
 
@@ -64,11 +64,11 @@ docker compose run wordpress wp --allow-root <command>
 
 Note WP-CLI will not work on the host machine, as WordPress configuration refers to databases within the Docker network, not the host machine.
 
-## Adding WordPress Plugins
+### Adding WordPress Plugins
 
 Run `docker compose run composer require wpackagist-plugin/plugin-name`.
 
-## Further Documentation
+### Further Documentation
 
 Documentation for Bedrock is available at [https://roots.io/bedrock/docs/](https://roots.io/bedrock/docs/).
 
@@ -108,4 +108,4 @@ These are exhaustive manual instructions, but should not be required after initi
 16. Still on the tools page, setup Force HTTPS by clicking on Modify and dollowing your nose, selecting "Force all traffic to the primary domain" along the way. Edit the `.env` file created in step 12, to have `WP_HOME` include `https` not `http`.
 17. In Domains, change the DNS pointed domain to your primary one selecting "Make primary".
 18. WordPress should now work at the site URL. You can login to the administration dashboard with the password you just created.
-19. Repeat steps 7 through 20, but creating a development environment.
+19. Repeat steps 7 through 20, but creating a developmgent environment.
