@@ -24,6 +24,26 @@ docker compose up
 
 # Full development documentation
 
+### Development Tools
+
+This template comes with some useful development tools for use within WordPress itself.
+
+#### [Create Block Theme](https://wordpress.org/plugins/create-block-theme/)
+
+Crucial. Save off block themes that you are making in the full site editor to the theme on disk. Add fonts direct from the WordPress backend.
+
+#### [Pattern Manager](https://wordpress.org/plugins/pattern-manager/)
+
+Create WordPress patterns from within the WordPress backend. They are automatically saved to the theme on disk, with appropriate metadata and can also be modified in this way.
+
+#### [Fakerpress](https://wordpress.org/plugins/fakerpress/)
+
+Generate a lot of dummy content to see how the website looks and feels with full content in it.
+
+#### [Yoast Duplicate Posts](https://wordpress.org/plugins/duplicate-post/)
+
+Again for creating dummy data, this allows quick duplication of posts to fill things out.
+
 ## Updating WordPress and other dependencies
 
 1. Run `composer outdated` to verify any dependencies that require updating.
