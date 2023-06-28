@@ -27,8 +27,8 @@ docker compose up
 ## Updating WordPress and other dependencies
 
 1. Run `composer outdated` to verify any dependencies that require updating.
-2. Run `composer bump` to bump minor versions.
-3. Update withing `composer.json`. For example the `wordpress` package.
+2. Run `composer bump` to bump minor versions and save results to `composer.json`.
+3. Update within `composer.json`. For example the `wordpress` package.
 4. Run `composer update`.
 5. Commit the result.
 
