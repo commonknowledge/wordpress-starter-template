@@ -108,4 +108,4 @@ These are exhaustive manual instructions, but should not be required after initi
 16. Still on the tools page, setup Force HTTPS by clicking on Modify and dollowing your nose, selecting "Force all traffic to the primary domain" along the way. Edit the `.env` file created in step 12, to have `WP_HOME` include `https` not `http`.
 17. In Domains, change the DNS pointed domain to your primary one selecting "Make primary".
 18. WordPress should now work at the site URL. You can login to the administration dashboard with the password you just created.
-19. Repeat steps 7 through 20, but creating a developmgent environment.
+19. Repeat steps 7 through 20, but creating a development environment.
