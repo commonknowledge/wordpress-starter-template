@@ -30,7 +30,7 @@ This template comes with some useful development tools for use within WordPress 
 
 #### [Create Block Theme](https://wordpress.org/plugins/create-block-theme/)
 
-Crucial. Save off block themes that you are making in the full site editor to the theme on disk. Add fonts direct from the WordPress backend.
+Crucial. Save off block themes that you are making in the full site editor to the theme on disk. Add fonts direct from the WordPress backend, including Google Fonts.
 
 #### [Pattern Manager](https://wordpress.org/plugins/pattern-manager/)
 
