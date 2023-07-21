@@ -22,9 +22,29 @@ docker compose up
 
 6. You can access the site at [http://localhost:8082](http://localhost:8082). You can install WordPress automatically by running `docker compose run wordpress wp --allow-root core install --url=http://localhost:8082 --title='WordPress Starter Template' --admin_user=ck_admin --admin_email=hello@commonknowledge.coop`.
 
-# Full development documentation
+## Development Documentation
 
-## Updating WordPress and other dependencies
+### Development Tools
+
+This template comes with some useful development tools for use within WordPress itself.
+
+#### [Create Block Theme](https://wordpress.org/plugins/create-block-theme/)
+
+Crucial. Save off block themes that you are making in the full site editor to the theme on disk. Add fonts direct from the WordPress backend, including Google Fonts.
+
+#### [Pattern Manager](https://wordpress.org/plugins/pattern-manager/)
+
+Create WordPress patterns from within the WordPress backend. They are automatically saved to the theme on disk, with appropriate metadata and can also be modified in this way.
+
+#### [Fakerpress](https://wordpress.org/plugins/fakerpress/)
+
+Generate a lot of dummy content to see how the website looks and feels with full content in it.
+
+#### [Yoast Duplicate Posts](https://wordpress.org/plugins/duplicate-post/)
+
+Again for creating dummy data, this allows quick duplication of posts to fill things out.
+
+### Updating WordPress and other dependencies
 
 1. Run `composer outdated` to verify any dependencies that require updating.
 2. Run `composer bump` to bump minor versions and save results to `composer.json`.
@@ -32,7 +52,7 @@ docker compose up
 4. Run `composer update`.
 5. Commit the result.
 
-## WP-CLI
+### WP-CLI
 
 [WP-CLI](https://wp-cli.org/) is installed in the `wordpress` container.
 
@@ -44,11 +64,11 @@ docker compose run wordpress wp --allow-root <command>
 
 Note WP-CLI will not work on the host machine, as WordPress configuration refers to databases within the Docker network, not the host machine.
 
-## Adding WordPress Plugins
+### Adding WordPress Plugins
 
 Run `docker compose run composer require wpackagist-plugin/plugin-name`.
 
-## Further Documentation
+### Further Documentation
 
 Documentation for Bedrock is available at [https://roots.io/bedrock/docs/](https://roots.io/bedrock/docs/).
 
