@@ -5,5 +5,12 @@
   ],
   "ignorePaths": [
     "Dockerfile"
+  ],
+  "packageRules": [
+    {
+      "matchDepTypes": ["devDependencies"],
+      "matchPackagePatterns": ["lint", "prettier"],
+      "automerge": true
+    }
   ]
 }
