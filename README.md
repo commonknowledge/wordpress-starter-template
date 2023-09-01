@@ -20,7 +20,7 @@ This folder structure uses the [Bedrock](https://roots.io/bedrock/) pattern, a m
 docker compose up
 ```
 
-6. You can access the site at [http://localhost:8082](http://localhost:8082). You can install WordPress automatically by running `docker compose run wordpress wp --allow-root core install --url=http://localhost:8082 --title='WordPress Starter Template' --admin_user=ck_admin --admin_email=hello@commonknowledge.coop`.
+6. You can access the site at [http://localhost:8082](http://localhost:8082). You can install WordPress automatically by running `docker compose run wordpress wp core install --url=http://localhost:8082 --title='WordPress Starter Template' --admin_user=ck_admin --admin_email=hello@commonknowledge.coop`.
 
 ## Development Documentation
 
