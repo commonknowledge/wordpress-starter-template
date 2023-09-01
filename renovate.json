@@ -3,10 +3,7 @@
   "extends": [
     "config:base"
   ],
-  "packageRules": [
-    {
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["patch"]
-    }
-  ]
+  "ignorePaths": [
+    "Dockerfile"
+  ],
 }
