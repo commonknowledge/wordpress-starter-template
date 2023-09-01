@@ -38,6 +38,8 @@ services:
       - WORDPRESS_TABLE_PREFIX=wp_
       - WORDPRESS_DB_HOST=mysql
       - WORDPRESS_DB_PASSWORD=password
+      - WP_CLI_ALLOW_ROOT=true
+      - PAGER=more
     depends_on:
       - mysql
     extra_hosts:
