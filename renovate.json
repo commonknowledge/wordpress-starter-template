@@ -5,5 +5,5 @@
   ],
   "ignorePaths": [
     "Dockerfile"
-  ],
+  ]
 }
