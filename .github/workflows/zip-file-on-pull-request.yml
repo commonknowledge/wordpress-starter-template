@@ -1,0 +1,31 @@
+name: Zip Files on Pull Request
+
+on:
+  pull_request:
+    types:
+      - opened
+
+jobs:
+  zip-files:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Create ZIP file
+        run: |
+          # Define the files or directories you want to zip
+          DIRECTORY_TO_ZIP="web/app/themes/future-natures"
+
+          # Create a unique timestamp for the zip file
+          TIMESTAMP=$(date +'%Y%m%d%H%M%S')
+
+          # Create the zip file
+          zip -r "archive_$TIMESTAMP.zip" $FILES_TO_ZIP
+
+      - name: Upload ZIP file as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: zipped-files
+          path: archive_*.zip
