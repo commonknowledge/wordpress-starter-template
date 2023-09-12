@@ -24,8 +24,8 @@ jobs:
 
       - name: Zip Theme
         run: |
-          cd ./web/app/themes/future-natures/
-          zip -r future-natures.zip .
+          cd web/app/themes
+          zip -r theme.zip future-natures/* -j
         working-directory: ${{ github.workspace }}
 
       - name: Create Release
@@ -33,7 +33,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            future-natures.zip
+            theme.zip
           tag_name: v1.0.0 
         env:
           GITHUB_TOKEN: ${{ secrets.ZIP_RELEASE_TOKEN }}
