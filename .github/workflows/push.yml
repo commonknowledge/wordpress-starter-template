@@ -37,4 +37,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ZIP_RELEASE_TOKEN }}
 
       - name: Get Release URL
-        run: echo "Release URL: ${{ steps.create_release.outputs.html_url }}"
+        run: echo "Release URL ${{ steps.create_release.outputs.html_url }}"
