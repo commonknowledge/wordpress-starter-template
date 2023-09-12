@@ -1,0 +1,50 @@
+<!-- wp:template-part {"slug":"header-future-natures-mobile","theme":"future-natures"} /-->
+
+<!-- wp:template-part {"slug":"header-future-natures-desktop","theme":"future-natures"} /-->
+
+<!-- wp:group {"className":"magazine-container","layout":{"inherit":false}} -->
+<div class="wp-block-group magazine-container">
+    <!-- wp:query {"queryId":11,"query":{"perPage":3,"pages":0,"offset":0,"postType":"magazine","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"sticky":"","inherit":false}} -->
+    <div class="wp-block-query">
+        <!-- wp:post-template -->
+        <!-- wp:cover {"useFeaturedImage":true,"dimRatio":0,"contentPosition":"center center","isDark":false,"className":"is-style-default"} -->
+    <div class="wp-block-cover is-light is-style-default"><span aria-hidden="true"
+            class="wp-block-cover__background has-background-dim-0 has-background-dim"></span>
+        <div class="wp-block-cover__inner-container">
+            <!-- wp:group {"backgroundColor":"dark-green","textColor":"pink","className":"editorial-container","layout":{"inherit":false}} -->
+            <div
+                class="wp-block-group editorial-container has-pink-color has-dark-green-background-color has-text-color has-background">
+                <!-- wp:carbon-fields/magazine-issue-number /-->
+    
+                <!-- wp:post-title {"level":1,"textColor":"pink"} /-->
+    
+                <!-- wp:carbon-fields/post-subtitle /-->
+    
+                <!-- wp:read-more {"content":"Read Editorial","style":{"border":{"width":"1px"},"spacing":{"padding":{"top":"5px","right":"5px","bottom":"5px","left":"5px"}}}} /-->
+            </div>
+            <!-- /wp:group -->
+        </div>
+    </div>
+    <!-- /wp:cover -->
+    <!-- wp:carbon-fields/posts-grid {"data":{"grid-title":"Magazine posts","grid_number_of_posts":"","grid_category":"","grid_post_type":"magazine","grid_show_title":false}} /-->
+    <!-- /wp:post-template -->
+    
+    <!-- wp:query-pagination -->
+    <!-- wp:query-pagination-previous /-->
+    
+    <!-- wp:query-pagination-numbers /-->
+    
+    <!-- wp:query-pagination-next /-->
+    <!-- /wp:query-pagination -->
+    
+    <!-- wp:query-no-results -->
+    <!-- wp:paragraph {"placeholder":"Add text or blocks that will display when the query returns no results."} -->
+    <p></p>
+    <!-- /wp:paragraph -->
+    <!-- /wp:query-no-results -->
+    </div>
+    <!-- /wp:query -->
+    </div>
+    <!-- /wp:group -->
+    
+    <!-- wp:template-part {"slug":"footer-future-natures","theme":"future-natures"} /-->

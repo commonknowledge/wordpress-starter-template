@@ -1,0 +1,108 @@
+/* Typography */
+
+body {
+    color: var(--wp--preset--color--dark-green);
+  }
+  
+  h1,
+  h4,
+  p,
+  figcaption {
+    font-family: "Libre Franklin", sans-serif;
+  }
+  
+  h2,
+  h3 {
+    font-family: "Averia Libre", sans-serif;
+  }
+  
+  h1 {
+    font-size: var(--wp--preset--font-size--heading-1);
+    font-weight: 400;
+    line-height: 82px;
+  }
+  
+  h2 {
+    font-size: var(--wp--preset--font-size--heading-2);
+    font-weight: 700;
+    line-height: 62px;
+    letter-spacing: -1px;
+  }
+  
+  h3 {
+    font-size: var(--wp--preset--font-size--heading-3);
+    font-weight: 700;
+    line-height: 41.4px;
+    letter-spacing: -1px;
+  }
+  
+  h4 {
+    font-size: var(--wp--preset--font-size--heading-4);
+    font-weight: 500;
+    line-height: 29px;
+  }
+  
+  p {
+    font-size: var(--wp--preset--font-size--body);
+    font-weight: 700;
+    line-height: 31px;
+  }
+  
+  h5 {
+    font-size: var(--wp--preset--font-size--body);
+    font-family: var(--wp--preset--typography--body-font);
+    font-weight: 500;
+    line-height: 28px;
+  }
+  
+  h6 {
+    font-family: var(--wp--preset--typography--body-font);
+    font-weight: 500;
+  }
+  
+  .wp-block-pullquote blockquote p, .wp-block-pullquote blockquote cite {
+    font-style: normal;
+  }
+  
+  .wp-block-quote p, .wp-block-quote cite {
+    font-style: normal;
+  }
+  
+  @media only screen and (min-width: 678px) {
+    h1 {
+        font-size: var(--wp--preset--font-size--heading-1);
+        font-weight: 400;
+        line-height: 82px;
+      }
+      
+      h2 {
+        font-size: var(--wp--preset--font-size--heading-2);
+        font-weight: 700;
+        line-height: 62px;
+      }
+      
+      h3 {
+        font-size: var(--wp--preset--font-size--heading-3);
+        font-weight: 700;
+        line-height: 41.4px;
+        letter-spacing: -1px;
+      }
+      
+      h4 {
+        font-size: var(--wp--preset--font-size--heading-4);
+        font-weight: 500;
+        line-height: 29px;
+      }
+      
+      p {
+        font-size: var(--wp--preset--font-size--body);
+        font-weight: 700;
+        line-height: 31px;
+      }
+      
+      h5 {
+        font-size: var(--wp--preset--font-size--body);
+        font-weight: 500;
+        line-height: 28px;
+      }
+  }
