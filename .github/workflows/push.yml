@@ -33,7 +33,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            theme.zip
+            future-natures.zip
           tag_name: v1.0.0 
         env:
           GITHUB_TOKEN: ${{ secrets.ZIP_RELEASE_TOKEN }}
