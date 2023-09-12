@@ -25,7 +25,7 @@ jobs:
       - name: Zip Theme
         run: |
           cd web/app/themes
-          zip -r theme.zip future-natures/* -j
+          zip -r theme.zip future-natures/*
         working-directory: ${{ github.workspace }}
 
       - name: Create Release
