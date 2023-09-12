@@ -4,6 +4,8 @@ on:
   pull_request:
     types:
       - opened
+    branches:
+      - test-wordpress-playground 
 
 jobs:
   zip-files:
