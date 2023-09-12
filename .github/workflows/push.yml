@@ -7,24 +7,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Composer dependencies
-        uses: php-actions/composer@v6
+      # - name: Install Composer dependencies
+      #   uses: php-actions/composer@v6
 
-      - name: Build the stack
-        run: docker compose up -d
+      # - name: Build the stack
+      #   run: docker compose up -d
 
-      - name: Setup environment file with database settings
-        run: cp .env.example .env
+      # - name: Setup environment file with database settings
+      #   run: cp .env.example .env
 
-      - name: Wait for MariaDB to come up 
-        run: sleep 30
+      # - name: Wait for MariaDB to come up 
+      #   run: sleep 30
 
-      - name: Test WordPress is running successfully
-        run: curl -s --retry-delay 5 --retry 5 --retry-connrefused http://localhost:8082/
+      # - name: Test WordPress is running successfully
+      #   run: curl -s --retry-delay 5 --retry 5 --retry-connrefused http://localhost:8082/
 
       - name: Zip Theme
         run: |
-          zip -r theme.zip web/app/themes/future-natures
+          zip -r theme.zip ./web/app/themes/future-natures/*
         working-directory: ${{ github.workspace }}
 
       - name: Create Release
