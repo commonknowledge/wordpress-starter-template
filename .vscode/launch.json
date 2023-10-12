@@ -12,7 +12,7 @@
             "pathMappings": {
                 "/var/www/html": "${workspaceFolder}"
             },
-            "stopOnEntry": true
+            "stopOnEntry": false
         }
     ]
 }
