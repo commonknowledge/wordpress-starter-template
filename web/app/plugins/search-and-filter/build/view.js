@@ -26,8 +26,27 @@ var __webpack_exports__ = {};
  */
 
 /* eslint-disable no-console */
-console.log("Hello World!");
+
 /* eslint-enable no-console */
+
+document.addEventListener('DOMContentLoaded', function () {
+  let categorySelect = document.getElementsByTagName('select')[0];
+  categorySelect.addEventListener('change', function () {
+    filterPosts();
+  });
+  function filterPosts() {
+    let selectedCategory = categorySelect.value;
+    let posts = document.querySelectorAll('li');
+    posts.forEach(function (post) {
+      let postCategory = post.getAttribute('data-category');
+      if (selectedCategory === 'all' || selectedCategory === postCategory) {
+        post.style.display = 'block';
+      } else {
+        post.style.display = 'none';
+      }
+    });
+  }
+});
 /******/ })()
 ;
 //# sourceMappingURL=view.js.map

@@ -1,36 +1,44 @@
-import { __ } from '@wordpress/i18n';
+
 import { useBlockProps } from '@wordpress/block-editor';
 
-export default function save({ attributes }) {
+export default function Save({ attributes }) {
+    const blockProps = useBlockProps.save();
 
-    // Destructure the 'categories' attribute and check if it's an array
-    const categories = attributes.categories && Array.isArray(attributes.categories)
-        ? attributes.categories
-        : [];
-    const posts = attributes.posts && Array.isArray(attributes.posts)
-        ? attributes.posts
-        : [];
+    
+   const categories = attributes.categories;
+   const posts = attributes.posts;
 
 
-    // If the category details are available, display the category name
+    // Filter posts based on the selected category
+    // const filteredPosts = attributes.posts.filter(
+    //     (post) => !attributes.category || post.categories[0] === parseInt(attributes.category, 10)
+    // );
+
+
     return (
-        <>
-            <p {...useBlockProps.save()}></p>
-            <label htmlFor="categories">Choose a category:</label>
-            <select name="categories" id="categories">
-                {categories.map((category, index) => (
-                    <option key={index} value={category.name}>
+        <div {...blockProps}>
+            {typeof categories !== 'undefined' && categories.length > 0 ? (<select
+             value={attributes.category}
+                
+            >
+                <option value="">Select a category</option>
+                {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
                         {category.name}
                     </option>
                 ))}
             </select>
+            ) : (
+                <p>Loading categories...</p>
+            )}
 
             <ul>
-                {posts.map((post, index) => (
-                    <li key={index}>
-                        {post.slug}</li>
-
-                ))}</ul>
-        </>
+                {posts.map((post) => (
+                    <li key={post.id} data-category={post.categoryID}>
+                        <strong>{post.title.rendered}</strong> - {post.categoryName}
+                    </li>
+                ))}
+            </ul>
+        </div>
     );
 }

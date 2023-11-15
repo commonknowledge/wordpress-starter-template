@@ -7,6 +7,17 @@
   "category": "widgets",
   "icon": "filter",
   "description": "Example block scaffolded with Create Block tool.",
+  "attributes": {
+    "posts": {
+      "type": "array",
+      "source": "html",
+      "default": []
+    },
+    "categories": {
+      "type": "array",
+      "default": []
+    }
+  },
   "example": {},
   "supports": {
     "html": false
