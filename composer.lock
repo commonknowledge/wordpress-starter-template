@@ -1939,15 +1939,15 @@
         },
         {
             "name": "wpackagist-plugin/pattern-manager",
-            "version": "0.3.0",
+            "version": "0.3.1",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/pattern-manager/",
-                "reference": "tags/0.3.0"
+                "reference": "tags/0.3.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/pattern-manager.0.3.0.zip"
+                "url": "https://downloads.wordpress.org/plugin/pattern-manager.0.3.1.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
