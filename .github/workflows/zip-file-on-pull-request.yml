@@ -16,10 +16,10 @@ jobs:
     - name: Zip Folder
       run: |
         cd web/app/themes/
-        zip -r future-natures.zip future-natures
+        zip -r twentytwentythree.zip twentytwentythree
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: future-natures
-        path: web/app/themes/future-natures.zip
+        name: twentytwentythree
+        path: web/app/themes/twentytwentythree.zip
