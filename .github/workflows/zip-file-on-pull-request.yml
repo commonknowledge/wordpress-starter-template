@@ -16,7 +16,7 @@ jobs:
      - name: Create ZIP file
        run: |
          # Define the files or directories you want to zip
-         DIRECTORY_TO_ZIP="web/app/themes/future-natures"
+         DIRECTORY_TO_ZIP="web/app/themes/future-natures/"
 
          # Create a unique timestamp for the zip file
          TIMESTAMP=$(date +'%Y%m%d%H%M%S')
