@@ -16,10 +16,10 @@ jobs:
     - name: Zip Folder
       run: |
         cd web/app/themes/
-        zip -r twentytwentythree.zip twentytwentythree
+        zip -r solidarityknowsnoborders.zip solidarityknowsnoborders
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: twentytwentythree
-        path: web/app/themes/twentytwentythree.zip
+        name: solidarityknowsnoborders
+        path: web/app/themes/solidarityknowsnoborders.zip
