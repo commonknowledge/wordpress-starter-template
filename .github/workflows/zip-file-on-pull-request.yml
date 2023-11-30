@@ -1,9 +1,7 @@
-name: Zip Files on Pull Request
+name: Zip Files on Push
 
 on:
-  pull_request:
-    types:
-      - opened
+  push:
     branches:
       - test-wordpress-playground 
 
@@ -24,7 +22,7 @@ jobs:
           TIMESTAMP=$(date +'%Y%m%d%H%M%S')
 
           # Create the zip file
-          zip -r "archive_$TIMESTAMP.zip" $FILES_TO_ZIP
+          zip -r "archive_$TIMESTAMP.zip" $DIRECTORY_TO_ZIP
 
       - name: Upload ZIP file as artifact
         uses: actions/upload-artifact@v2
