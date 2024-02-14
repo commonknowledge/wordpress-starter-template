@@ -1885,15 +1885,15 @@
         },
         {
             "name": "wpackagist-plugin/create-block-theme",
-            "version": "1.13.2",
+            "version": "1.13.8",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/create-block-theme/",
-                "reference": "tags/1.13.2"
+                "reference": "tags/1.13.8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/create-block-theme.1.13.2.zip"
+                "url": "https://downloads.wordpress.org/plugin/create-block-theme.1.13.8.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
