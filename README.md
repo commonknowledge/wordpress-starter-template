@@ -109,3 +109,7 @@ These are exhaustive manual instructions, but should not be required after initi
 17. In Domains, change the DNS pointed domain to your primary one selecting "Make primary".
 18. WordPress should now work at the site URL. You can login to the administration dashboard with the password you just created.
 19. Repeat steps 7 through 20, but creating a development environment.
+
+### Deploy to Kinsta with GitHub Action
+There is a GitHub Action template file for deploying to Kinsta on pushes to main branch. Replace <Kinsta SSH terminal command> with the command for your site from the Kinsta dashboard. 
+Set up the SSH_PRIVATE_KEY, SSH_CONFIG and SSH_KNOWN_HOSTS secrets in the repository and on the Kinsta server using the Kinsta instructions https://kinsta.com/docs/wordpress-hosting/connect-to-ssh

@@ -1,0 +1,28 @@
+name: Deploy to Kinsta template
+on:
+ push:
+  branches:
+    - main
+jobs:
+ web-deploy:
+  name: Deploy to staging
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        config: ${{ secrets.SSH_CONFIG }}
+        known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+        name: id_rsa
+    - uses: webfactory/ssh-agent@v0.7.0
+      with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    - name: Run Git Pull
+      run: ssh <Kinsta SSH terminal command> "cd public && git pull && exit"
+    - name: Run Composer install
+      run: ssh <Kinsta SSH terminal command> "cd public && composer install --no-dev --no-scripts"
+    - name: Activate Plugins
+      run: ssh <Kinsta SSH terminal command> "cd public && wp plugin activate --all" 
