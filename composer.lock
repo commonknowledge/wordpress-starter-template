@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b9d75023663736a81b10a955f5914712",
+    "content-hash": "44a46b92f74de818b9cb02798f2a7331",
     "packages": [
         {
             "name": "composer/installers",
@@ -2103,15 +2103,15 @@
         },
         {
             "name": "wpackagist-plugin/create-block-theme",
-            "version": "1.13.8",
+            "version": "2.4.0",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/create-block-theme/",
-                "reference": "tags/1.13.8"
+                "reference": "tags/2.4.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/create-block-theme.1.13.8.zip"
+                "url": "https://downloads.wordpress.org/plugin/create-block-theme.2.4.0.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
