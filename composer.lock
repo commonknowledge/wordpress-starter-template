@@ -1936,15 +1936,15 @@
         },
         {
             "name": "wpackagist-plugin/fakerpress",
-            "version": "0.6.2",
+            "version": "0.6.6",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/fakerpress/",
-                "reference": "tags/0.6.2"
+                "reference": "tags/0.6.6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/fakerpress.0.6.2.zip"
+                "url": "https://downloads.wordpress.org/plugin/fakerpress.0.6.6.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
