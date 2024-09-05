@@ -197,11 +197,9 @@ Copy the .env.example file to .env:
 
 ### Setting Up Secrets for GitHub Action for Deployment to Kinsta
 
-1. You can use the same SSH key you generated for both Kinsta and this repository's GitHub Actions workflow.
+1. You can use the same SSH key you generated for both Kinsta and this repository's GitHub Actions deploy workflow.
 
-2. Add the SSH Key to Kinsta
-
-	•	Ensure the public key (id_rsa.pub) has been added to the SSH Access section for the Live environment in the Kinsta dashboard (as shown in the previous steps).
+2. Ensure the public key (id_rsa.pub) has been added to the SSH Access section for the Live environment in the Kinsta dashboard (as shown in the previous steps).
 
 3. Add the SSH Key as a Secret in GitHub
 
