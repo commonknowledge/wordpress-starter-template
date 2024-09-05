@@ -180,11 +180,9 @@ Copy the .env.example file to .env:
 
    This command will output the password for the new admin user. Save this password for later.
 
-6. Update NGINX Configuration
-	Ask Kinsta support (via Intercom chat) to update the NGINX configuration to point to public/web.
+6. Ask Kinsta support (via Intercom chat) to update the NGINX configuration to point to public/web.
 
-7. Point Domains to Kinsta Installation
-   Follow Kinsta’s guide to point your domain to the Kinsta environment.
+7. Follow Kinsta’s guide to point your domain to the Kinsta environment.
 
 8. Set Up SSL and Force HTTPS
 
@@ -199,7 +197,7 @@ Copy the .env.example file to .env:
 
 ### Setting Up Secrets for GitHub Action for Deployment to Kinsta
 
-1. You can use the same SSH key you generated for both Kinsta and GitHub in your GitHub Actions workflow.
+1. You can use the same SSH key you generated for both Kinsta and this repository's GitHub Actions workflow.
 
 2. Add the SSH Key to Kinsta
 
