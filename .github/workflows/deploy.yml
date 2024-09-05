@@ -1,28 +1,34 @@
-name: Deploy to Kinsta template
+name: Deploy on Kinsta
+
 on:
- push:
-  branches:
-    - main
+  push:
+    branches:
+      - main
+
 jobs:
- web-deploy:
-  name: Deploy to staging
-  runs-on: ubuntu-latest
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    - name: Install SSH key
-      uses: shimataro/ssh-key-action@v2
-      with:
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        config: ${{ secrets.SSH_CONFIG }}
-        known_hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
-        name: id_rsa
-    - uses: webfactory/ssh-agent@v0.7.0
-      with:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-    - name: Run Git Pull
-      run: ssh <Kinsta SSH terminal command> "cd public && git pull && exit"
-    - name: Run Composer install
-      run: ssh <Kinsta SSH terminal command> "cd public && composer install --no-dev --no-scripts"
-    - name: Activate Plugins
-      run: ssh <Kinsta SSH terminal command> "cd public && wp plugin activate --all" 
+
+      - name: Add GitHub to known hosts
+        run: |
+          ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+
+      - name: Check SSH connection
+        run: |
+          ssh -o StrictHostKeyChecking=no -A ${{ secrets.SSH_USER_HOST }} -p ${{ secrets.SSH_PORT }} "echo 'SSH connection successful'"
+
+      - name: Verify forwarded SSH key on remote server
+        run: |
+          ssh -o StrictHostKeyChecking=no -A ${{ secrets.SSH_USER_HOST }} -p ${{ secrets.SSH_PORT }} 'ssh-add -l'
+
+      - name: Run git pull on the remote server
+        run: |
+          ssh -o StrictHostKeyChecking=no -A ${{ secrets.SSH_USER_HOST }} -p ${{ secrets.SSH_PORT }} 'cd public && git pull && composer install --no-dev --no-scripts ; wp plugin activate --all'
