@@ -20,8 +20,10 @@ This folder structure uses the [Bedrock](https://roots.io/bedrock/) pattern, a m
 docker compose up
 ```
 
-6. You can access the site at [http://localhost:8082](http://localhost:8082). You can install WordPress automatically by running `docker compose run wordpress wp core install --url=http://localhost:8082 --title='WordPress Starter Template' --admin_user=ck_admin --admin_email=hello@commonknowledge.coop`.
-
+6. You can access the site at [http://localhost:8082](http://localhost:8082). You can install WordPress automatically by running 
+```
+docker compose run wordpress wp core install --url=http://localhost:8082 --title='WordPress Starter Template' --admin_user=ck_admin --admin_email=hello@commonknowledge.coop
+```
 ## Development Documentation
 
 ### Development Tools
@@ -82,34 +84,138 @@ You will need to have "Company developer" or above permissions in order to creat
 
 These are exhaustive manual instructions, but should not be required after initial setup.
 
-1. Create [a new site on Kinsta](https://kinsta.com/knowledgebase/new-site/). You want to select "Don't install WordPress" and choose the London data centre. It will provision after around ten minutes.
-2. On Kinsta we have a Live environment and a staging environment. Start with the Live environment for a new build. Then after, you can create a staging environment as needed.
-3. For the next steps, you will need to [add your SSH key to Kinsta](https://kinsta.com/feature-updates/add-ssh-keys/). This is to allow you to log into Kinsta over SSH.
-4. You will also need to [add a SSH key to GitHub](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account). This is so you can check out the theme from GitHub over SSH when logged into Kinsta.
-5. Kinsta needs to be set up to forward you GitHub SSH key to it when you connect to it over SSH and checkout the theme with Git. You can look up the precise SSH details on Kinsta under the "SFTP/SSH" in the live environment section of the admin panel. You can then add them to a `~/.ssh/config` block to look something like this.
-   ```
-    host <your site>_live
-        User <see "SFTP/SSH" details for Live Environment>
-        Hostname <see "SFTP/SSH" details for Live Environment>
-        Port <see "SFTP/SSH" details for Live Environment>
-        IdentityFile <Location on your local machine of the SSH key>
-        ForwardAgent yes
-   ```
-6. Add you GitHub SSH key to `ssh-agent` [following these instructions](https://help.github.com/en/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent). The command will be something like `ssh-add ~/.ssh/gitlab_key_rsa`
-7. We are going to begin with the staging environment. SSH onto Kinsta staging environment using this command `ssh nurses_united_staging`.
-8. Test GitHub works by running the command `ssh -T git@github.com`. After accepting the authenticity of the host you should see a friendly message from GitHub.
-9. Remove the `public` directory with `rm -r public`. Clone the code into the `public/` directiory: `git clone git@github.com:commonknowledge/pluto-press.git public`.
-10. `cd public && composer install`.
-11 Return to the `public` directory, `cd ~/public`. If this is the first time, copy `.env.example` to `.env` with `cp .env.example .env` and modify details appropriately [as per the Bedrock documentation](https://roots.io/bedrock/docs/environment-variables/). You can use Vim on the server. The details of the database are on the Kinsta admin panel under the site itself then "Database Access". The `WP_HOME` can be `http://localhost`.
-12. You need to create database tables for WordPress. Run `wp core install --url=<URL from Primary domain in Kinsta admin panel> --title=<site name> --admin_user=<desired username> --admin_email=<desired email>`. This will output the password for the user you have just created to the terminal. Save it for when you need to login.
-13. Ask Kinsta to update NGINX to point at `public/web` on Intercom chat inside the Kinsta control panel. Note, not `public/current/web`, which is the directory if you are deploy Bedrock with [Trellis](https://github.com/roots/trellis). This installation does not use Trellis.
-14. You can now point the domains to this installation of WordPress following [Kinsta's instructions](https://kinsta.com/knowledgebase/add-domain/).
-15. Head to Tools for the site in the live environment. Use "SSL certificate" to generate a new Let's Encrypt SSL certificate and wait for this to complete.
-16. Still on the tools page, setup Force HTTPS by clicking on Modify and dollowing your nose, selecting "Force all traffic to the primary domain" along the way. Edit the `.env` file created in step 12, to have `WP_HOME` include `https` not `http`.
-17. In Domains, change the DNS pointed domain to your primary one selecting "Make primary".
-18. WordPress should now work at the site URL. You can login to the administration dashboard with the password you just created.
-19. Repeat steps 7 through 20, but creating a development environment.
+#### Create a New Site on Kinsta
 
-### Deploy to Kinsta with GitHub Action
-There is a GitHub Action template file for deploying to Kinsta on pushes to main branch. Replace <Kinsta SSH terminal command> with the command for your site from the Kinsta dashboard. 
-Set up the SSH_PRIVATE_KEY, SSH_CONFIG and SSH_KNOWN_HOSTS secrets in the repository and on the Kinsta server using the Kinsta instructions https://kinsta.com/docs/wordpress-hosting/connect-to-ssh
+1. Log in to your Kinsta account and create a new site.
+2. Select “Don’t install WordPress” and choose the London data center.
+3. The provisioning process will take about 10 minutes.
+
+Once the site is created, you will have both Live and Staging environments. Start with the Live environment, and you can later create a Staging environment as needed.
+
+#### Set Up a Single SSH Key for Kinsta and GitHub
+
+You will use the same SSH key to connect to Kinsta and pull from GitHub.
+1. Generate an SSH Key Pair (if you don’t already have one)
+2. On your local machine, generate a new SSH key pair:
+
+   ```
+
+   ssh-keygen -t rsa -b 4096 -C "your-email@example.com"
+
+   ```
+
+   This will create two files: id_rsa (private key) and id_rsa.pub (public key).
+
+#### Add the Public SSH Key to Kinsta
+
+1. In Kinsta, navigate to Sites > Live Environment > Info.
+2. Under SSH Access, click “Add SSH Key” and paste the contents of the id_rsa.pub file.
+
+#### Add the Public SSH Key to GitHub
+
+1. Go to your GitHub profile > Settings > SSH and GPG keys.
+2. Click New SSH key, paste the contents of the id_rsa.pub file, and save it.
+
+#### Configure SSH on Your Local Machine
+
+You need to set up SSH forwarding so that you can connect to Kinsta and GitHub using the same key.
+
+1. Open or create the ~/.ssh/config file and add the following block:
+   ```
+      Host <your_site>_live
+      User <Kinsta SSH username from Live Environment>
+      Hostname <Kinsta SSH hostname>
+      Port <Kinsta SSH port>
+      IdentityFile <path_to_your_private_key>
+      ForwardAgent yes
+
+   ```
+
+2. Replace the placeholders (<your_site>, <Kinsta SSH username>, <Kinsta SSH hostname>, <Kinsta SSH port>, <path_to_your_private_key>) with the actual details from the SFTP/SSH section of your Live Environment in Kinsta’s dashboard.
+
+3. Start the SSH agent and add your GitHub SSH key:
+   ```
+   eval "$(ssh-agent -s)"
+   ssh-add ~/.ssh/id_rsa
+   ```
+
+#### Log into the Kinsta Live Environment
+
+1. SSH into the Live environment with the following command:
+`ssh <your_site>_live`
+
+2. Test the GitHub SSH connection by running:
+`ssh -T git@github.com`
+
+After accepting the host authenticity, you should see a confirmation message from GitHub.
+
+#### Deploy the WordPress Site from GitHub
+
+1. Remove the Existing public Directory
+Once logged into the Live environment, remove the default public directory: `rm -r public`
+
+2. Clone Your WordPress Theme from GitHub
+`git clone git@github.com:<your_repo>.git public`
+
+3. Install Dependencies with Composer
+Navigate to the public directory and install the dependencies:
+`cd public composer install --no-dev`
+
+4. Set Up the .env File
+Copy the .env.example file to .env: 
+`cp .env.example .env`
+
+   Modify the .env file as per the Bedrock documentation. Update the database and other environment details
+
+   You can find database credentials in the Kinsta dashboard under Database Access.
+   
+   Set the WP_HOME to http://localhost.
+
+
+5. Install WordPress
+
+   Run the following command to install WordPress and create the necessary database tables:
+
+   ```
+   wp core install --url=<Kinsta Primary Domain URL> --title=<Site Title> --admin_user=<Admin Username> --admin_email=<Admin Email>
+   ```
+
+   This command will output the password for the new admin user. Save this password for later.
+
+6. Update NGINX Configuration
+	Ask Kinsta support (via Intercom chat) to update the NGINX configuration to point to public/web.
+
+7. Point Domains to Kinsta Installation
+   Follow Kinsta’s guide to point your domain to the Kinsta environment.
+
+8. Set Up SSL and Force HTTPS
+
+	•	Go to the Tools section in the Kinsta dashboard for the live environment.
+
+	•	Generate a new Let’s Encrypt SSL certificate.
+
+	•	Enable Force HTTPS by selecting “Force all traffic to the primary domain”.
+
+9. In the Kinsta Domains section, make sure your primary domain is selected and marked as primary.
+   
+
+### Setting Up GitHub Action for Deployment to Kinsta
+
+1. You can use the same SSH key you generated for both Kinsta and GitHub in your GitHub Actions workflow.
+
+2. Add the SSH Key to Kinsta
+
+	•	Ensure the public key (id_rsa.pub) has been added to the SSH Access section for the Live environment in the Kinsta dashboard (as shown in the previous steps).
+
+3. Add the SSH Key as a Secret in GitHub
+
+	•	In your repository, go to Settings > Secrets and variables > Actions.
+
+	•	Click New repository secret and create the following secrets:
+
+	•	SSH_PRIVATE_KEY: Paste the contents of your id_rsa (private key).
+
+	•	SSH_USER_HOST: Enter the username and hostname from Kinsta’s SFTP/SSH details
+
+	•	SSH_PORT: Enter the SSH port number from Kinsta’s SFTP/SSH details
+
