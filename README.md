@@ -165,10 +165,8 @@ Navigate to the public directory and install the dependencies:
 Copy the .env.example file to .env: 
 `cp .env.example .env`
 
-   Modify the .env file as per the Bedrock documentation. Update the database and other environment details
-
+   Modify the .env file as per the <a href="https://roots.io/bedrock/docs/environment-variables/">Bedrock documentation</a>. Update the database and other environment details
    You can find database credentials in the Kinsta dashboard under Database Access.
-   
    Set the WP_HOME to http://localhost.
 
 
@@ -199,7 +197,7 @@ Copy the .env.example file to .env:
 9. In the Kinsta Domains section, make sure your primary domain is selected and marked as primary.
    
 
-### Setting Up GitHub Action for Deployment to Kinsta
+### Setting Up Secrets for GitHub Action for Deployment to Kinsta
 
 1. You can use the same SSH key you generated for both Kinsta and GitHub in your GitHub Actions workflow.
 
