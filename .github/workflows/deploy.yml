@@ -9,26 +9,27 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    # Uncomment the following for a standard deployment to Kinsta
+    # steps:
+      # - name: Checkout code
+      #   uses: actions/checkout@v4
+      # - name: Set up SSH
+      #   uses: webfactory/ssh-agent@v0.9.0
+      #   with:
+      #     ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      
+      # - name: Add GitHub to known hosts
+      #   run: |
+      #     ssh-keyscan -H github.com >> ~/.ssh/known_hosts
 
-      - name: Add GitHub to known hosts
-        run: |
-          ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+      # - name: Check SSH connection
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no -A ${{ secrets.SSH_USER_HOST }} -p ${{ secrets.SSH_PORT }} "echo 'SSH connection successful'"
 
-      - name: Check SSH connection
-        run: |
-          ssh -o StrictHostKeyChecking=no -A ${{ secrets.SSH_USER_HOST }} -p ${{ secrets.SSH_PORT }} "echo 'SSH connection successful'"
+      # - name: Verify forwarded SSH key on remote server
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no -A ${{ secrets.SSH_USER_HOST }} -p ${{ secrets.SSH_PORT }} 'ssh-add -l'
 
-      - name: Verify forwarded SSH key on remote server
-        run: |
-          ssh -o StrictHostKeyChecking=no -A ${{ secrets.SSH_USER_HOST }} -p ${{ secrets.SSH_PORT }} 'ssh-add -l'
-
-      - name: Run git pull on the remote server
-        run: |
-          ssh -o StrictHostKeyChecking=no -A ${{ secrets.SSH_USER_HOST }} -p ${{ secrets.SSH_PORT }} 'cd public && git pull && composer install --no-dev --no-scripts ; wp plugin activate --all'
+      # - name: Run git pull on the remote server
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no -A ${{ secrets.SSH_USER_HOST }} -p ${{ secrets.SSH_PORT }} 'cd public && git pull && composer install --no-dev --no-scripts ; wp plugin activate --all'
