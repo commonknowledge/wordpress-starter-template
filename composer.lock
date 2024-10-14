@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "44a46b92f74de818b9cb02798f2a7331",
+    "content-hash": "8e1053c02dcdcfae66593c3ef9003260",
     "packages": [
         {
             "name": "composer/installers",
@@ -480,7 +480,7 @@
         },
         {
             "name": "roots/wordpress",
-            "version": "6.6.1",
+            "version": "6.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/roots/wordpress.git",
@@ -511,7 +511,7 @@
             ],
             "support": {
                 "issues": "https://github.com/roots/wordpress/issues",
-                "source": "https://github.com/roots/wordpress/tree/6.6.1"
+                "source": "https://github.com/roots/wordpress/tree/6.6.2"
             },
             "funding": [
                 {
@@ -594,22 +594,22 @@
         },
         {
             "name": "roots/wordpress-no-content",
-            "version": "6.6.1",
+            "version": "6.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/WordPress/WordPress.git",
-                "reference": "6.6.1"
+                "reference": "6.6.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/release/wordpress-6.6.1-no-content.zip",
-                "shasum": "954aa560a66112cd999aa9d9519da5f964e6692a"
+                "url": "https://downloads.wordpress.org/release/wordpress-6.6.2-no-content.zip",
+                "shasum": "b496b8a9bb3c6d20a781344cbe3e189f7fd83871"
             },
             "require": {
-                "php": ">= 7.0.0"
+                "php": ">= 7.2.24"
             },
             "provide": {
-                "wordpress/core-implementation": "6.6.1"
+                "wordpress/core-implementation": "6.6.2"
             },
             "suggest": {
                 "ext-curl": "Performs remote request operations.",
@@ -660,7 +660,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2024-07-23T15:25:13+00:00"
+            "time": "2024-09-10T15:25:31+00:00"
         },
         {
             "name": "roots/wp-config",
@@ -2023,16 +2023,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.10.2",
+            "version": "3.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "86e5f5dd9a840c46810ebe5ff1885581c42a3017"
+                "reference": "62d32998e820bddc40f99f8251958aed187a5c9c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/86e5f5dd9a840c46810ebe5ff1885581c42a3017",
-                "reference": "86e5f5dd9a840c46810ebe5ff1885581c42a3017",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/62d32998e820bddc40f99f8251958aed187a5c9c",
+                "reference": "62d32998e820bddc40f99f8251958aed187a5c9c",
                 "shasum": ""
             },
             "require": {
@@ -2099,7 +2099,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2024-07-21T23:26:44+00:00"
+            "time": "2024-09-18T10:38:58+00:00"
         },
         {
             "name": "wpackagist-plugin/create-block-theme",
@@ -2186,5 +2186,5 @@
         "php": ">=8.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
