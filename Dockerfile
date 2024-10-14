@@ -1,4 +1,4 @@
-FROM php:8.1.27-fpm-alpine
+FROM php:8.3.12-fpm-alpine
 
 ENV PATH "$PATH:/var/www/html/vendor/bin"
 
@@ -11,12 +11,16 @@ RUN apk update \
     && echo "date.timezone=Europe/London" > /usr/local/etc/php/conf.d/zz-custom.ini \
     && echo "session.autostart=0" >> /usr/local/etc/php/conf.d/zz-custom.ini
 
+# TODO: replace `git clone imagick && pecl install /tmp/imagick/package.xml` with `pecl install imagick`
+# when this issue is fixed on their pecl release: https://github.com/Imagick/imagick/issues/640
 RUN apk update && apk add --virtual --no-cache \
-    imagemagick imagemagick-dev linux-headers $PHPIZE_DEPS \
-    && pecl install imagick \
+    imagemagick imagemagick-dev linux-headers git $PHPIZE_DEPS \
+    && git clone https://github.com/Imagick/imagick.git /tmp/imagick \
+    && pecl install /tmp/imagick/package.xml \
     && pecl install xdebug \
     && docker-php-ext-enable imagick xdebug \
-    && apk del imagemagick-dev linux-headers $PHPIZE_DEPS
+    && apk del imagemagick-dev linux-headers $PHPIZE_DEPS \
+    && rm -rf /tmp/imagick
 
 RUN { \
     echo "zend_extension=xdebug"; \
