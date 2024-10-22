@@ -1148,15 +1148,15 @@
         },
         {
             "name": "wpackagist-plugin/wordpress-importer",
-            "version": "0.8.2",
+            "version": "0.8.3",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/wordpress-importer/",
-                "reference": "tags/0.8.2"
+                "reference": "tags/0.8.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/wordpress-importer.0.8.2.zip"
+                "url": "https://downloads.wordpress.org/plugin/wordpress-importer.0.8.3.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -2185,6 +2185,6 @@
     "platform": {
         "php": ">=8.0"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
