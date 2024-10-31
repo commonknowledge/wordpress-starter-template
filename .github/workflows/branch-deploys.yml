@@ -1,0 +1,40 @@
+name: InstaWP WordPress Testing
+
+on: push
+
+jobs:
+  create-wp-for-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Composer dependencies
+        uses: php-actions/composer@v6
+
+      - name: Zip up artefact
+        uses: vimtor/action-zip@v1.2
+        with:
+          files: web/app
+          dest: builds/wordpress-starter-template-${{ github.sha }}.zip
+
+      - name: Deploy artefact to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./builds
+          publish_branch: builds
+
+      - name: Wait for GitHub Pages to deploy
+        run: sleep 60
+          
+      - name: Deploy to InstaWP
+        uses: instawp/wordpress-testing-automation@main
+        with:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          INSTAWP_TOKEN: ${{secrets.INSTAWP_TOKEN}}
+          INSTAWP_TEMPLATE_SLUG: wordpress-starter-template
+          EXPIRY_HOURS: 1
+          REPO_ID: 555
+          INSTAWP_ACTION: create-site-template
+          ARTIFACT_URL: https://commonknowledge.github.io/wordpress-starter-template/wordpress-starter-template-${{ github.sha }}.zip
