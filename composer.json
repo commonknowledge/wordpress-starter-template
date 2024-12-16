@@ -24,7 +24,7 @@
     "roots/wp-config": "1.0.0",
     "roots/wp-password-bcrypt": "1.1.0",
     "wpackagist-plugin/wordpress-importer": "^0.8.0",
-    "wpackagist-plugin/wordfence": "^7.10",
+    "wpackagist-plugin/wordfence": "^8.0",
     "wpackagist-plugin/safe-svg": "^2.1.1"
   },
   "require-dev": {
