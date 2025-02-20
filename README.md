@@ -11,7 +11,8 @@ This folder structure uses the [Bedrock](https://roots.io/bedrock/) pattern, a m
 
 ## Run locally
 
-1. [Generate a repository](https://github.com/commonknowledge/groundwork-starter-template/generate) from this template
+1. [Clone This Repository](https://github.com/commonknowledge/wordpress-starter-template)
+2. Search and replace all instances of `wordpress-starter-template` and `WordpressStarterTemplate` with the name of the new project, in kebab and camel case respectfully. Also rename the theme folder `web/app/themes/wordpress-starter-template` to the name of the new project.
 2. If you have PHP and Composer installed locally you can run from this directory `composer install`. Otherwise run `composer install` via Docker with `docker compose run composer install`.
 3. Copy `.env.example` to `.env`, running `cp .env.example .env`. The example file contains variables required for this Docker Compose setup but modify details appropriately [as per the Bedrock documentation](https://roots.io/bedrock/docs/environment-variables/) as required.
 4. Start up all containers with:
