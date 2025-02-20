@@ -25,23 +25,31 @@
     "roots/wp-password-bcrypt": "1.1.0",
     "wpackagist-plugin/wordpress-importer": "^0.8.0",
     "wpackagist-plugin/wordfence": "^8.0",
-    "wpackagist-plugin/safe-svg": "^2.1.1"
+    "wpackagist-plugin/safe-svg": "^2.1.1",
+    "htmlburger/carbon-fields": "^3.6"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^3.7.2",
     "roave/security-advisories": "dev-latest",
     "smgladkovskiy/phpcs-git-pre-commit": "dev-master",
-    "wpackagist-plugin/create-block-theme": "2.4.0",
+    "wpackagist-plugin/create-block-theme": "^2.6.0",
     "wpackagist-plugin/pattern-manager": "^0.3.0",
     "wpackagist-plugin/duplicate-post": "^4.5",
-    "wpackagist-plugin/fakerpress": "^0.6.1"
+    "wpackagist-plugin/fakerpress": "^0.6.1",
+    "mnsami/composer-custom-directory-installer": "^2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "CommonKnowledge\\WordpressStarterTemplate\\": "web/app/themes/wordpress-starter-template/src/"
+    }
   },
   "config": {
     "optimize-autoloader": true,
     "preferred-install": "dist",
     "allow-plugins": {
       "composer/installers": true,
-      "roots/wordpress-core-installer": true
+      "roots/wordpress-core-installer": true,
+      "mnsami/composer-custom-directory-installer": true
     }
   },
   "minimum-stability": "dev",
@@ -56,6 +64,9 @@
       ],
       "web/app/themes/{$name}/": [
         "type:wordpress-theme"
+      ],
+      "web/app/vendor/{$vendor}/{$name}/": [
+        "htmlburger/carbon-fields"
       ]
     },
     "wordpress-install-dir": "web/wp"

@@ -21,6 +21,7 @@ web/.htaccess
 
 # Composer
 /vendor
+/web/app/vendor
 
 # WP-CLI
 wp-cli.local.yml

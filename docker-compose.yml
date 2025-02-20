@@ -33,10 +33,6 @@ services:
       - ./:/var/www/html:rw,cached
       - ./docker/wordpress/php.ini:/usr/local/etc/php/conf.d/php.ini
     environment:
-      - WORDPRESS_DB_NAME=wordpress-starter-template
-      - WORDPRESS_TABLE_PREFIX=wp_
-      - WORDPRESS_DB_HOST=mysql
-      - WORDPRESS_DB_PASSWORD=password
       - WP_CLI_ALLOW_ROOT=true
       - PAGER=more
     depends_on:
