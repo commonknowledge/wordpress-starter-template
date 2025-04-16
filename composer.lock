@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e5a25dfc96f6485f90800725fd3a093d",
+    "content-hash": "b99dd1ba1e8061fdd1cadc4f3d332cc7",
     "packages": [
         {
             "name": "composer/installers",
@@ -850,27 +850,31 @@
         },
         {
             "name": "roots/wp-password-bcrypt",
-            "version": "1.1.0",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/roots/wp-password-bcrypt.git",
-                "reference": "15f0d8919fb3731f79a0cf2fb47e1baecb86cb26"
+                "reference": "e84fb85329c54b99a9176751cfb885497bcdc110"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/roots/wp-password-bcrypt/zipball/15f0d8919fb3731f79a0cf2fb47e1baecb86cb26",
-                "reference": "15f0d8919fb3731f79a0cf2fb47e1baecb86cb26",
+                "url": "https://api.github.com/repos/roots/wp-password-bcrypt/zipball/e84fb85329c54b99a9176751cfb885497bcdc110",
+                "reference": "e84fb85329c54b99a9176751cfb885497bcdc110",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.6.0"
+                "php": ">=8.0"
+            },
+            "conflict": {
+                "roots/wordpress-full": ">=6.8",
+                "roots/wordpress-no-content": ">=6.8"
             },
             "require-dev": {
                 "brain/monkey": "^2.6",
                 "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
                 "mockery/mockery": "^1.4",
                 "phpcompatibility/php-compatibility": "^9.3",
-                "phpunit/phpunit": "<= 9.3",
+                "phpunit/phpunit": "^9.6",
                 "squizlabs/php_codesniffer": "^3.5"
             },
             "type": "library",
@@ -913,19 +917,16 @@
             "support": {
                 "forum": "https://discourse.roots.io/",
                 "issues": "https://github.com/roots/wp-password-bcrypt/issues",
-                "source": "https://github.com/roots/wp-password-bcrypt/tree/1.1.0"
+                "source": "https://github.com/roots/wp-password-bcrypt/tree/1.3.0"
             },
             "funding": [
                 {
                     "url": "https://github.com/roots",
                     "type": "github"
-                },
-                {
-                    "url": "https://www.patreon.com/rootsdev",
-                    "type": "patreon"
                 }
             ],
-            "time": "2021-10-31T01:18:58+00:00"
+            "abandoned": "roots/wp-password-bcrypt",
+            "time": "2025-04-16T14:47:02+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -2441,6 +2442,6 @@
     "platform": {
         "php": ">=8.0"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
