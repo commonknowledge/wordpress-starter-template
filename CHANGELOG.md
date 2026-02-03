@@ -1,6 +1,7 @@
 ### Unreleased
 * Bump roots/wordpress from 6.8.1 to 6.9
 * Bump PHP requirement from 8.0 to 8.3
+* Bump composer/installers from ^2.2 to ^2.3
 * Add AGENTS.md with project documentation and coding guidelines
 
 ### 1.19.2: 2022-03-11
