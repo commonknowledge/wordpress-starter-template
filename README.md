@@ -65,8 +65,6 @@ docker compose run wordpress wp <command>
 
 ```
 
-Note WP-CLI will not work on the host machine, as WordPress configuration refers to databases within the Docker network, not the host machine.
-
 ### Adding WordPress Plugins
 
 Run `docker compose run composer require wp-plugin/plugin-name`.
