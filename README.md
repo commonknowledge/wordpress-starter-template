@@ -68,7 +68,7 @@ Note WP-CLI will not work on the host machine, as WordPress configuration refers
 
 ### Adding WordPress Plugins
 
-Run `docker compose run composer require wpackagist-plugin/plugin-name`.
+Run `docker compose run composer require wp-plugin/plugin-name`.
 
 ### Further Documentation
 

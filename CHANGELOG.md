@@ -1,3 +1,11 @@
+### Bedrock upstream sync: 2026-06-09
+* Realign with Roots Bedrock `master`: PHP `>=8.3`, `roots/wordpress` 7.0 (WordPress 6.9.x)
+* Migrate package sourcing from WPackagist to wp-packages.org (`wp-plugin/*`, `wp-theme/*`)
+* Replace phpcs + git pre-commit hook with `laravel/pint` + `pestphp/pest`; add `tests/`, `phpunit.xml.dist`, `pint.json`, `.devcontainer/`, `.gitattributes`, CI workflow
+* Bump Docker image to `php:8.3-fpm-alpine`
+* Adopt upstream `config/application.php` (env flags, `WP_ENVIRONMENT_TYPE`, `WP_DEVELOPMENT_MODE`, `DB_SSL`, `CONCATENATE_SCRIPTS`), retaining CK tweaks (`error_reporting`, `DISALLOW_FILE_EDIT`)
+* Drop `roots/wp-password-bcrypt` (redundant on WP 6.8+)
+
 ### 1.19.2: 2022-03-11
 * Bump roots/wordpress to 5.9.2 ([#631](https://github.com/roots/bedrock/pull/631))
 
