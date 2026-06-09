@@ -1,4 +1,3 @@
-version: "3.6"
 services:
   nginx:
     image: nginx:latest
@@ -11,7 +10,6 @@ services:
       - ./docker/nginx/certs:/etc/certs
     depends_on:
       - wordpress
-    restart: always
 
   mysql:
     image: mariadb
@@ -21,7 +19,6 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=wordpress-starter-template
-    restart: always
     ports:
       - "3308:3306"
 
@@ -34,17 +31,12 @@ services:
       - ./:/var/www/html:rw,cached
       - ./docker/wordpress/php.ini:/usr/local/etc/php/conf.d/php.ini
     environment:
-      - WORDPRESS_DB_NAME=wordpress-starter-template
-      - WORDPRESS_TABLE_PREFIX=wp_
-      - WORDPRESS_DB_HOST=mysql
-      - WORDPRESS_DB_PASSWORD=password
       - WP_CLI_ALLOW_ROOT=true
       - PAGER=more
     depends_on:
       - mysql
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    restart: always
 
   composer:
     image: composer
