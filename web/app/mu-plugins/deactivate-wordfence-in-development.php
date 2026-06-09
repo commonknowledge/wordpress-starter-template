@@ -1,4 +1,5 @@
 <?php
+
 /*
 Plugin Name:  Deactivate WordFence Plugin in Development
 Description:  Disallow activation of WordFence in Development environments
@@ -14,11 +15,11 @@ add_action('admin_init', function () {
     if (defined('WP_ENV') && WP_ENV === 'development') {
         include_once(ABSPATH . 'wp-admin/includes/plugin.php');
 
-         // Add an admin notice to explain why WordFence is not activated
+        // Add an admin notice to explain why WordFence is not activated
         add_action('admin_notices', function () {
             echo '<div class="notice notice-warning"><p>Wordfence has been automatically deactivated because this is a development environment.</p></div>';
         });
-   
+
         // Deactivate Wordfence plugin if it's active
         if (is_plugin_active('wordfence/wordfence.php')) {
             deactivate_plugins('wordfence/wordfence.php');
