@@ -9,8 +9,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    # Uncomment the following for a standard deployment to Kinsta
-    # steps:
+    # Replace this placeholder with the commented steps below for a
+    # standard deployment to Kinsta
+    steps:
+      - name: Deployment not configured
+        run: echo "Deployment is not configured. Replace this step with the commented Kinsta steps in this file."
+
       # - name: Checkout code
       #   uses: actions/checkout@v4
       # - name: Set up SSH
