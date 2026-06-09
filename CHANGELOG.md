@@ -1,5 +1,5 @@
 ### Bedrock upstream sync: 2026-06-09
-* Realign with Roots Bedrock `master`: PHP `>=8.3`, `roots/wordpress` 7.0 (WordPress 6.9.x)
+* Realign with Roots Bedrock `master`: PHP `>=8.5`, `roots/wordpress` 7.0 (WordPress 6.9.x)
 * Migrate package sourcing from WPackagist to wp-packages.org (`wp-plugin/*`, `wp-theme/*`)
 * Replace phpcs + git pre-commit hook with `laravel/pint` + `pestphp/pest`; add `tests/`, `phpunit.xml.dist`, `pint.json`, `.devcontainer/`, `.gitattributes`, CI workflow
 * Bump Docker image to `php:8.3-fpm-alpine`

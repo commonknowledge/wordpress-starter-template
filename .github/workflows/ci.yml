@@ -7,9 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # Pinned to the PHP version in the Dockerfile (php:8.3-fpm-alpine) so CI,
+        # Pinned to the PHP version in the Dockerfile (php:8.5.7-fpm-alpine) so CI,
         # local dev and production all target the same runtime.
-        php-version: ['8.3']
+        php-version: ['8.5']
 
     steps:
     - uses: actions/checkout@v6

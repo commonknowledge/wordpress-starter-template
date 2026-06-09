@@ -11,7 +11,7 @@
     }
   ],
   "require": {
-    "php": ">=8.3",
+    "php": ">=8.5",
     "composer/installers": "^2.0",
     "oscarotero/env": "^2.0",
     "roots/bedrock-autoloader": "^1.0",
@@ -36,7 +36,7 @@
     "optimize-autoloader": true,
     "preferred-install": "dist",
     "platform": {
-      "php": "8.3"
+      "php": "8.5"
     },
     "allow-plugins": {
       "composer/installers": true,

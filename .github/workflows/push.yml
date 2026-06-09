@@ -10,7 +10,7 @@ jobs:
       - name: Install Composer dependencies
         uses: php-actions/composer@v6
         with:
-          php_version: "8.3"
+          php_version: "8.5"
 
       - name: Build the stack
         run: docker compose up -d
