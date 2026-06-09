@@ -1,4 +1,4 @@
-FROM php:8.1.27-fpm-alpine
+FROM php:8.3-fpm-alpine
 
 ENV PATH "$PATH:/var/www/html/vendor/bin"
 
