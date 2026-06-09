@@ -57,11 +57,11 @@ Again for creating dummy data, this allows quick duplication of posts to fill th
 
 ### WP-CLI
 
-[WP-CLI](https://wp-cli.org/) is installed in the `wordpress` container.
+[WP-CLI](https://wp-cli.org/) is installed in the `wordpress` container. The container sets `WP_CLI_ALLOW_ROOT=true`, so there's no need to pass `--allow-root`.
 
 ```
 
-docker compose run wordpress wp --allow-root <command>
+docker compose run wordpress wp <command>
 
 ```
 
