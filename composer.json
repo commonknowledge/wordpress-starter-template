@@ -5,38 +5,34 @@
   "description": "A WordPress starter template for organisers and campaigns, using Bedrock and Docker Compose",
   "repositories": [
     {
+      "name": "wp-packages",
       "type": "composer",
-      "url": "https://wpackagist.org",
-      "only": [
-        "wpackagist-plugin/*",
-        "wpackagist-theme/*"
-      ]
+      "url": "https://repo.wp-packages.org"
     }
   ],
   "require": {
-    "php": ">=8.0",
-    "composer/installers": "^2.2",
-    "vlucas/phpdotenv": "^5.5",
-    "oscarotero/env": "^2.1",
-    "roots/bedrock-autoloader": "^1.0.4",
+    "php": ">=8.5",
+    "composer/installers": "^2.0",
+    "htmlburger/carbon-fields": "^3.6",
+    "oscarotero/env": "^2.0",
+    "roots/bedrock-autoloader": "^1.0",
     "roots/bedrock-disallow-indexing": "^2.0",
-    "roots/wordpress": "6.8.1",
-    "roots/wp-config": "1.0.0",
-    "roots/wp-password-bcrypt": "1.1.0",
-    "wpackagist-plugin/wordpress-importer": "^0.8.0",
-    "wpackagist-plugin/wordfence": "^8.0",
-    "wpackagist-plugin/safe-svg": "^2.1.1",
-    "htmlburger/carbon-fields": "^3.6"
+    "roots/wordpress": "7.0",
+    "roots/wp-config": "^1.0",
+    "vlucas/phpdotenv": "^5.0",
+    "wp-plugin/safe-svg": "*",
+    "wp-plugin/wordfence": "*",
+    "wp-plugin/wordpress-importer": "*",
+    "wp-theme/twentytwentyfive": "^1.0"
   },
   "require-dev": {
-    "squizlabs/php_codesniffer": "^3.7.2",
-    "roave/security-advisories": "dev-latest",
-    "smgladkovskiy/phpcs-git-pre-commit": "dev-master",
-    "wpackagist-plugin/create-block-theme": "^2.6.0",
-    "wpackagist-plugin/pattern-manager": "^0.3.0",
-    "wpackagist-plugin/duplicate-post": "^4.5",
-    "wpackagist-plugin/fakerpress": "^0.6.1",
-    "mnsami/composer-custom-directory-installer": "^2.0"
+    "laravel/pint": "^1.0",
+    "mnsami/composer-custom-directory-installer": "^2.0",
+    "pestphp/pest": "^4.0",
+    "wp-plugin/create-block-theme": "*",
+    "wp-plugin/duplicate-post": "*",
+    "wp-plugin/fakerpress": "*",
+    "wp-plugin/pattern-manager": "*"
   },
   "autoload": {
     "psr-4": {
@@ -46,11 +42,16 @@
   "config": {
     "optimize-autoloader": true,
     "preferred-install": "dist",
+    "platform": {
+      "php": "8.5"
+    },
     "allow-plugins": {
       "composer/installers": true,
       "roots/wordpress-core-installer": true,
+      "pestphp/pest-plugin": true,
       "mnsami/composer-custom-directory-installer": true
-    }
+    },
+    "sort-packages": true
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
@@ -72,20 +73,8 @@
     "wordpress-install-dir": "web/wp"
   },
   "scripts": {
-    "install-hooks": [
-      "sh ./vendor/smgladkovskiy/phpcs-git-pre-commit/src/setup.sh"
-    ],
-    "post-install-cmd": [
-      "@install-hooks"
-    ],
-    "post-update-cmd": [
-      "@install-hooks"
-    ],
-    "post-root-package-install": [
-      "php -r \"copy('.env.example', '.env');\""
-    ],
-    "test": [
-      "phpcs"
-    ]
+    "lint": "pint --test",
+    "lint:fix": "pint",
+    "test": "pest"
   }
 }
