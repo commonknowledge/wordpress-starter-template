@@ -1,0 +1,30 @@
+{
+  "baseBranchPatterns": [
+    "main"
+  ],
+  "commitMessageAction": "⬆️ Bump",
+  "commitMessageTopic": "{{depName}}",
+  "extends": [
+    "config:recommended",
+    "schedule:weekly",
+    ":semanticCommitsDisabled"
+  ],
+  "ignoreDeps": ["php"],
+  "ignorePaths": ["Dockerfile"],
+  "packageRules": [
+    {
+      "groupName": "GitHub Actions",
+      "matchManagers": ["github-actions"]
+    },
+    {
+      "groupName": "roots/wordpress",
+      "schedule": [
+        "at any time"
+      ],
+      "matchPackageNames": [
+        "roots/wordpress{/,}**"
+      ]
+    }
+  ],
+  "timezone": "America/Chicago"
+}
