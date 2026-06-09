@@ -1,6 +1,6 @@
 services:
   nginx:
-    image: nginx:latest
+    image: nginx:1.31
     container_name: wordpress-starter-template-nginx
     ports:
       - "8082:80"
@@ -12,7 +12,7 @@ services:
       - wordpress
 
   mysql:
-    image: mariadb
+    image: mariadb:12.3
     container_name: wordpress-starter-template-mysql
     volumes:
       - wordpress-starter-template-mysql:/var/lib/mysql
@@ -39,7 +39,7 @@ services:
       - "host.docker.internal:host-gateway"
 
   composer:
-    image: composer
+    image: composer:2
     working_dir: /var/www/html
     restart: "no"
     volumes:
