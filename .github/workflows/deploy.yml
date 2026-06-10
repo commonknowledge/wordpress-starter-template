@@ -16,9 +16,9 @@ jobs:
         run: echo "Deployment is not configured. Replace this step with the commented Kinsta steps in this file."
 
       # - name: Checkout code
-      #   uses: actions/checkout@v4
+      #   uses: actions/checkout@v6
       # - name: Set up SSH
-      #   uses: webfactory/ssh-agent@v0.9.0
+      #   uses: webfactory/ssh-agent@v0.10.0
       #   with:
       #     ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       
