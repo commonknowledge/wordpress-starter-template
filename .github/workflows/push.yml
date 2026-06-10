@@ -1,11 +1,15 @@
 name: Check Docker Compose development environment
-on: push
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Install Composer dependencies
         uses: php-actions/composer@v6
