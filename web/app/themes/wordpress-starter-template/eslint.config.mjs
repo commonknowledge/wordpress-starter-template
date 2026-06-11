@@ -6,7 +6,7 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    files: ["**/*.{js,mjs,ts}"],
+    files: ["**/*.{js,jsx,mjs,ts,tsx}"],
     extends: [
       eslint.configs.recommended,
       importPlugin.flatConfigs.recommended,
@@ -53,7 +53,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["postcss.config.js", "tailwind.config.js", "webpack.config.js"],
+    files: ["webpack.config.js"],
     languageOptions: {
       globals: { ...globals.node },
       sourceType: "commonjs",
