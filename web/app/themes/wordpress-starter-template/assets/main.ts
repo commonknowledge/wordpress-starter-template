@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-named-as-default -- the named "Alpine" export is only a type
 import Alpine from "alpinejs";
 
 import "./main.css";

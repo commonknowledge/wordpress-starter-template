@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "lint": "tsc --noEmit && eslint --fix . && prettier --write assets/ blocks/",
+    "lint": "tsc --noEmit && eslint . && prettier --check \"{assets,blocks}/**/*.{ts,tsx,js,jsx,css}\"",
+    "lint:fix": "tsc --noEmit && eslint --fix . && prettier --write \"{assets,blocks}/**/*.{ts,tsx,js,jsx,css}\"",
     "dev": "webpack --mode development --watch",
     "build": "webpack --mode production"
   },
