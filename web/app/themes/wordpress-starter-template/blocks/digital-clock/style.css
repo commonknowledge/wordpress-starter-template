@@ -1,0 +1,32 @@
+/*
+ * Loaded on both the front end and in the editor (via "style" in block.json),
+ * so the block looks the same in both. Every visual value is a CSS custom
+ * property: block-local --clock-* variables, defaulting to the theme.json
+ * tokens (settings.custom.clock => --wp--custom--clock--*) and WordPress
+ * presets (--wp--preset--*).
+ */
+/*
+ * The wrapper stays block-level: WordPress's constrained layout aligns blocks
+ * with max-width + auto margins, which inline-level boxes ignore. The pill
+ * styling goes on the inner <time> element instead.
+ */
+.wp-block-wordpress-starter-template-digital-clock {
+  --clock-background: var(--wp--custom--clock--background, #1d2327);
+  --clock-color: var(--wp--custom--clock--color, #7bf178);
+  --clock-font-family: var(--wp--custom--clock--font-family, monospace);
+  --clock-border-radius: var(--wp--custom--clock--border-radius, 0.5rem);
+  --clock-font-size: var(--wp--preset--font-size--large, 1.5rem);
+  --clock-padding: var(--wp--preset--spacing--40, 1rem);
+}
+
+.wp-block-wordpress-starter-template-digital-clock time {
+  display: inline-block;
+  padding: calc(var(--clock-padding) / 2) var(--clock-padding);
+  background: var(--clock-background);
+  border-radius: var(--clock-border-radius);
+  color: var(--clock-color);
+  font-family: var(--clock-font-family);
+  font-size: var(--clock-font-size);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+}

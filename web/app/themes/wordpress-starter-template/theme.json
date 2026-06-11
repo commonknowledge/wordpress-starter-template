@@ -1,6 +1,14 @@
 {
 	"settings": {
 		"appearanceTools": true,
+		"custom": {
+			"clock": {
+				"background": "#1d2327",
+				"borderRadius": "0.5rem",
+				"color": "#7bf178",
+				"fontFamily": "ui-monospace, Menlo, Consolas, monospace"
+			}
+		},
 		"layout": {
 			"contentSize": "620px",
 			"wideSize": "1000px"

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bb5b3bcb4d0c27f6e54211aad3bfbbe3",
+    "content-hash": "9a19e4116399a2ab2709a379962a4734",
     "packages": [
         {
             "name": "composer/installers",
@@ -213,146 +213,6 @@
                 }
             ],
             "time": "2025-12-27T19:43:20+00:00"
-        },
-        {
-            "name": "htmlburger/carbon-fields",
-            "version": "v3.6.9",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/htmlburger/carbon-fields.git",
-                "reference": "f82e80e3e3469d6e86cc17a8950b918ad448a059"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/htmlburger/carbon-fields/zipball/f82e80e3e3469d6e86cc17a8950b918ad448a059",
-                "reference": "f82e80e3e3469d6e86cc17a8950b918ad448a059",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.6.20"
-            },
-            "require-dev": {
-                "mockery/mockery": "1.3.6",
-                "phpunit/phpunit": "7.5.20|9.6.3",
-                "yoast/phpunit-polyfills": "^1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Carbon_Fields\\": "core/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "htmlBurger",
-                    "email": "wordpress@htmlburger.com",
-                    "homepage": "https://htmlburger.com/",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Miroslav Mitev",
-                    "email": "mmitev.2create@gmail.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Atanas Angelov",
-                    "email": "atanas.angelov.dev@gmail.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Georgi Stoyanov",
-                    "email": "stoyanov.gs@gmail.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Plamen Kostadinov",
-                    "email": "pkostadinov.2create@gmail.com",
-                    "homepage": "http://plasmen.info/",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Stanimir Panchev",
-                    "email": "Stan4omir@gmail.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Marin Atanasov",
-                    "email": "contact@marinatanasov.com",
-                    "homepage": "http://marinatanasov.com/",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Siyan Panayotov",
-                    "homepage": "http://siyanpanayotov.com/",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Peter Petrov",
-                    "email": "peter.petrov89@gmail.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Stanimir Stoyanov",
-                    "email": "stanimir.k.stoyanov@gmail.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Kaloyan Ivanov",
-                    "email": "kaloyanxivanov@gmail.com",
-                    "homepage": "http://vilepixels.com/",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Georgi Popov",
-                    "homepage": "http://magadanski.com/",
-                    "role": "Developer"
-                },
-                {
-                    "name": "German Velchev",
-                    "email": "germozy@gmail.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Rashko Petrov",
-                    "email": "brutalenemy666@gmail.com",
-                    "homepage": "http://errorfactory.com/",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Alexander Panayotov",
-                    "email": "alexander.panayotov@gmail.com",
-                    "homepage": "http://alexanderpanayotov.com/",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Viktor Vasilev",
-                    "email": "liberalcho@gmail.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Georgi Georgiev",
-                    "email": "george.georgiev96@gmail.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Atanas Vasilev",
-                    "email": "atanasvasilev91@gmail.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "WordPress developer-friendly custom fields for post types, taxonomy terms, users, comments, widgets, options and more.",
-            "homepage": "http://carbonfields.net/",
-            "support": {
-                "docs": "http://carbonfields.net/docs/",
-                "email": "wordpress@htmlburger.com",
-                "issues": "https://github.com/htmlburger/carbon-fields/issues",
-                "source": "https://github.com/htmlburger/carbon-fields"
-            },
-            "time": "2025-06-11T11:23:23+00:00"
         },
         {
             "name": "oscarotero/env",
@@ -1397,28 +1257,29 @@
         },
         {
             "name": "composer/pcre",
-            "version": "3.3.2",
+            "version": "3.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/pcre.git",
-                "reference": "b2bed4734f0cc156ee1fe9c0da2550420d99a21e"
+                "reference": "d5a341b3fb61f3001970940afb1d332968a183ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/pcre/zipball/b2bed4734f0cc156ee1fe9c0da2550420d99a21e",
-                "reference": "b2bed4734f0cc156ee1fe9c0da2550420d99a21e",
+                "url": "https://api.github.com/repos/composer/pcre/zipball/d5a341b3fb61f3001970940afb1d332968a183ed",
+                "reference": "d5a341b3fb61f3001970940afb1d332968a183ed",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.4 || ^8.0"
             },
             "conflict": {
-                "phpstan/phpstan": "<1.11.10"
+                "phpstan/phpstan": "<2.2.2"
             },
             "require-dev": {
-                "phpstan/phpstan": "^1.12 || ^2",
-                "phpstan/phpstan-strict-rules": "^1 || ^2",
-                "phpunit/phpunit": "^8 || ^9"
+                "phpstan/phpstan": "^2",
+                "phpstan/phpstan-deprecation-rules": "^2",
+                "phpstan/phpstan-strict-rules": "^2",
+                "phpunit/phpunit": "^9"
             },
             "type": "library",
             "extra": {
@@ -1456,7 +1317,7 @@
             ],
             "support": {
                 "issues": "https://github.com/composer/pcre/issues",
-                "source": "https://github.com/composer/pcre/tree/3.3.2"
+                "source": "https://github.com/composer/pcre/tree/3.4.0"
             },
             "funding": [
                 {
@@ -1466,13 +1327,9 @@
                 {
                     "url": "https://github.com/composer",
                     "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/composer/composer",
-                    "type": "tidelift"
                 }
             ],
-            "time": "2024-11-12T16:29:46+00:00"
+            "time": "2026-06-07T11:47:49+00:00"
         },
         {
             "name": "composer/xdebug-handler",
@@ -1847,78 +1704,6 @@
                 "source": "https://github.com/laravel/pint"
             },
             "time": "2026-04-20T15:26:14+00:00"
-        },
-        {
-            "name": "mnsami/composer-custom-directory-installer",
-            "version": "2.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mnsami/composer-custom-directory-installer.git",
-                "reference": "23b7039ea7cf18b5846faae2b9f4d9c9445e0039"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mnsami/composer-custom-directory-installer/zipball/23b7039ea7cf18b5846faae2b9f4d9c9445e0039",
-                "reference": "23b7039ea7cf18b5846faae2b9f4d9c9445e0039",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^2.0",
-                "php": ">=8.1"
-            },
-            "require-dev": {
-                "composer/composer": "^2.0",
-                "friendsofphp/php-cs-fixer": "^3.75",
-                "phpunit/phpunit": "^10.5"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": [
-                    "Composer\\CustomDirectoryInstaller\\LibraryPlugin",
-                    "Composer\\CustomDirectoryInstaller\\PearPlugin",
-                    "Composer\\CustomDirectoryInstaller\\PluginPlugin"
-                ],
-                "branch-alias": {
-                    "dev-master": "2.2.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Composer\\CustomDirectoryInstaller\\": "src/Composer/CustomDirectoryInstaller"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Mina Nabil Sami",
-                    "email": "mina.nsami@gmail.com"
-                }
-            ],
-            "description": "A composer plugin, to help install packages of different types in custom paths.",
-            "keywords": [
-                "composer",
-                "composer-installer",
-                "composer-plugin",
-                "custom-path",
-                "drupal",
-                "installer-paths",
-                "monorepo",
-                "wordpress"
-            ],
-            "support": {
-                "issues": "https://github.com/mnsami/composer-custom-directory-installer/issues",
-                "source": "https://github.com/mnsami/composer-custom-directory-installer/tree/2.2.1"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/mnsami",
-                    "type": "github"
-                }
-            ],
-            "time": "2026-05-20T07:57:55+00:00"
         },
         {
             "name": "myclabs/deep-copy",

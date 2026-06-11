@@ -31,6 +31,10 @@ RUN { \
     echo "xdebug.log=/tmp/xdebug_remote.log"; \
 } > /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
 
+# Install composer (just the binary: it runs on this image's PHP, keeping the
+# PHP version composer sees identical to the one WordPress runs on)
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+
 # Install wp-cli
 RUN curl -o /bin/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 RUN chmod +x /bin/wp-cli.phar

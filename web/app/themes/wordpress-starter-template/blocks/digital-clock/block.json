@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "wordpress-starter-template/digital-clock",
+  "version": "1.0.0",
+  "title": "Digital Clock",
+  "category": "widgets",
+  "icon": "clock",
+  "description": "A ticking digital clock, rendered with React in the editor and Alpine.js on the front end.",
+  "textdomain": "wordpress-starter-template",
+  "attributes": {},
+  "supports": {
+    "html": false
+  },
+  "editorScript": "file:./index.js",
+  "style": "file:./index.css",
+  "viewScript": "file:./view.js",
+  "render": "file:./render.php"
+}

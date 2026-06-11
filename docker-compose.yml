@@ -39,7 +39,13 @@ services:
       - "host.docker.internal:host-gateway"
 
   composer:
-    image: composer:2
+    # Built from the project Dockerfile so composer runs on the same PHP
+    # version as WordPress itself (the stock composer image bundles its own
+    # PHP, which can fall behind the platform requirement in composer.json).
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: ["composer"]
     working_dir: /var/www/html
     restart: "no"
     volumes:
