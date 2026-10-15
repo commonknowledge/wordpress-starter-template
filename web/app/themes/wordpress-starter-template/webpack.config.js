@@ -16,7 +16,7 @@ module.exports = [
     },
     devtool: DEBUG ? "eval-source-map" : false,
     entry: {
-      main: "./assets/main.tsx",
+      main: "./assets/main.ts",
     },
     mode: DEBUG ? "development" : "production",
     output: {
@@ -36,7 +36,7 @@ module.exports = [
     module: {
       rules: [
         {
-          test: /\.tsx?$/,
+          test: /\.ts$/,
           use: "ts-loader",
           exclude: /node_modules/,
         },
@@ -65,7 +65,7 @@ module.exports = [
       alias: {
         "@": path.resolve("./assets"),
       },
-      extensions: [".ts", ".tsx", ".js"],
+      extensions: [".ts", ".js"],
     },
     target: "web",
     watchOptions: {
