@@ -6,6 +6,7 @@
 * Make the Docker Compose CI check install WordPress and run `scripts/smoke-test.sh`
 * Bump Pest to 5, Wordfence to 9, and all other Composer dependencies within their constraints
 * Theme: Node 24, ESLint 10 (replacing `eslint-plugin-import` with `eslint-plugin-import-x`), webpack-dev-server 6, TypeScript 7 alongside TypeScript 6 for tooling, and a `typecheck` CI step
+* Theme: remove Tailwind and React, which our recent WordPress builds do not use
 
 ### Bedrock upstream sync: 2026-06-09
 * Realign with Roots Bedrock `master`: PHP `>=8.5`, `roots/wordpress` 7.0 (WordPress 6.9.x)

@@ -42,7 +42,7 @@ CI runs the same check against a fresh install.
 
 ### Theme
 
-The theme in `web/app/themes/wordpress-starter-template` is built with webpack, Tailwind and TypeScript, and needs Node 24 (see `.nvmrc`). From the theme folder:
+The theme in `web/app/themes/wordpress-starter-template` is built with webpack, PostCSS and TypeScript, and needs Node 24 (see `.nvmrc`). From the theme folder:
 
 - `npm ci` installs dependencies
 - `npm run dev` starts the webpack dev server on port 9000, which the theme loads assets from when `WP_ENV` is `development`
