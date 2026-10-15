@@ -27,3 +27,6 @@ jobs:
 
       - name: Build theme assets
         run: npm run build
+
+      - name: Type-check theme
+        run: npm run typecheck

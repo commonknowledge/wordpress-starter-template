@@ -5,7 +5,8 @@
   "scripts": {
     "lint": "eslint --fix . && prettier --write .",
     "dev": "cross-env DEBUG=true webpack serve",
-    "build": "cross-env DEBUG=false webpack"
+    "build": "cross-env DEBUG=false webpack",
+    "typecheck": "tsc --noEmit"
   },
   "husky": {
     "hooks": {
