@@ -1214,15 +1214,15 @@
         },
         {
             "name": "wp-plugin/wordfence",
-            "version": "8.2.2",
+            "version": "9.0.2",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/wordfence/",
-                "reference": "tags/8.2.2"
+                "reference": "tags/9.0.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/wordfence.8.2.2.zip"
+                "url": "https://downloads.wordpress.org/plugin/wordfence.9.0.2.zip"
             },
             "require": {
                 "composer/installers": "~1.0|~2.0"
@@ -1241,7 +1241,7 @@
                 "issues": "https://wordpress.org/support/plugin/wordfence",
                 "source": "https://plugins.svn.wordpress.org/wordfence"
             },
-            "time": "2026-05-13T15:46:44+00:00"
+            "time": "2026-09-30T15:31:24+00:00"
         },
         {
             "name": "wp-plugin/wordpress-importer",
