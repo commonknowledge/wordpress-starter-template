@@ -25,7 +25,32 @@ docker compose up
 ```
 docker compose run wordpress wp core install --url=http://localhost:8082 --title='WordPress Starter Template' --admin_user=ck_admin --admin_email=hello@commonknowledge.coop
 ```
+
+If ports 8082 or 3308 are already in use by another project, set `WEB_HOST_PORT` and `DB_HOST_PORT` in `.env`, and update the port in `WP_HOME` to match.
+
+### Checking the environment works
+
+Once WordPress is installed, run the smoke test with the site title and URL:
+
+```
+scripts/smoke-test.sh "WordPress Starter Template" http://localhost:8082
+```
+
+CI runs the same check against a fresh install.
+
 ## Development Documentation
+
+### Theme
+
+The theme in `web/app/themes/wordpress-starter-template` is built with webpack, Tailwind and TypeScript, and needs Node 24 (see `.nvmrc`). From the theme folder:
+
+- `npm ci` installs dependencies
+- `npm run dev` starts the webpack dev server on port 9000, which the theme loads assets from when `WP_ENV` is `development`
+- `npm run build` builds assets to `build/` for other environments
+- `npm run typecheck` type-checks with TypeScript 7
+- `npm run lint` fixes lint and formatting issues
+
+TypeScript 7 does not yet have a compiler API, which `ts-loader` and `typescript-eslint` need. As recommended in the [TypeScript 7 release notes](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-6.0), the `typescript` package is aliased to `@typescript/typescript6` for those tools, and TypeScript 7 is installed as `@typescript/native`, which provides `tsc`. Once TypeScript 7.1 ships an API and those tools support it, the alias can be removed.
 
 ### Development Tools
 
