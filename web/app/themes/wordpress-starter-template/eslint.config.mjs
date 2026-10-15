@@ -57,7 +57,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["postcss.config.js", "tailwind.config.js", "webpack.config.js"],
+    files: ["postcss.config.js", "webpack.config.js"],
     languageOptions: {
       globals: { ...globals.node },
       sourceType: "commonjs",
