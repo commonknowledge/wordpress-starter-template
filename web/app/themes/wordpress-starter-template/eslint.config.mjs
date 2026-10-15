@@ -1,6 +1,7 @@
 import eslint from "@eslint/js";
 import prettier from "eslint-config-prettier";
-import importPlugin from "eslint-plugin-import";
+import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript";
+import importX from "eslint-plugin-import-x";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
@@ -9,8 +10,8 @@ export default tseslint.config(
     files: ["**/*.{js,mjs,ts}"],
     extends: [
       eslint.configs.recommended,
-      importPlugin.flatConfigs.recommended,
-      importPlugin.flatConfigs.typescript,
+      importX.flatConfigs.recommended,
+      importX.flatConfigs.typescript,
       tseslint.configs.strict,
       tseslint.configs.stylistic,
       prettier,
@@ -18,8 +19,11 @@ export default tseslint.config(
     languageOptions: {
       globals: globals.browser,
     },
+    settings: {
+      "import-x/resolver-next": [createTypeScriptImportResolver()],
+    },
     rules: {
-      "import/order": [
+      "import-x/order": [
         "error",
         {
           alphabetize: {
@@ -39,8 +43,8 @@ export default tseslint.config(
         },
       ],
       // Disable resolve checking as this is handled by typescript
-      "import/no-unresolved": "off",
-      // Import sorting is handled by the import/order rule.
+      "import-x/no-unresolved": "off",
+      // Import sorting is handled by the import-x/order rule.
       // However, sort-imports also sorts symbols inside a multi-import
       //     e.g. import { a, b, c } from "d"
       // Setting `ignoreDeclarationSort: true` restricts it to only this behavior.
