@@ -28,7 +28,7 @@
   "require-dev": {
     "laravel/pint": "^1.0",
     "mnsami/composer-custom-directory-installer": "^2.0",
-    "pestphp/pest": "^4.0",
+    "pestphp/pest": "^5.0",
     "wp-plugin/create-block-theme": "*",
     "wp-plugin/duplicate-post": "*",
     "wp-plugin/fakerpress": "*",
