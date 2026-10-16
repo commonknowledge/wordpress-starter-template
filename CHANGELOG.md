@@ -1,14 +1,15 @@
 ### Bedrock upstream sync and dependency upgrade: 2026-10-15
 * Realign with Roots Bedrock 1.31.7: `roots/wordpress` 7.1.3, `actions/checkout` v7, `actions/cache` v6, LICENSE and Bedrock Autoloader header
 * Remove `.devcontainer/` in favour of Docker Compose, and the committed `twentytwentyfour` theme
-* Bump PHP image to `php:8.5.11-fpm-alpine`, install Imagick from PECL, and bump MariaDB to 13.0 with `MARIADB_AUTO_UPGRADE`
+* Bump PHP image to `php:8.5.11-fpm-alpine`, and install Imagick from PECL; MariaDB stays on 12.3 LTS
 * Allow overriding Docker Compose host ports with `WEB_HOST_PORT` and `DB_HOST_PORT`
 * Make the Docker Compose CI check install WordPress and run `scripts/smoke-test.sh`
 * Bump Pest to 5, Wordfence to 9, and all other Composer dependencies within their constraints
 * Theme: Node 24, ESLint 10 (replacing `eslint-plugin-import` with `eslint-plugin-import-x`), webpack-dev-server 6, TypeScript 7 alongside TypeScript 6 for tooling, and a `typecheck` CI step
 * Theme: remove Tailwind, which our recent WordPress builds do not use
 * Theme: custom block support, following Rethinking Economics and Healing Justice London: JSX, auto-discovered `blocks/<name>/` folders built by webpack and registered from `block.json`, WordPress dependency extraction, `view.ts` front-end scripts, Sass, and an example block
-* Add `scripts/setup.sh` and page fixtures, used locally and in CI, and `CLAUDE.md` with theme conventions
+* Add `scripts/setup.sh` and page fixtures, used locally and in CI, with regression tests, and `CLAUDE.md` with theme conventions
+* Load `main.js` dependencies from its build asset file, and remove the hard-coded navigation ref from the header
 * Hide deprecation notices from a must-use plugin instead of `wp-config.php`, so they no longer break REST API JSON in development
 
 ### Bedrock upstream sync: 2026-06-09
