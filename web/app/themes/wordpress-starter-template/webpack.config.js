@@ -6,8 +6,9 @@ const { DefinePlugin } = require("webpack");
 
 const DEBUG = process.env.DEBUG === "true" ? true : false;
 
-// Each blocks/<name>/index.tsx is built to build/blocks/<name>/index.js,
-// which the block's block.json loads as its editorScript.
+// Each blocks/<name>/index.tsx is built to build/blocks/<name>/index.js, which
+// the block's block.json loads as its editorScript. An optional view.ts is
+// built to view.js, for front-end JavaScript loaded as its viewScript.
 const blocksDir = path.resolve(__dirname, "blocks");
 const blockEntries = Object.fromEntries(
   (fs.existsSync(blocksDir)
@@ -15,9 +16,16 @@ const blockEntries = Object.fromEntries(
     : []
   )
     .filter((dirent) => dirent.isDirectory())
-    .map((dirent) => dirent.name)
-    .filter((name) => fs.existsSync(path.resolve(blocksDir, name, "index.tsx")))
-    .map((name) => [`blocks/${name}/index`, `./blocks/${name}/index.tsx`]),
+    .flatMap((dirent) =>
+      ["index.tsx", "view.ts"]
+        .filter((file) =>
+          fs.existsSync(path.resolve(blocksDir, dirent.name, file)),
+        )
+        .map((file) => [
+          `blocks/${dirent.name}/${path.parse(file).name}`,
+          `./blocks/${dirent.name}/${file}`,
+        ]),
+    ),
 );
 
 module.exports = [
