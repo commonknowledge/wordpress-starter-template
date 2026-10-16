@@ -9,6 +9,7 @@
 * Theme: remove Tailwind, which our recent WordPress builds do not use
 * Theme: custom block support, following Rethinking Economics and Healing Justice London: JSX, auto-discovered `blocks/<name>/` folders built by webpack and registered from `block.json`, WordPress dependency extraction, `view.ts` front-end scripts, Sass, and an example block
 * Add `scripts/setup.sh` and page fixtures, used locally and in CI, and `CLAUDE.md` with theme conventions
+* Hide deprecation notices from a must-use plugin instead of `wp-config.php`, so they no longer break REST API JSON in development
 
 ### Bedrock upstream sync: 2026-06-09
 * Realign with Roots Bedrock `master`: PHP `>=8.5`, `roots/wordpress` 7.0 (WordPress 6.9.x)
