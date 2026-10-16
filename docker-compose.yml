@@ -12,15 +12,13 @@ services:
       - wordpress
 
   mysql:
-    image: mariadb:13.0
+    image: mariadb:12.3
     container_name: wordpress-starter-template-mysql
     volumes:
       - wordpress-starter-template-mysql:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=wordpress-starter-template
-      # Upgrade existing data directories when the MariaDB version changes
-      - MARIADB_AUTO_UPGRADE=1
     ports:
       - "${DB_HOST_PORT:-3308}:3306"
 
