@@ -1,19 +1,20 @@
 import eslint from "@eslint/js";
+import { defineConfig } from "eslint/config";
 import prettier from "eslint-config-prettier";
 import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript";
-import importX from "eslint-plugin-import-x";
+import { flatConfigs as importConfigs } from "eslint-plugin-import-x";
 import globals from "globals";
-import tseslint from "typescript-eslint";
+import { configs as tsConfigs } from "typescript-eslint";
 
-export default tseslint.config(
+export default defineConfig(
   {
     files: ["**/*.{js,mjs,ts,tsx}"],
     extends: [
       eslint.configs.recommended,
-      importX.flatConfigs.recommended,
-      importX.flatConfigs.typescript,
-      tseslint.configs.strict,
-      tseslint.configs.stylistic,
+      importConfigs.recommended,
+      importConfigs.typescript,
+      tsConfigs.strict,
+      tsConfigs.stylistic,
       prettier,
     ],
     languageOptions: {
