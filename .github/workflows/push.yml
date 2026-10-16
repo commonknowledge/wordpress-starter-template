@@ -41,3 +41,9 @@ jobs:
           scripts/smoke-test.sh "WordPress Starter" http://localhost:8082
           "/blocks/=wp-block-wordpress-starter-template-example"
           "/blocks/=Hello from a custom block"
+
+      - name: Test the theme's main.js dependencies are loaded
+        run: scripts/test-theme-assets.sh http://localhost:8082
+
+      - name: Test the setup script
+        run: scripts/test-setup.sh http://localhost:8082 "WordPress Starter"
