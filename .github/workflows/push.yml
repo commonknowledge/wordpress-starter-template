@@ -16,6 +16,17 @@ jobs:
         with:
           php_version: "8.5"
 
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: web/app/themes/wordpress-starter-template/.nvmrc
+          cache: npm
+          cache-dependency-path: web/app/themes/wordpress-starter-template/package-lock.json
+
+      - name: Build theme assets
+        working-directory: web/app/themes/wordpress-starter-template
+        run: npm ci && npm run build
+
       - name: Setup environment file with database settings
         run: cp .env.example .env
 
@@ -40,5 +51,16 @@ jobs:
           --admin_email=admin@example.com
           --skip-email
 
+      - name: Activate the theme and add a page using the example block
+        run: |
+          docker compose exec -T wordpress wp theme activate wordpress-starter-template
+          docker compose exec -T wordpress wp rewrite structure '/%postname%/'
+          docker compose exec -T wordpress wp post create --post_type=page --post_status=publish \
+            --post_title=Blocks --post_name=blocks \
+            --post_content='<!-- wp:wordpress-starter-template/example /-->'
+
       - name: Test WordPress is running successfully
-        run: scripts/smoke-test.sh "WordPress Starter" http://localhost:8082
+        run: >
+          scripts/smoke-test.sh "WordPress Starter" http://localhost:8082
+          "/blocks/=wp-block-wordpress-starter-template-example"
+          "/blocks/=Hello from a custom block"
