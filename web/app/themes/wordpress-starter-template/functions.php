@@ -24,8 +24,13 @@ add_action('wp_enqueue_scripts', function () {
 
     $fileRoot = WP_ENV === "development" ? "http://localhost:9000" : (get_template_directory_uri() . "/build");
 
+    // The build lists the WordPress scripts main.js imports, such as
+    // wp-dom-ready. The dev server also writes this file to build/.
+    $assetFile = get_template_directory() . '/build/main.asset.php';
+    $dependencies = file_exists($assetFile) ? (require $assetFile)['dependencies'] : [];
+
     wp_enqueue_style('theme-custom-style', $fileRoot . '/main.css', [], $VERSION, 'all');
-    wp_enqueue_script('theme-custom-script', $fileRoot . '/main.js', ['jquery'], $VERSION, true);
+    wp_enqueue_script('theme-custom-script', $fileRoot . '/main.js', array_merge(['jquery'], $dependencies), $VERSION, true);
 });
 
 add_action('wp_footer', function () {
