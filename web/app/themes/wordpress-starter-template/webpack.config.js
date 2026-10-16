@@ -74,7 +74,7 @@ module.exports = [
           exclude: /node_modules/,
         },
         {
-          test: /\.css$/i,
+          test: /\.s?css$/i,
           use: [
             MiniCssExtractPlugin.loader,
             {
@@ -82,6 +82,9 @@ module.exports = [
             },
             {
               loader: "postcss-loader",
+            },
+            {
+              loader: "sass-loader",
             },
           ],
         },

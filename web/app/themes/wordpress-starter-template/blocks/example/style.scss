@@ -1,5 +1,9 @@
-/* Loaded on the front end and in the editor via "style" in block.json. */
+// Loaded on the front end and in the editor via "style" in block.json.
 .wp-block-wordpress-starter-template-example {
   padding: var(--wp--preset--spacing--40, 1.5rem);
   border: 1px solid currentcolor;
+
+  h2 {
+    margin: 0;
+  }
 }

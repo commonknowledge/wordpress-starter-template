@@ -1,4 +1,4 @@
-import "./style.css";
+import "./style.scss";
 import { RichText, useBlockProps } from "@wordpress/block-editor";
 import {
   type BlockConfiguration,
