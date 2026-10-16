@@ -9,7 +9,9 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "resolveJsonModule": true /* Allow importing .json files, such as a block's block.json. */,
     "jsx": "react-jsx" /* Compile JSX for block editor components. WordPress provides React at runtime. */,
-    "types": ["webpack-env"] /* Needed for module.hot; TypeScript 6+ no longer includes @types packages by default. */,
+    "types": [
+      "webpack-env"
+    ] /* Needed for module.hot; TypeScript 6+ no longer includes @types packages by default. */,
     "paths": {
       "@/*": ["./assets/*"]
     }

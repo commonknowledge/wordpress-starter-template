@@ -8,6 +8,13 @@ add_action('after_setup_theme', function () {
     \Carbon_Fields\Carbon_Fields::boot();
 });
 
+add_action('init', function () {
+    // Register every custom block in blocks/, each defined by its block.json
+    foreach (glob(get_template_directory() . '/blocks/*/block.json') as $blockJson) {
+        register_block_type(dirname($blockJson));
+    }
+});
+
 add_action('carbon_fields_register_fields', function () {
     // Register Carbon Fields containers, fields and blocks here.
 });
