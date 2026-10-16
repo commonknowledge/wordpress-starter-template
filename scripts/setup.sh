@@ -39,9 +39,14 @@ for fixture in scripts/fixtures/*.html; do
     slug=$(basename "$fixture" .html)
     # The repository is mounted at /var/www/html in the container
     path="/var/www/html/$fixture"
-    id=$(wp post list --post_type=page --name="$slug" --field=ID 2>/dev/null)
-    if [ -n "$id" ]; then
-        wp post update "$id" "$path"
+    # Only root pages: a page under another parent can share the slug
+    ids=$(wp post list --post_type=page --name="$slug" --post_parent=0 --post_status=any --field=ID 2>/dev/null)
+    count=$(printf '%s\n' "$ids" | grep -c . || true)
+    if [ "$count" -gt 1 ]; then
+        echo "Error: several root pages have the slug '$slug' (IDs $(echo $ids)), so the fixture was not loaded"
+        exit 1
+    elif [ "$count" -eq 1 ]; then
+        wp post update "$ids" "$path"
     else
         wp post create "$path" --post_type=page --post_status=publish \
             --post_title="$slug" --post_name="$slug"
