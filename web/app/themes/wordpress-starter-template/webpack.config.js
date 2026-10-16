@@ -45,7 +45,8 @@ module.exports = [
     },
     devtool: DEBUG ? "eval-source-map" : false,
     entry: {
-      main: "./assets/main.ts",
+      // MAIN_ENTRY swaps the main entry, for scripts/test-theme-assets.sh
+      main: process.env.MAIN_ENTRY || "./assets/main.ts",
       ...blockEntries,
     },
     mode: DEBUG ? "development" : "production",
