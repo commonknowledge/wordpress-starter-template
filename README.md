@@ -15,28 +15,43 @@ This folder structure uses the [Bedrock](https://roots.io/bedrock/) pattern, a m
 2. Search and replace all instances of `wordpress-starter-template` and `WordpressStarterTemplate` with the name of the new project, in kebab and camel case respectfully. Also rename the theme folder `web/app/themes/wordpress-starter-template` to the name of the new project.
 2. If you have PHP and Composer installed locally you can run from this directory `composer install`. Otherwise run `composer install` via Docker with `docker compose run composer install`.
 3. Copy `.env.example` to `.env`, running `cp .env.example .env`. The example file contains variables required for this Docker Compose setup but modify details appropriately [as per the Bedrock documentation](https://roots.io/bedrock/docs/environment-variables/) as required.
-4. Start up all containers with:
+4. Start the local proxy, and point `.test` domains at it (see [Local domains](#local-domains)). Both are once per machine, not per project:
+
+```
+scripts/proxy.sh
+scripts/setup-dns.sh
+```
+
+5. Start up all containers with:
 
 ```
 docker compose up
 ```
 
-5. Build the theme (see [Theme](#theme)), then install WordPress, activate the theme and load the page fixtures in `scripts/fixtures`:
+6. Build the theme (see [Theme](#theme)), then install WordPress, activate the theme and load the page fixtures in `scripts/fixtures`:
 
 ```
-scripts/setup.sh http://localhost:8082 "WordPress Starter Template"
+scripts/setup.sh http://wordpress-starter-template.test "WordPress Starter Template"
 ```
 
-6. You can access the site at [http://localhost:8082](http://localhost:8082), and log in with `admin` / `admin`.
+7. You can access the site at [http://wordpress-starter-template.test](http://wordpress-starter-template.test), and log in with `admin` / `admin`.
 
-If ports 8082 or 3308 are already in use by another project, set `WEB_HOST_PORT` and `DB_HOST_PORT` in `.env`, and update the port in `WP_HOME` to match.
+### Local domains
+
+Sites are served at `http://<project>.test` instead of on a host port, so several projects can run at once without clashing. A shared [Traefik](https://traefik.io/traefik/) proxy in `docker/proxy` listens on port 80 and routes each domain to the project whose `nginx` container claims it in `docker-compose.yml`. Every project built from this template uses the same proxy.
+
+- `scripts/proxy.sh` starts the proxy, and it restarts with Docker after that. Extra arguments go to `docker compose`, e.g. `scripts/proxy.sh logs -f` or `scripts/proxy.sh down`. Its dashboard is at [http://traefik.test](http://traefik.test).
+- `scripts/setup-dns.sh` makes every `*.test` name resolve to `127.0.0.1`, using a small DNS server that runs with the proxy. On macOS it writes `/etc/resolver/test`; on Linux it configures systemd-resolved. It needs `sudo`, and `scripts/setup-dns.sh --remove` undoes it. Without it, add `127.0.0.1 wordpress-starter-template.test` to `/etc/hosts` for each project.
+- Port 80 must be free on the host, so stop anything else that uses it, such as a local Apache or Laravel Valet.
+- MariaDB is published on a free port picked by Docker; `docker compose port mysql 3306` shows it. Set `DB_HOST_PORT` in `.env` for a fixed port.
+- If a browser uses DNS over HTTPS, it may bypass the system resolver for `.test` names. Turn it off, or add the domain to `/etc/hosts`.
 
 ### Checking the environment works
 
 Run the smoke test with the site title and URL. Extra `path=text` arguments check a page contains some text:
 
 ```
-scripts/smoke-test.sh "WordPress Starter Template" http://localhost:8082 "/blocks/=wp-block-wordpress-starter-template-example"
+scripts/smoke-test.sh "WordPress Starter Template" http://wordpress-starter-template.test "/blocks/=wp-block-wordpress-starter-template-example"
 ```
 
 CI builds the theme, runs `setup.sh` and runs the smoke test against a fresh install.

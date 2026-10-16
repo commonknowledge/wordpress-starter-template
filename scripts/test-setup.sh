@@ -7,7 +7,7 @@
 
 cd "$(dirname "$0")/.."
 
-SITE_URL="${1:-http://localhost:8082}"
+SITE_URL="${1:-http://wordpress-starter-template.test}"
 SITE_TITLE="${2:-WordPress Starter}"
 MARKER="Nested page content that setup must not change"
 failures=0

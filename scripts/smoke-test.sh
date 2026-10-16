@@ -3,13 +3,13 @@
 # WordPress is installed and serving pages through nginx and PHP-FPM.
 #
 # Usage: scripts/smoke-test.sh <site-title> [base-url] [path=text ...]
-#   e.g. scripts/smoke-test.sh "WordPress Starter" http://localhost:8082
+#   e.g. scripts/smoke-test.sh "WordPress Starter" http://wordpress-starter-template.test
 #
 # Each extra path=text argument checks that the page at path returns 200 and
 # contains text, e.g. "/blocks/=wp-block-wordpress-starter-template-example".
 
 SITE_TITLE="$1"
-BASE_URL="${2:-http://localhost:8082}"
+BASE_URL="${2:-http://wordpress-starter-template.test}"
 failures=0
 
 if [ -z "$SITE_TITLE" ]; then

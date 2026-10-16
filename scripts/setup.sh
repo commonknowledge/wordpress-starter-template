@@ -5,13 +5,13 @@
 # re-run: existing fixture pages are updated.
 #
 # Usage: scripts/setup.sh [site-url] [site-title]
-#   e.g. scripts/setup.sh http://localhost:8082 "WordPress Starter"
+#   e.g. scripts/setup.sh http://wordpress-starter-template.test "WordPress Starter"
 # Run `docker compose up -d` first. The admin login is admin / admin (local only).
 
 set -eu
 cd "$(dirname "$0")/.."
 
-SITE_URL="${1:-http://localhost:8082}"
+SITE_URL="${1:-http://wordpress-starter-template.test}"
 SITE_TITLE="${2:-WordPress Starter}"
 
 # Send PHP notices to stderr so they don't end up in captured output

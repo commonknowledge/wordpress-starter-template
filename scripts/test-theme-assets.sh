@@ -11,7 +11,7 @@
 
 cd "$(dirname "$0")/.."
 
-BASE_URL="${1:-http://localhost:8082}"
+BASE_URL="${1:-http://wordpress-starter-template.test}"
 THEME_DIR=web/app/themes/wordpress-starter-template
 ASSET_FILE="/var/www/html/$THEME_DIR/build/main.asset.php"
 TEST_ENTRY=./tests/main-with-wp-dependency.ts

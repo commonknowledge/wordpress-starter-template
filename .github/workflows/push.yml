@@ -30,20 +30,25 @@ jobs:
       - name: Setup environment file with database settings
         run: cp .env.example .env
 
+      - name: Start the local proxy
+        run: |
+          scripts/proxy.sh
+          echo "127.0.0.1 wordpress-starter-template.test" | sudo tee -a /etc/hosts
+
       - name: Build the stack
         run: docker compose up -d --build
 
       - name: Install WordPress, activate the theme and load page fixtures
-        run: scripts/setup.sh http://localhost:8082 "WordPress Starter"
+        run: scripts/setup.sh http://wordpress-starter-template.test "WordPress Starter"
 
       - name: Test WordPress is running successfully
         run: >
-          scripts/smoke-test.sh "WordPress Starter" http://localhost:8082
+          scripts/smoke-test.sh "WordPress Starter" http://wordpress-starter-template.test
           "/blocks/=wp-block-wordpress-starter-template-example"
           "/blocks/=Hello from a custom block"
 
       - name: Test the theme's main.js dependencies are loaded
-        run: scripts/test-theme-assets.sh http://localhost:8082
+        run: scripts/test-theme-assets.sh http://wordpress-starter-template.test
 
       - name: Test the setup script
-        run: scripts/test-setup.sh http://localhost:8082 "WordPress Starter"
+        run: scripts/test-setup.sh http://wordpress-starter-template.test "WordPress Starter"
