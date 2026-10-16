@@ -1,1 +1,4 @@
-@import "tailwindcss";
+/*
+ * Theme styles. Most styling belongs in theme.json; use this file for what
+ * theme.json cannot express. postcss-preset-env lets you use modern CSS.
+ */

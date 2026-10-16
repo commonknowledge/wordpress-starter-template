@@ -9,21 +9,41 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install Composer dependencies
         uses: php-actions/composer@v6
         with:
           php_version: "8.5"
 
-      - name: Build the stack
-        run: docker compose up -d
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: web/app/themes/wordpress-starter-template/.nvmrc
+          cache: npm
+          cache-dependency-path: web/app/themes/wordpress-starter-template/package-lock.json
+
+      - name: Build theme assets
+        working-directory: web/app/themes/wordpress-starter-template
+        run: npm ci && npm run build
 
       - name: Setup environment file with database settings
         run: cp .env.example .env
 
-      - name: Wait for MariaDB to come up 
-        run: sleep 30
+      - name: Build the stack
+        run: docker compose up -d --build
+
+      - name: Install WordPress, activate the theme and load page fixtures
+        run: scripts/setup.sh http://localhost:8082 "WordPress Starter"
 
       - name: Test WordPress is running successfully
-        run: curl -s --retry-delay 5 --retry 5 --retry-connrefused http://localhost:8082/
+        run: >
+          scripts/smoke-test.sh "WordPress Starter" http://localhost:8082
+          "/blocks/=wp-block-wordpress-starter-template-example"
+          "/blocks/=Hello from a custom block"
+
+      - name: Test the theme's main.js dependencies are loaded
+        run: scripts/test-theme-assets.sh http://localhost:8082
+
+      - name: Test the setup script
+        run: scripts/test-setup.sh http://localhost:8082 "WordPress Starter"

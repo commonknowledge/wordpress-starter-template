@@ -21,11 +21,51 @@ This folder structure uses the [Bedrock](https://roots.io/bedrock/) pattern, a m
 docker compose up
 ```
 
-6. You can access the site at [http://localhost:8082](http://localhost:8082). You can install WordPress automatically by running 
+5. Build the theme (see [Theme](#theme)), then install WordPress, activate the theme and load the page fixtures in `scripts/fixtures`:
+
 ```
-docker compose run wordpress wp core install --url=http://localhost:8082 --title='WordPress Starter Template' --admin_user=ck_admin --admin_email=hello@commonknowledge.coop
+scripts/setup.sh http://localhost:8082 "WordPress Starter Template"
 ```
+
+6. You can access the site at [http://localhost:8082](http://localhost:8082), and log in with `admin` / `admin`.
+
+If ports 8082 or 3308 are already in use by another project, set `WEB_HOST_PORT` and `DB_HOST_PORT` in `.env`, and update the port in `WP_HOME` to match.
+
+### Checking the environment works
+
+Run the smoke test with the site title and URL. Extra `path=text` arguments check a page contains some text:
+
+```
+scripts/smoke-test.sh "WordPress Starter Template" http://localhost:8082 "/blocks/=wp-block-wordpress-starter-template-example"
+```
+
+CI builds the theme, runs `setup.sh` and runs the smoke test against a fresh install.
+
 ## Development Documentation
+
+### Theme
+
+The theme in `web/app/themes/wordpress-starter-template` is built with webpack, TypeScript, Sass and PostCSS, and needs Node 24 (see `.nvmrc`). From the theme folder:
+
+- `npm ci` installs dependencies
+- `npm run dev` starts the webpack dev server on port 9000, which the theme loads assets from when `WP_ENV` is `development`. It also writes to `build/`, where blocks load their scripts and styles from.
+- `npm run build` builds assets to `build/` for other environments
+- `npm run typecheck` type-checks with TypeScript 7
+- `npm run lint` fixes lint and formatting issues
+
+TypeScript 7 does not yet have a compiler API, which `ts-loader` and `typescript-eslint` need. As recommended in the [TypeScript 7 release notes](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-6.0), the `typescript` package is aliased to `@typescript/typescript6` for those tools, and TypeScript 7 is installed as `@typescript/native`, which provides `tsc`. Once TypeScript 7.1 ships an API and those tools support it, the alias can be removed.
+
+#### Custom blocks
+
+Each custom block is a folder in `blocks/`. Copy `blocks/example` to start one:
+
+- `block.json` defines the block and points at its built files in `build/blocks/<name>/`
+- `index.tsx` is the editor script, written in TypeScript and JSX
+- `render.php` renders the block on the server
+- `style.scss` styles the block on the front end and in the editor
+- `view.ts` (optional) is front-end JavaScript, loaded through `viewScript` in `block.json`
+
+webpack builds and `functions.php` registers every block folder automatically. `@wordpress/*` and React imports use WordPress's own copies at runtime. Add new blocks to `scripts/fixtures/blocks.html` so they show at `/blocks/` and are covered by CI. See `CLAUDE.md` for theme conventions.
 
 ### Development Tools
 

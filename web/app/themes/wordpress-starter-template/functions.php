@@ -8,6 +8,13 @@ add_action('after_setup_theme', function () {
     \Carbon_Fields\Carbon_Fields::boot();
 });
 
+add_action('init', function () {
+    // Register every custom block in blocks/, each defined by its block.json
+    foreach (glob(get_template_directory() . '/blocks/*/block.json') as $blockJson) {
+        register_block_type(dirname($blockJson));
+    }
+});
+
 add_action('carbon_fields_register_fields', function () {
     // Register Carbon Fields containers, fields and blocks here.
 });
@@ -17,8 +24,13 @@ add_action('wp_enqueue_scripts', function () {
 
     $fileRoot = WP_ENV === "development" ? "http://localhost:9000" : (get_template_directory_uri() . "/build");
 
+    // The build lists the WordPress scripts main.js imports, such as
+    // wp-dom-ready. The dev server also writes this file to build/.
+    $assetFile = get_template_directory() . '/build/main.asset.php';
+    $dependencies = file_exists($assetFile) ? (require $assetFile)['dependencies'] : [];
+
     wp_enqueue_style('theme-custom-style', $fileRoot . '/main.css', [], $VERSION, 'all');
-    wp_enqueue_script('theme-custom-script', $fileRoot . '/main.js', ['jquery'], $VERSION, true);
+    wp_enqueue_script('theme-custom-script', $fileRoot . '/main.js', array_merge(['jquery'], $dependencies), $VERSION, true);
 });
 
 add_action('wp_footer', function () {

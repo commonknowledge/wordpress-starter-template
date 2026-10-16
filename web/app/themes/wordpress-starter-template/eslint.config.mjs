@@ -1,25 +1,30 @@
 import eslint from "@eslint/js";
+import { defineConfig } from "eslint/config";
 import prettier from "eslint-config-prettier";
-import importPlugin from "eslint-plugin-import";
+import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript";
+import { flatConfigs as importConfigs } from "eslint-plugin-import-x";
 import globals from "globals";
-import tseslint from "typescript-eslint";
+import { configs as tsConfigs } from "typescript-eslint";
 
-export default tseslint.config(
+export default defineConfig(
   {
-    files: ["**/*.{js,mjs,ts}"],
+    files: ["**/*.{js,mjs,ts,tsx}"],
     extends: [
       eslint.configs.recommended,
-      importPlugin.flatConfigs.recommended,
-      importPlugin.flatConfigs.typescript,
-      tseslint.configs.strict,
-      tseslint.configs.stylistic,
+      importConfigs.recommended,
+      importConfigs.typescript,
+      tsConfigs.strict,
+      tsConfigs.stylistic,
       prettier,
     ],
     languageOptions: {
       globals: globals.browser,
     },
+    settings: {
+      "import-x/resolver-next": [createTypeScriptImportResolver()],
+    },
     rules: {
-      "import/order": [
+      "import-x/order": [
         "error",
         {
           alphabetize: {
@@ -39,8 +44,8 @@ export default tseslint.config(
         },
       ],
       // Disable resolve checking as this is handled by typescript
-      "import/no-unresolved": "off",
-      // Import sorting is handled by the import/order rule.
+      "import-x/no-unresolved": "off",
+      // Import sorting is handled by the import-x/order rule.
       // However, sort-imports also sorts symbols inside a multi-import
       //     e.g. import { a, b, c } from "d"
       // Setting `ignoreDeclarationSort: true` restricts it to only this behavior.
@@ -53,7 +58,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["postcss.config.js", "tailwind.config.js", "webpack.config.js"],
+    files: ["postcss.config.js", "webpack.config.js"],
     languageOptions: {
       globals: { ...globals.node },
       sourceType: "commonjs",
