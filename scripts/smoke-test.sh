@@ -2,17 +2,22 @@
 # Smoke test for the Docker Compose development environment. Checks that
 # WordPress is installed and serving pages through nginx and PHP-FPM.
 #
-# Usage: scripts/smoke-test.sh <site-title> [base-url]
+# Usage: scripts/smoke-test.sh <site-title> [base-url] [path=text ...]
 #   e.g. scripts/smoke-test.sh "WordPress Starter" http://localhost:8082
+#
+# Each extra path=text argument checks that the page at path returns 200 and
+# contains text, e.g. "/blocks/=wp-block-wordpress-starter-template-example".
 
 SITE_TITLE="$1"
 BASE_URL="${2:-http://localhost:8082}"
 failures=0
 
 if [ -z "$SITE_TITLE" ]; then
-    echo "Usage: $0 <site-title> [base-url]"
+    echo "Usage: $0 <site-title> [base-url] [path=text ...]"
     exit 2
 fi
+shift
+[ $# -gt 0 ] && shift
 
 pass() { echo "PASS  $1"; }
 fail() { echo "FAIL  $1"; failures=$((failures + 1)); }
@@ -41,6 +46,13 @@ check_body / "<title>$SITE_TITLE"
 check_body / "</html>"
 check_status /wp/wp-login.php 200
 check_status /wp-json/ 200
+
+for check in "$@"; do
+    path="${check%%=*}"
+    text="${check#*=}"
+    check_status "$path" 200
+    check_body "$path" "$text"
+done
 
 echo
 if [ "$failures" -eq 0 ]; then
