@@ -2,17 +2,17 @@ services:
   nginx:
     image: nginx:1.31
     container_name: wordpress-starter-template-nginx
-    # Served at http://wordpress-starter-template.test by the shared local
-    # proxy in docker/proxy, rather than on a host port
+    # Served at http://$LOCAL_DOMAIN (set in .env) by the shared local proxy
+    # in docker/proxy, rather than on a host port
     labels:
       - traefik.enable=true
-      - traefik.http.routers.wordpress-starter-template.rule=Host(`wordpress-starter-template.test`)
+      - traefik.http.routers.wordpress-starter-template.rule=Host(`${LOCAL_DOMAIN:?Set LOCAL_DOMAIN in .env}`)
       - traefik.http.routers.wordpress-starter-template.entrypoints=web
     networks:
       default:
         # Lets WordPress reach its own URL, for cron and loopback requests
         aliases:
-          - wordpress-starter-template.test
+          - ${LOCAL_DOMAIN:?Set LOCAL_DOMAIN in .env}
       local-proxy:
     volumes:
       - ./docker/nginx/config:/etc/nginx/conf.d

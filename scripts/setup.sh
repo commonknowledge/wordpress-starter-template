@@ -6,12 +6,14 @@
 #
 # Usage: scripts/setup.sh [site-url] [site-title]
 #   e.g. scripts/setup.sh http://wordpress-starter-template.test "WordPress Starter"
+# The site URL defaults to LOCAL_DOMAIN in .env.
 # Run `docker compose up -d` first. The admin login is admin / admin (local only).
 
 set -eu
 cd "$(dirname "$0")/.."
+. scripts/env.sh
 
-SITE_URL="${1:-http://wordpress-starter-template.test}"
+SITE_URL="${1:-${DEFAULT_SITE_URL:?Pass a site URL or set LOCAL_DOMAIN in .env}}"
 SITE_TITLE="${2:-WordPress Starter}"
 
 # Send PHP notices to stderr so they don't end up in captured output

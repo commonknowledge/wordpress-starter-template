@@ -7,9 +7,13 @@
 #
 # Each extra path=text argument checks that the page at path returns 200 and
 # contains text, e.g. "/blocks/=wp-block-wordpress-starter-template-example".
+# The base URL defaults to LOCAL_DOMAIN in .env.
+
+cd "$(dirname "$0")/.."
+. scripts/env.sh
 
 SITE_TITLE="$1"
-BASE_URL="${2:-http://wordpress-starter-template.test}"
+BASE_URL="${2:-${DEFAULT_SITE_URL:?Pass a base URL or set LOCAL_DOMAIN in .env}}"
 failures=0
 
 if [ -z "$SITE_TITLE" ]; then

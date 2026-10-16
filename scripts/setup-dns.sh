@@ -21,8 +21,8 @@ Darwin)
     ;;
 Linux)
     if ! systemctl is-active --quiet systemd-resolved 2>/dev/null; then
-        echo "systemd-resolved is not running, so add each site to /etc/hosts instead:"
-        echo "  127.0.0.1 wordpress-starter-template.test"
+        echo "systemd-resolved is not running, so add each site's LOCAL_DOMAIN to /etc/hosts instead, e.g."
+        echo "  127.0.0.1 example.test"
         exit 1
     fi
     file=/etc/systemd/resolved.conf.d/test.conf
