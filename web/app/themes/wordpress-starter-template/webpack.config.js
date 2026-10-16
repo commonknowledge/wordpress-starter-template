@@ -36,7 +36,7 @@ module.exports = [
     module: {
       rules: [
         {
-          test: /\.ts$/,
+          test: /\.tsx?$/,
           use: "ts-loader",
           exclude: /node_modules/,
         },
@@ -65,7 +65,7 @@ module.exports = [
       alias: {
         "@": path.resolve("./assets"),
       },
-      extensions: [".ts", ".js"],
+      extensions: [".ts", ".tsx", ".js", ".json"],
     },
     target: "web",
     watchOptions: {

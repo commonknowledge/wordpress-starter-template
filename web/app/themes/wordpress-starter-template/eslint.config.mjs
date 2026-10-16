@@ -7,7 +7,7 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    files: ["**/*.{js,mjs,ts}"],
+    files: ["**/*.{js,mjs,ts,tsx}"],
     extends: [
       eslint.configs.recommended,
       importX.flatConfigs.recommended,
