@@ -1,34 +1,74 @@
 #!/bin/sh
-# Checks that every script the theme's main.js depends on, as listed by the
-# build in build/main.asset.php, is loaded on the homepage. Run after building
-# the theme, against a site with the theme active.
+# Regression test for loading main.js's WordPress dependencies. Builds the
+# theme from a test entry that imports @wordpress/dom-ready, then checks the
+# build lists wp-dom-ready in build/main.asset.php and that WordPress loads it
+# before main.js. Rebuilds the normal theme when it finishes, pass or fail.
+#
+# Needs Node and the theme's npm dependencies installed, and a running site
+# with the theme active.
 #
 # Usage: scripts/test-theme-assets.sh [base-url]
 
 cd "$(dirname "$0")/.."
 
 BASE_URL="${1:-http://localhost:8082}"
-ASSET_FILE=/var/www/html/web/app/themes/wordpress-starter-template/build/main.asset.php
+THEME_DIR=web/app/themes/wordpress-starter-template
+ASSET_FILE="/var/www/html/$THEME_DIR/build/main.asset.php"
+TEST_ENTRY=./tests/main-with-wp-dependency.ts
 failures=0
 
-deps=$(docker compose exec -T wordpress php -r "echo implode(' ', (require '$ASSET_FILE')['dependencies']);")
-page=$(curl -s "$BASE_URL/")
+pass() { echo "PASS  $1"; }
+fail() { echo "FAIL  $1"; failures=$((failures + 1)); }
+abort() { echo "ERROR $1"; exit 1; }
+
+build() {
+    (cd "$THEME_DIR" && MAIN_ENTRY="$1" npm run --silent build >/dev/null 2>&1)
+}
+
+restore() {
+    status=$?
+    build "" || { echo "ERROR could not rebuild the normal theme"; status=1; }
+    exit "$status"
+}
+trap restore EXIT
+trap 'exit 1' INT TERM
+
+build "$TEST_ENTRY" || abort "could not build the theme from $TEST_ENTRY"
+
+deps=$(docker compose exec -T wordpress php -r "
+    \$asset = require '$ASSET_FILE';
+    if (!is_array(\$asset) || !isset(\$asset['dependencies'])) {
+        fwrite(STDERR, 'no dependencies in asset file');
+        exit(1);
+    }
+    echo implode(' ', \$asset['dependencies']);
+") || abort "could not read $ASSET_FILE"
+
+case " $deps " in
+*" wp-dom-ready "*) pass "build/main.asset.php lists wp-dom-ready" ;;
+*) abort "build/main.asset.php does not list wp-dom-ready (got: '$deps')" ;;
+esac
+
+page=$(curl -fsS "$BASE_URL/") || abort "could not fetch $BASE_URL/"
+
+# Byte offset of a script tag in the page, or nothing if it isn't there
+offset() {
+    printf '%s' "$page" | grep -bo "id=\"$1-js\"" | head -n 1 | cut -d: -f1
+}
+
+main=$(offset theme-custom-script)
+[ -n "$main" ] || abort "main.js is not loaded on the homepage"
 
 for handle in $deps; do
-    if printf '%s' "$page" | grep -q "id=\"$handle-js\""; then
-        echo "PASS  main.js dependency $handle is loaded"
+    at=$(offset "$handle")
+    if [ -z "$at" ]; then
+        fail "$handle is loaded"
+    elif [ "$at" -lt "$main" ]; then
+        pass "$handle is loaded before main.js"
     else
-        echo "FAIL  main.js dependency $handle is loaded"
-        failures=$((failures + 1))
+        fail "$handle is loaded before main.js"
     fi
 done
-
-if printf '%s' "$page" | grep -q 'id="theme-custom-script-js"'; then
-    echo "PASS  main.js is loaded"
-else
-    echo "FAIL  main.js is loaded"
-    failures=$((failures + 1))
-fi
 
 echo
 if [ "$failures" -eq 0 ]; then
