@@ -33,31 +33,8 @@ jobs:
       - name: Build the stack
         run: docker compose up -d --build
 
-      - name: Wait for MariaDB to come up
-        run: |
-          for i in $(seq 1 30); do
-            docker compose exec -T mysql mariadb -uroot -ppassword -e 'SELECT 1' && exit 0
-            sleep 2
-          done
-          exit 1
-
-      - name: Install WordPress
-        run: >
-          docker compose exec -T wordpress wp core install
-          --url=http://localhost:8082
-          --title="WordPress Starter"
-          --admin_user=admin
-          --admin_password=admin
-          --admin_email=admin@example.com
-          --skip-email
-
-      - name: Activate the theme and add a page using the example block
-        run: |
-          docker compose exec -T wordpress wp theme activate wordpress-starter-template
-          docker compose exec -T wordpress wp rewrite structure '/%postname%/'
-          docker compose exec -T wordpress wp post create --post_type=page --post_status=publish \
-            --post_title=Blocks --post_name=blocks \
-            --post_content='<!-- wp:wordpress-starter-template/example /-->'
+      - name: Install WordPress, activate the theme and load page fixtures
+        run: scripts/setup.sh http://localhost:8082 "WordPress Starter"
 
       - name: Test WordPress is running successfully
         run: >
