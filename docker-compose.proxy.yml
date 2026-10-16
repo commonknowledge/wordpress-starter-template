@@ -1,0 +1,24 @@
+# Serves the site at http://wordpress-starter-template.test through the shared
+# local proxy in docker/proxy, instead of on a host port. Enable it by setting
+# COMPOSE_FILE in .env; see "Local domains" in README.md.
+services:
+  nginx:
+    ports: !reset []
+    networks:
+      - default
+      - local-proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.wordpress-starter-template.rule=Host(`${LOCAL_DOMAIN:-wordpress-starter-template.test}`)
+      - traefik.http.routers.wordpress-starter-template.entrypoints=web
+      - traefik.http.services.wordpress-starter-template.loadbalancer.server.port=80
+
+  mysql:
+    # Publish on a free port picked by Docker, found with
+    # `docker compose port mysql 3306`
+    ports: !override
+      - "127.0.0.1::3306"
+
+networks:
+  local-proxy:
+    external: true
