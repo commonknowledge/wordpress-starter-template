@@ -47,6 +47,13 @@ check_body / "</html>"
 check_status /wp/wp-login.php 200
 check_status /wp-json/ 200
 
+# PHP notices printed before the JSON break the REST API, and the block editor
+if curl -s "$BASE_URL/wp-json/" | head -c 1 | grep -q '{'; then
+    pass "/wp-json/ returns JSON with no output before it"
+else
+    fail "/wp-json/ returns JSON with no output before it"
+fi
+
 for check in "$@"; do
     path="${check%%=*}"
     text="${check#*=}"
