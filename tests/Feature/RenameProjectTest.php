@@ -12,7 +12,7 @@ function copyProject(): string
         if (! is_file("$root/$file")) {
             continue;
         }
-        @mkdir(dirname("$copy/$file"), 0777, true);
+        is_dir(dirname("$copy/$file")) || mkdir(dirname("$copy/$file"), 0777, true);
         copy("$root/$file", "$copy/$file");
     }
     exec('git -C ' . escapeshellarg($copy) . ' init -q && git -C ' . escapeshellarg($copy) . ' add -A');
@@ -53,7 +53,7 @@ test('leaves no trace of the template name outside history and its own repositor
     exec('grep -rnI -e wordpress-starter-template -e WordpressStarterTemplate --exclude-dir=.git '
         . '--exclude=CHANGELOG.md --exclude=rename-project.php --exclude=RenameProjectTest.php '
         . escapeshellarg($this->copy), $leftovers);
-    $leftovers = array_filter($leftovers, fn ($line) => ! str_contains($line, 'github.com/commonknowledge/wordpress-starter-template'));
+    $leftovers = array_filter($leftovers, fn($line) => ! str_contains($line, 'github.com/commonknowledge/wordpress-starter-template'));
 
     expect($leftovers)->toBe([]);
 });

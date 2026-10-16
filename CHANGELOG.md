@@ -2,6 +2,8 @@
 * Serve sites at `http://<project>.test` through a shared Traefik proxy (`docker/proxy`, started with `scripts/proxy.sh`) instead of host ports, so projects can run side by side
 * Add `scripts/setup-dns.sh`, which resolves `*.test` to the proxy on macOS and Linux
 * Publish MariaDB on a free host port unless `DB_HOST_PORT` is set, and remove `WEB_HOST_PORT`
+* Set the local domain once, as `LOCAL_DOMAIN` in `.env`, which Docker Compose, `WP_HOME`, the scripts and CI all read
+* Add `scripts/rename-project.php` (`composer rename-project <name>`), which renames a new project made from the template, with Pest tests
 
 ### Bedrock upstream sync and dependency upgrade: 2026-10-15
 * Realign with Roots Bedrock 1.31.7: `roots/wordpress` 7.1.3, `actions/checkout` v7, `actions/cache` v6, LICENSE and Bedrock Autoloader header
