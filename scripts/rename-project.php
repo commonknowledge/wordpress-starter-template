@@ -48,18 +48,28 @@ if (file_exists($themes . '/' . $name)) {
     fail("A theme folder called $name already exists");
 }
 
-// safe.directory lets this run in a container whose user doesn't own the files
-exec('git -c safe.directory=* -C ' . escapeshellarg($root) . ' ls-files -z 2>&1', $output, $status);
+// safe.directory lets this run in a container whose user doesn't own the
+// files. git's warnings go to the terminal, not into the file list.
+exec('git -c safe.directory=* -C ' . escapeshellarg($root) . ' ls-files -z', $output, $status);
 if ($status !== 0) {
-    fail('Could not list the project\'s files with git: ' . implode(PHP_EOL, $output));
+    fail('Could not list the project\'s files with git');
 }
 $files = array_filter(explode("\0", implode("\n", $output)));
 if (file_exists($root . '/.env')) {
     $files[] = '.env';
 }
 
+// Move the theme first, so a failure leaves the project unchanged
+if (! rename($themes . '/' . TEMPLATE_NAME, $themes . '/' . $name)) {
+    fail('Could not rename the theme folder to web/app/themes/' . $name);
+}
+
+$oldThemePath = 'web/app/themes/' . TEMPLATE_NAME . '/';
 $changed = 0;
 foreach ($files as $file) {
+    if (str_starts_with($file, $oldThemePath)) {
+        $file = 'web/app/themes/' . $name . '/' . substr($file, strlen($oldThemePath));
+    }
     $path = $root . '/' . $file;
     if (in_array($file, SKIP_FILES, true) || is_link($path) || ! is_file($path)) {
         continue;
@@ -75,12 +85,34 @@ foreach ($files as $file) {
         str_replace(TEMPLATE_CLASS_NAME, $className, $contents),
     );
     if ($renamed !== $contents) {
-        file_put_contents($path, $renamed);
+        if (file_put_contents($path, $renamed) === false) {
+            fail("Could not write $file");
+        }
         $changed++;
     }
 }
 
-rename($themes . '/' . TEMPLATE_NAME, $themes . '/' . $name);
+// The lock file's content hash covers the package name in composer.json.
+// This mirrors Composer\Package\Locker::getContentHash().
+$lockPath = $root . '/composer.lock';
+if (file_exists($lockPath)) {
+    $composer = json_decode(file_get_contents($root . '/composer.json'), true);
+    $relevantKeys = ['name', 'version', 'require', 'require-dev', 'conflict', 'replace', 'provide',
+        'minimum-stability', 'prefer-stable', 'repositories', 'extra'];
+    $relevant = array_intersect_key($composer, array_flip($relevantKeys));
+    if (isset($composer['config']['platform'])) {
+        $relevant['config']['platform'] = $composer['config']['platform'];
+    }
+    ksort($relevant);
+    $lock = preg_replace(
+        '/"content-hash": "[0-9a-f]{32}"/',
+        '"content-hash": "' . md5(json_encode($relevant)) . '"',
+        file_get_contents($lockPath),
+    );
+    if (file_put_contents($lockPath, $lock) === false) {
+        fail('Could not update composer.lock');
+    }
+}
 
 echo "Renamed the project to $name in $changed files, and moved the theme to web/app/themes/$name." . PHP_EOL;
 echo 'Next:' . PHP_EOL;

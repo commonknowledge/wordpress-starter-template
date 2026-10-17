@@ -16,6 +16,8 @@ function copyProject(): string
         copy("$root/$file", "$copy/$file");
     }
     exec('git -C ' . escapeshellarg($copy) . ' init -q && git -C ' . escapeshellarg($copy) . ' add -A');
+    // An untracked .env, as a developer would have after copying the example
+    copy("$copy/.env.example", "$copy/.env");
 
     return $copy;
 }
@@ -46,6 +48,22 @@ test('renames the theme folder, names and namespace', function () {
         ->and(file_get_contents("{$this->copy}/.env.example"))
         ->toContain('LOCAL_DOMAIN=tenants-union.test');
 });
+
+test('renames the untracked .env too', function () {
+    renameProject($this->copy, 'tenants-union');
+
+    expect(file_get_contents("{$this->copy}/.env"))
+        ->toContain('LOCAL_DOMAIN=tenants-union.test')
+        ->toContain('DB_NAME=tenants-union');
+});
+
+test('keeps composer.lock in step with composer.json', function () {
+    renameProject($this->copy, 'tenants-union');
+
+    exec('composer validate --no-check-all --no-interaction -d ' . escapeshellarg($this->copy) . ' 2>&1', $output, $status);
+
+    expect($status)->toBe(0, implode("\n", $output));
+})->skip(fn() => ! shell_exec('command -v composer'), 'Composer is not installed');
 
 test('leaves no trace of the template name outside history and its own repository links', function () {
     renameProject($this->copy, 'tenants-union');

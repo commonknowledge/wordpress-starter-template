@@ -21,13 +21,14 @@ php scripts/rename-project.php my-project
    `composer rename-project my-project` does the same. Without PHP installed locally, run it with Docker instead: `docker run --rm -v "$PWD":/app -w /app composer:2 php scripts/rename-project.php my-project`.
 
 3. Copy `.env.example` to `.env`, running `cp .env.example .env`. The example file contains variables required for this Docker Compose setup but modify details appropriately [as per the Bedrock documentation](https://roots.io/bedrock/docs/environment-variables/) as required. `LOCAL_DOMAIN` sets the site's local domain, which Docker Compose, WordPress and the scripts all read.
-4. If you have PHP and Composer installed locally you can run from this directory `composer install`. Otherwise run `composer install` via Docker with `docker compose run composer install`.
-5. Start the local proxy, and point `.test` domains at it (see [Local domains](#local-domains)). Both are once per machine, not per project:
+4. Start the local proxy, and point `.test` domains at it (see [Local domains](#local-domains)). Both are once per machine, not per project, and the proxy must be running before you use `docker compose` in any project:
 
 ```
 scripts/proxy.sh
 scripts/setup-dns.sh
 ```
+
+5. If you have PHP and Composer installed locally you can run from this directory `composer install`. Otherwise run `composer install` via Docker with `docker compose run composer install`.
 
 6. Start up all containers with:
 
