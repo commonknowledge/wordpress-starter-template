@@ -45,6 +45,9 @@ services:
     environment:
       - WP_CLI_ALLOW_ROOT=true
       - PAGER=more
+      # The domain Traefik routes, from the shell or .env, so WP_HOME in .env
+      # expands to the same one
+      - LOCAL_DOMAIN=${LOCAL_DOMAIN:?Set LOCAL_DOMAIN in .env}
     depends_on:
       - mysql
     extra_hosts:

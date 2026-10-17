@@ -30,11 +30,18 @@ function renameProject(string $copy, string $name): array
 }
 
 beforeEach(function () {
+    // The script renames the template once, so a project made from it has
+    // nothing left to test
+    if (! is_dir(dirname(__DIR__, 2) . '/web/app/themes/wordpress-starter-template')) {
+        $this->markTestSkipped('This project has already been renamed');
+    }
     $this->copy = copyProject();
 });
 
 afterEach(function () {
-    exec('rm -rf ' . escapeshellarg($this->copy));
+    if (isset($this->copy)) {
+        exec('rm -rf ' . escapeshellarg($this->copy));
+    }
 });
 
 test('renames the theme folder, names and namespace', function () {
