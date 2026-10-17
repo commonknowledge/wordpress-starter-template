@@ -12,31 +12,55 @@ This folder structure uses the [Bedrock](https://roots.io/bedrock/) pattern, a m
 ## Run locally
 
 1. [Clone This Repository](https://github.com/commonknowledge/wordpress-starter-template)
-2. Search and replace all instances of `wordpress-starter-template` and `WordpressStarterTemplate` with the name of the new project, in kebab and camel case respectfully. Also rename the theme folder `web/app/themes/wordpress-starter-template` to the name of the new project.
-2. If you have PHP and Composer installed locally you can run from this directory `composer install`. Otherwise run `composer install` via Docker with `docker compose run composer install`.
-3. Copy `.env.example` to `.env`, running `cp .env.example .env`. The example file contains variables required for this Docker Compose setup but modify details appropriately [as per the Bedrock documentation](https://roots.io/bedrock/docs/environment-variables/) as required.
-4. Start up all containers with:
+2. Rename the project, giving its name in kebab-case. This replaces the template's name everywhere, renames the theme folder, and sets the local domain to `<project-name>.test`:
+
+```
+php scripts/rename-project.php my-project
+```
+
+   `composer rename-project my-project` does the same. Without PHP installed locally, run it with Docker instead: `docker run --rm -v "$PWD":/app -w /app composer:2 php scripts/rename-project.php my-project`.
+
+3. Copy `.env.example` to `.env`, running `cp .env.example .env`. The example file contains variables required for this Docker Compose setup but modify details appropriately [as per the Bedrock documentation](https://roots.io/bedrock/docs/environment-variables/) as required. `LOCAL_DOMAIN` sets the site's local domain, which Docker Compose, WordPress and the scripts all read.
+4. If you have PHP and Composer installed locally you can run from this directory `composer install`. Otherwise run `composer install` via Docker with `docker compose run composer install`.
+5. Start the local proxy, and point `.test` domains at it (see [Local domains](#local-domains)). Both are once per machine, not per project:
+
+```
+scripts/proxy.sh
+scripts/setup-dns.sh
+```
+
+6. Start up all containers with:
 
 ```
 docker compose up
 ```
 
-5. Build the theme (see [Theme](#theme)), then install WordPress, activate the theme and load the page fixtures in `scripts/fixtures`:
+7. Build the theme (see [Theme](#theme)), then install WordPress, activate the theme and load the page fixtures in `scripts/fixtures`:
 
 ```
-scripts/setup.sh http://localhost:8082 "WordPress Starter Template"
+scripts/setup.sh "" "WordPress Starter Template"
 ```
 
-6. You can access the site at [http://localhost:8082](http://localhost:8082), and log in with `admin` / `admin`.
+   The site URL defaults to `LOCAL_DOMAIN` in `.env`; pass a URL as the first argument to override it.
 
-If ports 8082 or 3308 are already in use by another project, set `WEB_HOST_PORT` and `DB_HOST_PORT` in `.env`, and update the port in `WP_HOME` to match.
+8. You can access the site at [http://wordpress-starter-template.test](http://wordpress-starter-template.test), and log in with `admin` / `admin`.
+
+### Local domains
+
+Sites are served at `http://<project>.test` instead of on a host port, so several projects can run at once without clashing. A shared [Traefik](https://traefik.io/traefik/) proxy in `docker/proxy` listens on port 80 and routes each domain to the project that claims it: `docker-compose.yml` labels the `nginx` container with `LOCAL_DOMAIN` from `.env`. To change a project's domain, change `LOCAL_DOMAIN` and run `docker compose up -d` again. Every project built from this template uses the same proxy.
+
+- `scripts/proxy.sh` starts the proxy, and it restarts with Docker after that. Extra arguments go to `docker compose`, e.g. `scripts/proxy.sh logs -f` or `scripts/proxy.sh down`. Its dashboard is at [http://traefik.test](http://traefik.test).
+- `scripts/setup-dns.sh` makes every `*.test` name resolve to `127.0.0.1`, using a small DNS server that runs with the proxy. On macOS it writes `/etc/resolver/test`; on Linux it configures systemd-resolved. It needs `sudo`, and `scripts/setup-dns.sh --remove` undoes it. Without it, add `127.0.0.1 <LOCAL_DOMAIN>` to `/etc/hosts` for each project.
+- Port 80 must be free on the host, so stop anything else that uses it, such as a local Apache or Laravel Valet.
+- MariaDB is published on a free port picked by Docker; `docker compose port mysql 3306` shows it. Set `DB_HOST_PORT` in `.env` for a fixed port.
+- If a browser uses DNS over HTTPS, it may bypass the system resolver for `.test` names. Turn it off, or add the domain to `/etc/hosts`.
 
 ### Checking the environment works
 
 Run the smoke test with the site title and URL. Extra `path=text` arguments check a page contains some text:
 
 ```
-scripts/smoke-test.sh "WordPress Starter Template" http://localhost:8082 "/blocks/=wp-block-wordpress-starter-template-example"
+scripts/smoke-test.sh "WordPress Starter Template" "" "/blocks/=wp-block-wordpress-starter-template-example"
 ```
 
 CI builds the theme, runs `setup.sh` and runs the smoke test against a fresh install.

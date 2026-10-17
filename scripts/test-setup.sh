@@ -6,8 +6,9 @@
 # Usage: scripts/test-setup.sh [site-url] [site-title]
 
 cd "$(dirname "$0")/.."
+. scripts/env.sh
 
-SITE_URL="${1:-http://localhost:8082}"
+SITE_URL="${1:-${DEFAULT_SITE_URL:?Pass a site URL or set LOCAL_DOMAIN in .env}}"
 SITE_TITLE="${2:-WordPress Starter}"
 MARKER="Nested page content that setup must not change"
 failures=0

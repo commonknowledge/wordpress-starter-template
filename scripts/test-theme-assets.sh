@@ -10,8 +10,9 @@
 # Usage: scripts/test-theme-assets.sh [base-url]
 
 cd "$(dirname "$0")/.."
+. scripts/env.sh
 
-BASE_URL="${1:-http://localhost:8082}"
+BASE_URL="${1:-${DEFAULT_SITE_URL:?Pass a base URL or set LOCAL_DOMAIN in .env}}"
 THEME_DIR=web/app/themes/wordpress-starter-template
 ASSET_FILE="/var/www/html/$THEME_DIR/build/main.asset.php"
 TEST_ENTRY=./tests/main-with-wp-dependency.ts
