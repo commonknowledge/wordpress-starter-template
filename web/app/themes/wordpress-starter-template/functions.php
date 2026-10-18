@@ -27,7 +27,7 @@ add_action('wp_enqueue_scripts', function () {
     $dependencies = file_exists($assetFile) ? (require $assetFile)['dependencies'] : [];
 
     wp_enqueue_style('theme-custom-style', $fileRoot . '/main.css', [], $VERSION, 'all');
-    wp_enqueue_script('theme-custom-script', $fileRoot . '/main.js', array_merge(['jquery'], $dependencies), $VERSION, true);
+    wp_enqueue_script('theme-custom-script', $fileRoot . '/main.js', $dependencies, $VERSION, true);
 });
 
 add_action('wp_footer', function () {
