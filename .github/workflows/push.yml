@@ -30,18 +30,14 @@ jobs:
       - name: Setup environment file with database settings
         run: cp .env.example .env
 
-      - name: Start the local proxy, and resolve the site's local domain
+      - name: Resolve the site's local domain
         run: |
-          scripts/proxy.sh
           . scripts/env.sh
           echo "127.0.0.1 $LOCAL_DOMAIN" | sudo tee -a /etc/hosts
           echo "SITE_URL=$DEFAULT_SITE_URL" >> "$GITHUB_ENV"
 
-      - name: Build the stack
-        run: docker compose up -d --build
-
-      - name: Install WordPress, activate the theme and load page fixtures
-        run: scripts/setup.sh "$SITE_URL" "WordPress Starter"
+      - name: Start the proxy and the stack, and install WordPress with start.sh
+        run: ./start.sh --yes
 
       - name: Test WordPress is running successfully
         run: >

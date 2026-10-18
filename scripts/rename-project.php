@@ -115,6 +115,10 @@ if (file_exists($lockPath)) {
 }
 
 echo "Renamed the project to $name in $changed files, and moved the theme to web/app/themes/$name." . PHP_EOL;
+// start.sh does the next steps itself
+if (getenv('RENAME_FROM_START_SH')) {
+    exit(0);
+}
 echo 'Next:' . PHP_EOL;
 if (! file_exists($root . '/.env')) {
     echo '  cp .env.example .env' . PHP_EOL;

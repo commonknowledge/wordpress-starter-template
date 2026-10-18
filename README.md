@@ -6,45 +6,50 @@ This folder structure uses the [Bedrock](https://roots.io/bedrock/) pattern, a m
 
 ## Requirements
 
-- Docker [installed](https://docs.docker.com/install/)
-- PHP and Composer installed locally. If not, you can use them in containers provided, prefixing all Composer commands below with `docker compose run composer <command>`
+- Docker [installed](https://docs.docker.com/install/) and running
+- Node 24 (see the theme's `.nvmrc`) to build the theme
+- PHP and Composer are optional: without them, the scripts run them in containers
 
 ## Run locally
 
 1. [Clone This Repository](https://github.com/commonknowledge/wordpress-starter-template)
-2. Rename the project, giving its name in kebab-case. This replaces the template's name everywhere, renames the theme folder, and sets the local domain to `<project-name>.test`:
+2. From the project folder, run:
 
 ```
-php scripts/rename-project.php my-project
+./start.sh
 ```
 
-   `composer rename-project my-project` does the same. Without PHP installed locally, run it with Docker instead: `docker run --rm -v "$PWD":/app -w /app composer:2 php scripts/rename-project.php my-project`.
+That's it. The site is then at `http://<project-name>.test`, and the admin login is `admin` / `admin`.
 
-3. Copy `.env.example` to `.env`, running `cp .env.example .env`. The example file contains variables required for this Docker Compose setup but modify details appropriately [as per the Bedrock documentation](https://roots.io/bedrock/docs/environment-variables/) as required. `LOCAL_DOMAIN` sets the site's local domain, which Docker Compose, WordPress and the scripts all read.
-4. Start the local proxy, and point `.test` domains at it (see [Local domains](#local-domains)). Both are once per machine, not per project, and the proxy must be running before you use `docker compose` in any project:
+`start.sh` checks each step below, skips the ones already done, and asks before anything that changes the project or needs `sudo`. Press Enter to accept the default, which is always yes. It is safe to run again at any time, for example after pulling changes or restarting your computer.
 
-```
-scripts/proxy.sh
-scripts/setup-dns.sh
-```
+1. **Rename the project.** In a new project made from the template, it asks for the project's name in kebab-case: lowercase words joined by hyphens, such as `tenants-union`. It replaces the template's name everywhere, renames the theme folder, and sets the local domain to `tenants-union.test`. The PHP namespace becomes `TenantsUnion`.
+2. **Create `.env`** from `.env.example`. Change details [as per the Bedrock documentation](https://roots.io/bedrock/docs/environment-variables/) if needed. `LOCAL_DOMAIN` sets the site's local domain, which Docker Compose, WordPress and the scripts all read.
+3. **Start the local proxy**, shared by every project on your machine (see [Local domains](#local-domains)).
+4. **Point `*.test` domains at the proxy.** This needs `sudo`, and only happens once per machine.
+5. **Install Composer dependencies**, using a container if Composer isn't installed.
+6. **Build the theme** with npm (see [Theme](#theme)).
+7. **Start the containers.**
+8. **Install WordPress**, activate the theme and load the page fixtures in `scripts/fixtures`.
 
-5. If you have PHP and Composer installed locally you can run from this directory `composer install`. Otherwise run `composer install` via Docker with `docker compose run composer install`.
+`./start.sh --yes` accepts every default without asking, and `./start.sh --name tenants-union` names the project up front.
 
-6. Start up all containers with:
+### Doing it by hand
 
-```
-docker compose up
-```
+Each step is a script or command you can also run yourself:
 
-7. Build the theme (see [Theme](#theme)), then install WordPress, activate the theme and load the page fixtures in `scripts/fixtures`:
+| Step | Command |
+| --- | --- |
+| Rename the project | `php scripts/rename-project.php my-project` or `composer rename-project my-project` |
+| Create `.env` | `cp .env.example .env` |
+| Start the proxy | `scripts/proxy.sh` |
+| Point `*.test` at the proxy | `scripts/setup-dns.sh` |
+| Install dependencies | `composer install`, or `docker compose run --rm composer install` |
+| Build the theme | `npm ci && npm run build` in the theme folder |
+| Start the containers | `docker compose up -d` |
+| Install WordPress | `scripts/setup.sh "" "Site Title"` |
 
-```
-scripts/setup.sh "" "WordPress Starter Template"
-```
-
-   The site URL defaults to `LOCAL_DOMAIN` in `.env`; pass a URL as the first argument to override it.
-
-8. You can access the site at [http://wordpress-starter-template.test](http://wordpress-starter-template.test), and log in with `admin` / `admin`.
+The proxy must be running before you use `docker compose`, because each project joins its network. `setup.sh` takes the site URL first, which defaults to `LOCAL_DOMAIN` in `.env`.
 
 ### Local domains
 

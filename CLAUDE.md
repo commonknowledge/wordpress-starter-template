@@ -30,5 +30,5 @@ Conventions for sites built from this template. See README.md for setup.
 
 ## Checking work
 
-- `scripts/setup.sh` installs WordPress, activates the theme and loads the page fixtures. `scripts/smoke-test.sh` checks the site, and CI runs both against a fresh install.
+- `./start.sh` brings the site up from any state, skipping steps already done; `./start.sh --yes` runs it without questions. `scripts/setup.sh` installs WordPress, activates the theme and loads the page fixtures. `scripts/smoke-test.sh` checks the site, and CI runs both, through `start.sh`, against a fresh install.
 - PHP: `composer lint` (Pint) and `composer test` (Pest). Theme: `npm run build`, `npm run typecheck` and `npx eslint .` from the theme folder.
