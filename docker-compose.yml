@@ -6,7 +6,7 @@ services:
     # in docker/proxy, rather than on a host port
     labels:
       - traefik.enable=true
-      - traefik.http.routers.wordpress-starter-template.rule=Host(`${LOCAL_DOMAIN:?Set LOCAL_DOMAIN in .env}`)
+      - traefik.http.routers.wordpress-starter-template.rule=HostRegexp(`.+`)
       - traefik.http.routers.wordpress-starter-template.entrypoints=web
     networks:
       default:
