@@ -1,0 +1,49 @@
+name: Diagnose Docker DNS after setup-dns.sh
+on:
+  push:
+    branches:
+      - "ci-diagnose/**"
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Start the proxy and a two-container network
+        run: |
+          scripts/proxy.sh
+          docker network create diag
+          docker run -d --name db --network diag alpine:3.23 sleep 600
+          docker run -d --name app --network diag alpine:3.23 sleep 600
+
+      - name: Resolver state before setup-dns.sh
+        run: |
+          cat /etc/resolv.conf; echo ---; cat /run/systemd/resolve/resolv.conf; echo ---
+          docker exec app cat /etc/resolv.conf
+
+      - name: Resolve the db container 100 times, before
+        run: |
+          fails=0; for i in $(seq 1 100); do docker exec app getent hosts db >/dev/null || fails=$((fails+1)); done
+          echo "failures before: $fails"
+
+      - name: Run setup-dns.sh
+        run: scripts/setup-dns.sh && resolvectl status | head -30
+
+      - name: Resolver state after setup-dns.sh
+        run: |
+          cat /run/systemd/resolve/resolv.conf; echo ---
+          docker exec app cat /etc/resolv.conf
+          docker run --rm --network diag alpine:3.23 cat /etc/resolv.conf
+
+      - name: Resolve the db container 100 times, after, in the existing container
+        run: |
+          fails=0; for i in $(seq 1 100); do docker exec app getent hosts db >/dev/null || fails=$((fails+1)); done
+          echo "failures after (old container): $fails"
+
+      - name: Resolve the db container 100 times, after, in a new container
+        run: |
+          docker run -d --name app2 --network diag alpine:3.23 sleep 600
+          fails=0; for i in $(seq 1 100); do docker exec app2 getent hosts db >/dev/null || fails=$((fails+1)); done
+          echo "failures after (new container): $fails"
+          docker exec app2 sh -c 'for n in db db.$(sed -n "s/^search //p" /etc/resolv.conf | cut -d" " -f1) example.org; do echo "== $n"; nslookup "$n" 2>&1 | tail -4; done'
+          docker logs local-proxy-dns 2>&1 | tail -20
