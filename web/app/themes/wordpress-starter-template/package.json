@@ -3,22 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "lint": "eslint --fix . && prettier --write .",
+    "lint": "eslint . && prettier --check .",
+    "lint:fix": "eslint --fix . && prettier --write .",
     "dev": "cross-env DEBUG=true webpack serve",
     "build": "cross-env DEBUG=false webpack",
     "typecheck": "tsc --noEmit"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "**/*.js": [
-      "eslint --fix",
-      "prettier -w",
-      "git add"
-    ]
   },
   "keywords": [],
   "author": "",
