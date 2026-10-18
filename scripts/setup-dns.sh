@@ -11,6 +11,11 @@ cd "$(dirname "$0")/.."
 
 DNS_PORT=5354
 
+if [ "${1:-}" = "--remove" ] && [ ! -f /etc/resolver/test ] && [ ! -f /etc/systemd/resolved.conf.d/test.conf ]; then
+    echo "*.test DNS isn't set up, so there's nothing to remove"
+    exit 0
+fi
+
 case "$(uname -s)" in
 Darwin)
     file=/etc/resolver/test

@@ -12,71 +12,72 @@ This folder structure uses the [Bedrock](https://roots.io/bedrock/) pattern, a m
 
 ## Run locally
 
-1. [Clone This Repository](https://github.com/commonknowledge/wordpress-starter-template)
+### Start a new project
+
+1. Create a repository from this template on GitHub ("Use this template"), and clone it.
 2. From the project folder, run:
 
 ```
 ./start.sh
 ```
 
-That's it. The site is then at `http://<project-name>.test`, and the admin login is `admin` / `admin`.
+3. When it asks, give the project's name in kebab-case: lowercase words joined by hyphens, such as `tenants-union`. Press Enter to accept every other question.
 
-`start.sh` checks each step below, skips the ones already done, and asks before anything that changes the project or needs `sudo`. Press Enter to accept the default, which is always yes. It is safe to run again at any time, for example after pulling changes or restarting your computer.
+The site is then at `http://tenants-union.test`, and the admin login is `admin` / `admin`.
 
-1. **Rename the project.** In a new project made from the template, it asks for the project's name in kebab-case: lowercase words joined by hyphens, such as `tenants-union`. It replaces the template's name everywhere, renames the theme folder, and sets the local domain to `tenants-union.test`. The PHP namespace becomes `TenantsUnion`.
-2. **Create `.env`** from `.env.example`. Change details [as per the Bedrock documentation](https://roots.io/bedrock/docs/environment-variables/) if needed. `LOCAL_DOMAIN` sets the site's local domain, which Docker Compose, WordPress and the scripts all read.
-3. **Start the local proxy**, shared by every project on your machine (see [Local domains](#local-domains)).
-4. **Point `*.test` domains at the proxy.** This needs `sudo`, and only happens once per machine.
-5. **Install Composer dependencies**, using a container if Composer isn't installed.
-6. **Build the theme** with npm (see [Theme](#theme)).
-7. **Start the containers.**
-8. **Install WordPress**, activate the theme and load the page fixtures in `scripts/fixtures`.
+The first time you run `start.sh` on a computer, it asks for your password once, to make `.test` domains work.
 
-`./start.sh --yes` accepts every default without asking, and `./start.sh --name tenants-union` names the project up front.
+### Day to day
 
-### Doing it by hand
+Run `./start.sh` whenever you want the site up: after cloning an existing project, pulling changes or restarting your computer. It skips whatever is already done and never overwrites your content. `docker compose stop` stops the site and keeps its database.
 
-Each step is a script or command you can also run yourself:
+You can run several projects at once. Each has its own domain, containers and database, and they share one proxy.
+
+### Removing a project
+
+```
+scripts/uninstall.sh
+```
+
+This deletes the project's containers and database, after asking, and leaves its files. `./start.sh` brings it back with a fresh database. Add `--all` when removing the last project on your computer, to also remove the shared proxy and the `.test` domain setup. If other projects still use the proxy, `--all` leaves it running.
+
+### What `start.sh` does
+
+It checks each step, skips the ones already done, and asks before anything that changes the project or needs `sudo`. `./start.sh --yes` accepts every default without asking, and `./start.sh --name tenants-union` names a new project up front. Each step is also a command you can run yourself:
 
 | Step | Command |
 | --- | --- |
-| Rename the project | `php scripts/rename-project.php my-project` or `composer rename-project my-project` |
-| Create `.env` | `cp .env.example .env` |
-| Start the proxy | `scripts/proxy.sh` |
-| Point `*.test` at the proxy | `scripts/setup-dns.sh` |
-| Install dependencies | `composer install`, or `docker compose run --rm composer install` |
-| Build the theme | `npm ci && npm run build` in the theme folder |
+| Rename a new project, its theme, namespace (`TenantsUnion`) and domain | `php scripts/rename-project.php tenants-union` |
+| Create `.env`, where `LOCAL_DOMAIN` sets the domain | `cp .env.example .env` |
+| Start the shared proxy | `scripts/proxy.sh` |
+| Point `*.test` at the proxy, once per computer | `scripts/setup-dns.sh` |
+| Install Composer dependencies | `composer install`, or `docker compose run --rm composer install` |
+| Build the theme (see [Theme](#theme)) | `npm ci && npm run build` in the theme folder |
 | Start the containers | `docker compose up -d` |
-| Install WordPress | `scripts/setup.sh "" "Site Title"` |
+| Install WordPress and load the page fixtures | `scripts/setup.sh "" "Site Title"` |
 
-The proxy must be running before you use `docker compose`, because each project joins its network. `setup.sh` takes the site URL first, which defaults to `LOCAL_DOMAIN` in `.env`.
+Change other `.env` settings [as per the Bedrock documentation](https://roots.io/bedrock/docs/environment-variables/).
 
 ### Local domains
 
-Sites are served at `http://<project>.test` instead of on a host port, so several projects can run at once without clashing. A shared [Traefik](https://traefik.io/traefik/) proxy in `docker/proxy` listens on port 80 and routes each domain to the project that claims it: `docker-compose.yml` labels the `nginx` container with `LOCAL_DOMAIN` from `.env`. To change a project's domain, change `LOCAL_DOMAIN` and run `docker compose up -d` again. Every project built from this template uses the same proxy.
+Sites are served at `http://<project>.test` instead of on a host port, so projects don't clash. A shared [Traefik](https://traefik.io/traefik/) proxy listens on port 80 and sends each domain to the project that claims it in its `.env`. To change a project's domain, change `LOCAL_DOMAIN` and run `./start.sh` again. The proxy's dashboard is at [http://traefik.test](http://traefik.test).
 
-- `scripts/proxy.sh` starts the proxy, and it restarts with Docker after that. Extra arguments go to `docker compose`, e.g. `scripts/proxy.sh logs -f` or `scripts/proxy.sh down`. Its dashboard is at [http://traefik.test](http://traefik.test).
-- `scripts/setup-dns.sh` makes every `*.test` name resolve to `127.0.0.1`, using a small DNS server that runs with the proxy. On macOS it writes `/etc/resolver/test`; on Linux it configures systemd-resolved. It needs `sudo`, and `scripts/setup-dns.sh --remove` undoes it. Without it, add `127.0.0.1 <LOCAL_DOMAIN>` to `/etc/hosts` for each project.
-- Port 80 must be free on the host, so stop anything else that uses it, such as a local Apache or Laravel Valet.
-- MariaDB is published on a free port picked by Docker; `docker compose port mysql 3306` shows it. Set `DB_HOST_PORT` in `.env` for a fixed port.
-- If a browser uses DNS over HTTPS, it may bypass the system resolver for `.test` names. Turn it off, or add the domain to `/etc/hosts`.
+If something doesn't load:
+
+- Port 80 must be free, so stop anything else that uses it, such as a local Apache or Laravel Valet.
+- A browser using DNS over HTTPS may skip your computer's settings for `.test` names. Turn it off, or add `127.0.0.1 tenants-union.test` to `/etc/hosts`.
+- On Linux without systemd-resolved, add each project's domain to `/etc/hosts` the same way.
+- To reach the database from your computer, `docker compose port mysql 3306` shows its port. Set `DB_HOST_PORT` in `.env` for a fixed one.
 
 ### Checking the environment works
 
-Run the smoke test with the site title and URL. Extra `path=text` arguments check a page contains some text:
+The smoke test checks the site is up. Extra `path=text` arguments check that a page contains some text:
 
 ```
-scripts/smoke-test.sh "WordPress Starter Template" "" "/blocks/=wp-block-wordpress-starter-template-example"
+scripts/smoke-test.sh "WordPress Starter" "" "/blocks/=wp-block-wordpress-starter-template-example"
 ```
 
-CI tests the local setup the way engineers use it, on every pull request, on `main`, and nightly to catch changes upstream:
-
-- `./start.sh --yes` brings up a fresh install, which must pass the smoke, theme asset and setup tests
-- re-running `start.sh` must skip what's done and keep an edited page as it is
-- `scripts/setup-dns.sh` must make any `*.test` name resolve, without breaking other lookups even when the proxy's DNS server is down, and `--remove` must undo it
-- a new project, made by answering `start.sh`'s questions, must come up alongside the template at its own domain, with valid Composer files and passing tests
-- on macOS, `setup-dns.sh` must add and remove the `.test` resolver, and `.env` parsing and the rename must work with macOS's tools
-- ShellCheck lints every shell script
+CI tests this whole setup on every change and nightly, including several projects running side by side and uninstalling them.
 
 ## Development Documentation
 

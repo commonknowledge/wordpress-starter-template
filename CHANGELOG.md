@@ -2,7 +2,8 @@
 * Serve sites at `http://<project>.test` through a shared Traefik proxy (`docker/proxy`, started with `scripts/proxy.sh`) instead of host ports, so projects can run side by side
 * Add `start.sh`, which takes a project from a fresh clone to a running site: it renames the project, creates `.env`, starts the proxy, sets up DNS, installs dependencies, builds the theme and installs WordPress, skipping whatever is already done. CI uses it too
 * Add `scripts/setup-dns.sh`, which resolves `*.test` to the proxy on macOS and Linux
-* Test the local setup in CI on every change and nightly: a new project alongside the template, real `*.test` DNS on Linux and macOS, re-running `start.sh`, and ShellCheck on every shell script
+* Add `scripts/uninstall.sh`, which removes a project's containers and database, and with `--all` the shared proxy and `*.test` DNS setup once no other project uses them
+* Test the local setup in CI on every change and nightly: three freshly cloned projects running side by side as separate installs, real `*.test` DNS on Linux and macOS, re-running `start.sh`, its prompts, clean uninstalls, and ShellCheck on every shell script
 * Publish MariaDB on a free host port unless `DB_HOST_PORT` is set, and remove `WEB_HOST_PORT`
 * Set the local domain once, as `LOCAL_DOMAIN` in `.env`, which Docker Compose, `WP_HOME`, the scripts and CI all read
 * Add `scripts/rename-project.php` (`composer rename-project <name>`), which renames a new project made from the template, keeps `composer.lock` in step, and has Pest tests

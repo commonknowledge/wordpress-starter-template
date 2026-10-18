@@ -109,7 +109,7 @@ fi
 
 step "Local proxy"
 if [ -n "$(docker ps -q --filter name='^local-proxy-traefik$' --filter status=running)" ]; then
-    done_already "Already running"
+    done_already "The proxy is already running"
 else
     scripts/proxy.sh
 fi
@@ -127,7 +127,7 @@ fi
 
 step "Composer dependencies"
 if [ -f vendor/autoload.php ] && [ -z "$renamed" ]; then
-    done_already "Already installed"
+    done_already "Composer dependencies are already installed"
 elif command -v composer >/dev/null 2>&1; then
     composer install
 else
@@ -136,7 +136,7 @@ fi
 
 step "Theme"
 if [ -f "web/app/themes/$THEME/build/main.js" ] && [ -z "$renamed" ]; then
-    done_already "Already built"
+    done_already "The theme is already built"
 elif ! command -v npm >/dev/null 2>&1; then
     echo "    npm isn't installed, so the theme wasn't built. Install Node (see web/app/themes/$THEME/.nvmrc), then run ./start.sh again."
 elif confirm "Build the theme with npm?"; then
@@ -154,7 +154,7 @@ for i in $(seq 1 30); do
     sleep 2
 done
 if docker compose exec -T wordpress wp core is-installed >/dev/null 2>&1; then
-    done_already "Already installed"
+    done_already "WordPress is already installed"
 elif confirm "Install WordPress, activate the theme and load the page fixtures?"; then
     scripts/setup.sh
 fi
