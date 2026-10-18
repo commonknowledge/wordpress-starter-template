@@ -1,6 +1,7 @@
 # Answer every *.test name with the host's loopback address, where Traefik
-# listens. Other names are forwarded on, so a host that sends them here by
-# mistake still resolves them.
+# listens. Nothing else is answered: on Linux, systemd-resolved sends every
+# lookup to a globally configured server like this one, and refusing keeps
+# ordinary lookups away from the proxy entirely.
 test:53 {
     template IN A {
         answer "{{ .Name }} 60 IN A 127.0.0.1"
@@ -8,8 +9,4 @@ test:53 {
     template IN AAAA {
         rcode NOERROR
     }
-}
-
-.:53 {
-    forward . /etc/resolv.conf
 }
