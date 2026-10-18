@@ -167,10 +167,13 @@ jobs:
       - name: Test setup-dns.sh --remove undoes it
         run: |
           scripts/setup-dns.sh --remove
-          if scutil --dns | grep -qE 'domain *: test$'; then
-            echo "The .test resolver is still there after --remove"
-            exit 1
-          fi
+          # macOS drops removed resolver files after a moment too
+          for i in $(seq 1 10); do
+            scutil --dns | grep -qE 'domain *: test$' || exit 0
+            sleep 1
+          done
+          echo "The .test resolver is still there after --remove"
+          exit 1
 
       - name: Test reading LOCAL_DOMAIN from .env
         run: |
