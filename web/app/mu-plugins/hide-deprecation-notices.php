@@ -13,6 +13,5 @@ License:      MIT License
 // WordPress sets error_reporting(E_ALL) when WP_DEBUG is on. Must-use plugins
 // load after that and before plugins and themes, so this is the earliest point
 // to drop deprecations. Displayed in development, they print before REST API
-// JSON and break the block editor (e.g. Carbon Fields on PHP 8.5,
-// https://github.com/htmlburger/carbon-fields/issues/1308).
+// JSON and break the block editor.
 error_reporting(error_reporting() & ~E_DEPRECATED);
