@@ -75,6 +75,10 @@
   "scripts": {
     "lint": "pint --test",
     "lint:fix": "pint",
-    "test": "pest"
+    "test": "pest",
+    "rename-project": "php scripts/rename-project.php"
+  },
+  "scripts-descriptions": {
+    "rename-project": "Rename a new project made from this template: composer rename-project <project-name>"
   }
 }

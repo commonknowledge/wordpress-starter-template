@@ -1,20 +1,43 @@
 name: Check Docker Compose development environment
+
+# Every engineer starts work through start.sh, so this tests the local setup
+# the way they use it: the template itself, a new project made from it running
+# alongside, real *.test DNS, and re-running start.sh. It also runs nightly, so
+# a change upstream (a new Traefik, CoreDNS or PHP image) shows up here before
+# it reaches anyone's machine.
 on:
   push:
     branches:
       - main
   pull_request:
+  schedule:
+    - cron: "23 5 * * *"
+  workflow_dispatch:
+
 jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Lint the shell scripts
+        run: shellcheck -s sh start.sh scripts/*.sh
+
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Install Composer dependencies
-        uses: php-actions/composer@v6
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          php_version: "8.5"
+          php-version: "8.5"
+          tools: composer
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist
 
       - name: Setup Node
         uses: actions/setup-node@v7
@@ -30,20 +53,272 @@ jobs:
       - name: Setup environment file with database settings
         run: cp .env.example .env
 
-      - name: Build the stack
-        run: docker compose up -d --build
+      - name: Map the template's domain in /etc/hosts
+        run: |
+          . scripts/env.sh
+          echo "127.0.0.1 $LOCAL_DOMAIN" | sudo tee -a /etc/hosts
+          echo "SITE_URL=$DEFAULT_SITE_URL" >> "$GITHUB_ENV"
 
-      - name: Install WordPress, activate the theme and load page fixtures
-        run: scripts/setup.sh http://localhost:8082 "WordPress Starter"
+      - name: Start the proxy and the stack, and install WordPress with start.sh
+        run: ./start.sh --yes
 
       - name: Test WordPress is running successfully
         run: >
-          scripts/smoke-test.sh "WordPress Starter" http://localhost:8082
+          scripts/smoke-test.sh "WordPress Starter" "$SITE_URL"
           "/blocks/=wp-block-wordpress-starter-template-example"
           "/blocks/=Hello from a custom block"
 
       - name: Test the theme's main.js dependencies are loaded
-        run: scripts/test-theme-assets.sh http://localhost:8082
+        run: scripts/test-theme-assets.sh "$SITE_URL"
 
       - name: Test the setup script
-        run: scripts/test-setup.sh http://localhost:8082 "WordPress Starter"
+        run: scripts/test-setup.sh "$SITE_URL" "WordPress Starter"
+
+      - name: Test re-running start.sh skips what is done and keeps edits
+        run: |
+          wp() { docker compose exec -T wordpress php -d display_errors=stderr /bin/wp "$@"; }
+          # setup.sh would reload this fixture page's content, so start.sh must not run it again
+          id=$(wp post list --post_type=page --name=blocks --post_parent=0 --field=ID)
+          wp post update "$id" --post_content="Edited by an engineer"
+
+          ./start.sh --yes | tee rerun.log
+          for expected in "Keeping the template's name" ".env already exists" \
+              "The proxy is already running" "Composer dependencies are already installed" \
+              "The theme is already built" "WordPress is already installed"; do
+              grep -qF "$expected" rerun.log || { echo "start.sh didn't report: $expected"; exit 1; }
+          done
+
+          content=$(wp post get "$id" --field=post_content)
+          [ "$content" = "Edited by an engineer" ] || { echo "start.sh overwrote an edited page: '$content'"; exit 1; }
+
+      - name: Show containers, logs and DNS settings
+        if: failure()
+        run: |
+          docker ps -a
+          for project in template; do
+            echo "::group::$project"
+            (cd "$GITHUB_WORKSPACE" && docker compose ps -a && docker compose logs --tail 40) || true
+            echo "::endgroup::"
+          done
+          echo "::group::proxy"; docker logs --tail 40 local-proxy-traefik || true; docker logs --tail 40 local-proxy-dns || true; echo "::endgroup::"
+          echo "::group::DNS"; resolvectl status || true; cat /etc/hosts; echo "::endgroup::"
+
+  prompts:
+    # How start.sh and uninstall.sh answer people, separate from running sites
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Clone this commit, as an engineer would clone the template
+        run: |
+          git branch ci-head HEAD
+          git clone -q --no-local --branch ci-head "$GITHUB_WORKSPACE" "$RUNNER_TEMP/new-project"
+
+      - name: Test start.sh rejects a project name that isn't kebab-case
+        working-directory: ${{ runner.temp }}/new-project
+        run: |
+          if printf 'y\nBad Name\n' | ./start.sh > start.log 2>&1; then
+            cat start.log; echo "start.sh accepted 'Bad Name'"; exit 1
+          fi
+          cat start.log
+          grep -qF "'Bad Name' isn't kebab-case" start.log
+          if ./start.sh --yes --name Bad_Name > yes.log 2>&1; then
+            cat yes.log; echo "start.sh --name accepted 'Bad_Name'"; exit 1
+          fi
+          # Nothing was renamed or created
+          [ -d web/app/themes/wordpress-starter-template ] && [ ! -e .env ]
+
+      - name: Test uninstall.sh deletes nothing unless told to
+        working-directory: ${{ runner.temp }}/new-project
+        run: |
+          if printf '\n' | scripts/uninstall.sh > uninstall.log; then
+            cat uninstall.log; echo "uninstall.sh went ahead on the default answer"; exit 1
+          fi
+          grep -qF "Nothing removed" uninstall.log
+
+  projects:
+    # Three new projects, each cloned fresh as an engineer would, running side
+    # by side as separate WordPress installs, then uninstalled cleanly
+    runs-on: ubuntu-latest
+    env:
+      PROJECTS: ci-one ci-two ci-three
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.5"
+          tools: composer
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: web/app/themes/wordpress-starter-template/.nvmrc
+          cache: npm
+          cache-dependency-path: web/app/themes/wordpress-starter-template/package-lock.json
+
+      - name: Clone this commit three times, as engineers would clone the template
+        run: |
+          git branch ci-head HEAD
+          for name in $PROJECTS; do
+            git clone -q --no-local --branch ci-head "$GITHUB_WORKSPACE" "$RUNNER_TEMP/$name"
+          done
+
+      - name: Start the first project, answering start.sh's questions
+        working-directory: ${{ runner.temp }}/ci-one
+        # Rename it, set up *.test DNS, build the theme and install WordPress
+        run: printf 'y\nci-one\ny\ny\ny\n' | ./start.sh
+
+      - name: Start two more projects alongside with --yes
+        run: |
+          for name in ci-two ci-three; do
+            (cd "$RUNNER_TEMP/$name" && ./start.sh --yes --name "$name")
+          done
+
+      - name: Mark each project's theme, to tell the installs apart
+        run: |
+          for name in $PROJECTS; do
+            sed -i "s/Proudly Powered by/Theme of $name, proudly powered by/" \
+              "$RUNNER_TEMP/$name/web/app/themes/$name/parts/footer.html"
+          done
+
+      - name: Test each project serves its own theme at its own domain
+        run: |
+          # No /etc/hosts entries: every name resolves through the proxy's DNS server
+          for name in $PROJECTS; do
+            page=$(curl -fsS "http://$name.test/")
+            echo "$page" | grep -qF "Theme of $name," || { echo "$name.test doesn't show its own theme"; exit 1; }
+            for other in $PROJECTS; do
+              [ "$other" = "$name" ] && continue
+              if echo "$page" | grep -qF "Theme of $other,"; then echo "$name.test shows $other's theme"; exit 1; fi
+            done
+            (cd "$RUNNER_TEMP/$name" && scripts/smoke-test.sh "WordPress Starter" "" \
+              "/blocks/=wp-block-$name-example" "/blocks/=Hello from a custom block")
+          done
+
+      - name: Test each project has its own database
+        working-directory: ${{ runner.temp }}/ci-one
+        run: |
+          docker compose exec -T wordpress php -d display_errors=stderr /bin/wp post create \
+            --post_type=page --post_status=publish --post_title="Only in ci-one" --post_name=only-in-ci-one
+          curl -fsS http://ci-one.test/only-in-ci-one/ > /dev/null
+          for other in ci-two ci-three; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "http://$other.test/only-in-ci-one/")
+            [ "$code" = 404 ] || { echo "$other.test/only-in-ci-one/ returned $code, not 404"; exit 1; }
+          done
+
+      - name: Test a new project's Composer files and tests
+        working-directory: ${{ runner.temp }}/ci-two
+        run: composer validate --no-check-all && composer test
+
+      - name: Test other lookups still work when the proxy's DNS server is down
+        run: |
+          getent hosts any-name.test | grep -q '^127\.0\.0\.1'
+          docker stop local-proxy-dns
+          # A name not looked up yet, so no cached answer
+          timeout 5 getent hosts example.org || { echo "Non-.test lookups fail without the proxy's DNS server"; exit 1; }
+          docker start local-proxy-dns
+
+      - name: Test uninstalling one project removes it and leaves the others running
+        run: |
+          (cd "$RUNNER_TEMP/ci-two" && scripts/uninstall.sh --yes)
+          for kind in "ps -a" "volume ls" "network ls"; do
+            # shellcheck disable=SC2086
+            left=$(docker $kind -q --filter label=com.docker.compose.project=ci-two)
+            [ -z "$left" ] || { echo "ci-two left behind: docker $kind"; docker $kind; exit 1; }
+          done
+          [ -z "$(docker images -q ci-two-wordpress)" ] || { echo "ci-two's WordPress image is still there"; exit 1; }
+          # Traefik drops the route a moment after the container goes, so wait for it
+          for i in $(seq 1 15); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 2 http://ci-two.test/ || true)
+            [ "$code" = 404 ] && break
+            sleep 1
+          done
+          [ "$code" = 404 ] || { echo "ci-two.test returned $code after uninstalling, not the proxy's 404"; exit 1; }
+          curl -fsS http://ci-one.test/ > /dev/null
+          curl -fsS http://ci-three.test/ > /dev/null
+
+      - name: Test uninstall --all keeps the proxy while another project uses it
+        working-directory: ${{ runner.temp }}/ci-one
+        run: |
+          scripts/uninstall.sh --all --yes | tee uninstall.log
+          grep -qF "Other projects still use the proxy" uninstall.log
+          curl -fsS http://ci-three.test/ > /dev/null
+
+      - name: Test uninstall --all from the last project leaves nothing behind
+        working-directory: ${{ runner.temp }}/ci-three
+        run: |
+          scripts/uninstall.sh --all --yes
+          left="$(docker ps -aq)$(docker volume ls -q)$(docker network ls -q --filter type=custom)"
+          [ -z "$left" ] || { echo "Docker resources left behind:"; docker ps -a; docker volume ls; docker network ls; exit 1; }
+          [ -z "$(docker images -q traefik)$(docker images -q coredns/coredns)" ] || { echo "The proxy's images are still there"; exit 1; }
+          [ ! -e /etc/systemd/resolved.conf.d/test.conf ] || { echo "The *.test DNS setup is still there"; exit 1; }
+          if getent hosts after-uninstall.test; then echo "*.test still resolves"; exit 1; fi
+
+      - name: Show containers, logs and DNS settings
+        if: failure()
+        run: |
+          docker ps -a
+          for project in $PROJECTS; do
+            echo "::group::$project"
+            (cd "$RUNNER_TEMP/$project" && docker compose ps -a && docker compose logs --tail 40) || true
+            echo "::endgroup::"
+          done
+          echo "::group::proxy"; docker logs --tail 40 local-proxy-traefik || true; docker logs --tail 40 local-proxy-dns || true; echo "::endgroup::"
+          echo "::group::DNS"; resolvectl status || true; cat /etc/hosts; echo "::endgroup::"
+
+  macos:
+    # Docker isn't available on GitHub's macOS runners, so this covers the
+    # parts that differ on macOS: its resolver, and BSD versions of sed and tr
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.5"
+
+      - name: Test setup-dns.sh adds a resolver for .test
+        run: |
+          scripts/setup-dns.sh
+          # macOS picks up new resolver files after a moment
+          for i in $(seq 1 10); do
+            scutil --dns | grep -qE 'domain *: test$' && break
+            sleep 1
+          done
+          scutil --dns | grep -A5 -E 'domain *: test$' | tee resolver.txt
+          grep -qE 'nameserver\[0\] *: 127\.0\.0\.1' resolver.txt
+          grep -qE 'port *: 5354' resolver.txt
+
+      - name: Test uninstall.sh --all removes the .test resolver
+        run: |
+          # No Docker here, so this exercises the DNS clean-up alone
+          scripts/uninstall.sh --all --yes
+          [ ! -e /etc/resolver/test ] || { echo "/etc/resolver/test is still there"; exit 1; }
+          # macOS drops removed resolver files after a moment too
+          for i in $(seq 1 10); do
+            scutil --dns | grep -qE 'domain *: test$' || exit 0
+            sleep 1
+          done
+          echo "The .test resolver is still there after uninstalling"
+          exit 1
+
+      - name: Test reading LOCAL_DOMAIN from .env
+        run: |
+          printf 'X=1\r\nexport LOCAL_DOMAIN="mac.test" # a comment\r\n' > .env
+          . scripts/env.sh
+          [ "$DEFAULT_SITE_URL" = "http://mac.test" ] || { echo "Got '$DEFAULT_SITE_URL'"; exit 1; }
+          rm .env
+
+      - name: Test start.sh's help and the rename script
+        run: |
+          ./start.sh --help | grep -q "Usage: ./start.sh"
+          cp .env.example .env
+          php scripts/rename-project.php mac-project
+          [ -d web/app/themes/mac-project ]
+          grep -q 'LOCAL_DOMAIN=mac-project.test' .env

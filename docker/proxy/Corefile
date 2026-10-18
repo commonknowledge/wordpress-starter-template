@@ -1,0 +1,12 @@
+# Answer every *.test name with the host's loopback address, where Traefik
+# listens. Nothing else is answered: on Linux, systemd-resolved sends every
+# lookup to a globally configured server like this one, and refusing keeps
+# ordinary lookups away from the proxy entirely.
+test:53 {
+    template IN A {
+        answer "{{ .Name }} 60 IN A 127.0.0.1"
+    }
+    template IN AAAA {
+        rcode NOERROR
+    }
+}

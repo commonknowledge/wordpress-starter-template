@@ -2,8 +2,18 @@ services:
   nginx:
     image: nginx:1.31
     container_name: wordpress-starter-template-nginx
-    ports:
-      - "${WEB_HOST_PORT:-8082}:80"
+    # Served at http://$LOCAL_DOMAIN (set in .env) by the shared local proxy
+    # in docker/proxy, rather than on a host port
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.wordpress-starter-template.rule=Host(`${LOCAL_DOMAIN:?Set LOCAL_DOMAIN in .env}`)
+      - traefik.http.routers.wordpress-starter-template.entrypoints=web
+    networks:
+      default:
+        # Lets WordPress reach its own URL, for cron and loopback requests
+        aliases:
+          - ${LOCAL_DOMAIN:?Set LOCAL_DOMAIN in .env}
+      local-proxy:
     volumes:
       - ./docker/nginx/config:/etc/nginx/conf.d
       - ./:/var/www/html:rw,cached
@@ -19,8 +29,10 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=wordpress-starter-template
+    # A free port picked by Docker, found with `docker compose port mysql 3306`,
+    # unless DB_HOST_PORT is set
     ports:
-      - "${DB_HOST_PORT:-3308}:3306"
+      - "127.0.0.1:${DB_HOST_PORT:-}:3306"
 
   wordpress:
     container_name: wordpress-starter-template-wordpress
@@ -33,6 +45,9 @@ services:
     environment:
       - WP_CLI_ALLOW_ROOT=true
       - PAGER=more
+      # The domain Traefik routes, from the shell or .env, so WP_HOME in .env
+      # expands to the same one
+      - LOCAL_DOMAIN=${LOCAL_DOMAIN:?Set LOCAL_DOMAIN in .env}
     depends_on:
       - mysql
     extra_hosts:
@@ -44,6 +59,10 @@ services:
     restart: "no"
     volumes:
       - ./:/var/www/html:rw,cached
+
+networks:
+  local-proxy:
+    external: true
 
 volumes:
   wordpress-starter-template-mysql:
