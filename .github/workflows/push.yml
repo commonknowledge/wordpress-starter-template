@@ -231,7 +231,12 @@ jobs:
             [ -z "$left" ] || { echo "ci-two left behind: docker $kind"; docker $kind; exit 1; }
           done
           [ -z "$(docker images -q ci-two-wordpress)" ] || { echo "ci-two's WordPress image is still there"; exit 1; }
-          code=$(curl -s -o /dev/null -w '%{http_code}' http://ci-two.test/)
+          # Traefik drops the route a moment after the container goes, so wait for it
+          for i in $(seq 1 15); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 2 http://ci-two.test/ || true)
+            [ "$code" = 404 ] && break
+            sleep 1
+          done
           [ "$code" = 404 ] || { echo "ci-two.test returned $code after uninstalling, not the proxy's 404"; exit 1; }
           curl -fsS http://ci-one.test/ > /dev/null
           curl -fsS http://ci-three.test/ > /dev/null
