@@ -9,41 +9,42 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Start the proxy and a two-container network
+      - name: Start the proxy with query logging, and set up DNS
         run: |
+          sed -i 's/^test:53 {/test:53 {\n    log/; s/^\.:53 {/.:53 {\n    log/' docker/proxy/Corefile
+          cat docker/proxy/Corefile
           scripts/proxy.sh
+          scripts/setup-dns.sh
+
+      - name: Count how often one ordinary lookup reaches CoreDNS (current Corefile)
+        run: |
+          time getent hosts loop-check-one.example.com || true
+          sleep 3
+          echo "CoreDNS saw loop-check-one $(docker logs local-proxy-dns 2>&1 | grep -c loop-check-one) times"
+          docker logs local-proxy-dns 2>&1 | grep loop-check-one | head -10
+          time getent hosts example.org
+
+      - name: Switch to a Corefile that refuses everything but .test
+        run: |
+          printf 'test:53 {\n    log\n    template IN A {\n        answer "{{ .Name }} 60 IN A 127.0.0.1"\n    }\n    template IN AAAA {\n        rcode NOERROR\n    }\n}\n' > docker/proxy/Corefile
+          docker restart local-proxy-dns
+          sleep 2
+
+      - name: Ordinary lookups with the refusing Corefile
+        run: |
+          for n in example.org example.net github.com loop-check-two.example.com; do
+            start=$(date +%s%N); getent hosts "$n" > /dev/null && r=ok || r=fail
+            echo "$n: $r in $(( ($(date +%s%N) - start) / 1000000 ))ms"
+          done
+          echo "CoreDNS saw loop-check-two $(docker logs local-proxy-dns 2>&1 | grep -c loop-check-two) times"
+          getent hosts some-site.test
+
+      - name: Container lookups with the refusing Corefile
+        run: |
           docker network create diag
           docker run -d --name db --network diag alpine:3.23 sleep 600
           docker run -d --name app --network diag alpine:3.23 sleep 600
-
-      - name: Resolver state before setup-dns.sh
-        run: |
-          cat /etc/resolv.conf; echo ---; cat /run/systemd/resolve/resolv.conf; echo ---
-          docker exec app cat /etc/resolv.conf
-
-      - name: Resolve the db container 100 times, before
-        run: |
           fails=0; for i in $(seq 1 100); do docker exec app getent hosts db >/dev/null || fails=$((fails+1)); done
-          echo "failures before: $fails"
-
-      - name: Run setup-dns.sh
-        run: scripts/setup-dns.sh && resolvectl status | head -30
-
-      - name: Resolver state after setup-dns.sh
-        run: |
-          cat /run/systemd/resolve/resolv.conf; echo ---
-          docker exec app cat /etc/resolv.conf
-          docker run --rm --network diag alpine:3.23 cat /etc/resolv.conf
-
-      - name: Resolve the db container 100 times, after, in the existing container
-        run: |
-          fails=0; for i in $(seq 1 100); do docker exec app getent hosts db >/dev/null || fails=$((fails+1)); done
-          echo "failures after (old container): $fails"
-
-      - name: Resolve the db container 100 times, after, in a new container
-        run: |
-          docker run -d --name app2 --network diag alpine:3.23 sleep 600
-          fails=0; for i in $(seq 1 100); do docker exec app2 getent hosts db >/dev/null || fails=$((fails+1)); done
-          echo "failures after (new container): $fails"
-          docker exec app2 sh -c 'for n in db db.$(sed -n "s/^search //p" /etc/resolv.conf | cut -d" " -f1) example.org; do echo "== $n"; nslookup "$n" 2>&1 | tail -4; done'
-          docker logs local-proxy-dns 2>&1 | tail -20
+          echo "container-name failures: $fails"
+          docker exec app nslookup example.org | tail -3
+          docker exec app nslookup some-site.test | tail -3 || true
