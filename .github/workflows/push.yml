@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - main
+      - "ci-mutation/**"
   pull_request:
   schedule:
     - cron: "23 5 * * *"

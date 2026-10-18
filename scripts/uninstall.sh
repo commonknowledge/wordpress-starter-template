@@ -55,6 +55,7 @@ fi
 . scripts/env.sh
 LOCAL_DOMAIN="${LOCAL_DOMAIN:-unset.test}" docker compose down --volumes --rmi local --remove-orphans
 echo "Removed $project's containers, network, database and WordPress image."
+docker ps -aq --filter name=-nginx | xargs -r docker rm -f
 
 [ -z "$ALL" ] && exit 0
 
