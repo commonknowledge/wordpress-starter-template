@@ -155,6 +155,7 @@ for i in $(seq 1 30); do
 done
 if docker compose exec -T wordpress wp core is-installed >/dev/null 2>&1; then
     done_already "WordPress is already installed"
+    scripts/setup.sh
 elif confirm "Install WordPress, activate the theme and load the page fixtures?"; then
     scripts/setup.sh
 fi
