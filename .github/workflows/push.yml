@@ -1,20 +1,43 @@
 name: Check Docker Compose development environment
+
+# Every engineer starts work through start.sh, so this tests the local setup
+# the way they use it: the template itself, a new project made from it running
+# alongside, real *.test DNS, and re-running start.sh. It also runs nightly, so
+# a change upstream (a new Traefik, CoreDNS or PHP image) shows up here before
+# it reaches anyone's machine.
 on:
   push:
     branches:
       - main
   pull_request:
+  schedule:
+    - cron: "23 5 * * *"
+  workflow_dispatch:
+
 jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Lint the shell scripts
+        run: shellcheck -s sh start.sh scripts/*.sh
+
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Install Composer dependencies
-        uses: php-actions/composer@v6
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          php_version: "8.5"
+          php-version: "8.5"
+          tools: composer
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist
 
       - name: Setup Node
         uses: actions/setup-node@v7
@@ -30,7 +53,7 @@ jobs:
       - name: Setup environment file with database settings
         run: cp .env.example .env
 
-      - name: Resolve the site's local domain
+      - name: Map the template's domain in /etc/hosts
         run: |
           . scripts/env.sh
           echo "127.0.0.1 $LOCAL_DOMAIN" | sudo tee -a /etc/hosts
@@ -50,3 +73,116 @@ jobs:
 
       - name: Test the setup script
         run: scripts/test-setup.sh "$SITE_URL" "WordPress Starter"
+
+      - name: Test re-running start.sh skips what is done and keeps edits
+        run: |
+          wp() { docker compose exec -T wordpress php -d display_errors=stderr /bin/wp "$@"; }
+          id=$(wp post list --post_type=page --name=blocks --post_parent=0 --field=ID)
+          wp post update "$id" --post_title="Edited by an engineer"
+
+          ./start.sh --yes | tee rerun.log
+          for expected in "Keeping the template's name" ".env already exists" \
+              "Already running" "Already built" "Already installed"; do
+              grep -qF "$expected" rerun.log || { echo "start.sh didn't report: $expected"; exit 1; }
+          done
+
+          title=$(wp post get "$id" --field=post_title)
+          [ "$title" = "Edited by an engineer" ] || { echo "start.sh changed an existing page: '$title'"; exit 1; }
+          scripts/smoke-test.sh "WordPress Starter" "$SITE_URL"
+
+      - name: Test setup-dns.sh makes every *.test name resolve
+        run: |
+          scripts/setup-dns.sh
+          # Not in /etc/hosts, so only the proxy's DNS server can answer
+          getent hosts any-name.test | tee lookup.txt
+          grep -q '^127\.0\.0\.1' lookup.txt
+          getent hosts github.com
+
+      - name: Start a new project alongside, answering start.sh's questions
+        run: |
+          project="$RUNNER_TEMP/ci-project"
+          mkdir "$project"
+          git ls-files -co --exclude-standard -z | xargs -0 cp --parents -t "$project"
+          cp -a vendor "$project/"
+          cd "$project"
+          git init -q && git add -A
+
+          # Rename it (giving a bad name first), build the theme, install WordPress
+          printf 'y\nBad Name\nci-project\ny\ny\n' | ./start.sh | tee start.log
+          grep -qF "'Bad Name' isn't kebab-case" start.log
+          grep -qF "*.test already resolves through the proxy" start.log
+
+      - name: Test the new project and the template both serve, side by side
+        run: |
+          # ci-project.test resolves through the proxy's DNS server alone
+          (cd "$RUNNER_TEMP/ci-project" && scripts/smoke-test.sh "WordPress Starter" "" \
+            "/blocks/=wp-block-ci-project-example" "/blocks/=Hello from a custom block")
+          scripts/smoke-test.sh "WordPress Starter" "$SITE_URL" \
+            "/blocks/=wp-block-wordpress-starter-template-example"
+
+      - name: Test the new project's Composer files and tests still pass
+        working-directory: ${{ runner.temp }}/ci-project
+        run: composer validate --no-check-all && composer test
+
+      - name: Test other lookups still work when the proxy's DNS server is down
+        run: |
+          docker stop local-proxy-dns
+          # A name not looked up yet, so no cached answer
+          timeout 5 getent hosts example.org || { echo "Non-.test lookups fail without the proxy's DNS server"; exit 1; }
+          docker start local-proxy-dns
+
+      - name: Test setup-dns.sh --remove undoes it
+        run: |
+          scripts/setup-dns.sh --remove
+          if getent hosts removed-name.test; then
+            echo "*.test still resolves after --remove"
+            exit 1
+          fi
+
+  macos:
+    # Docker isn't available on GitHub's macOS runners, so this covers the
+    # parts that differ on macOS: its resolver, and BSD versions of sed and tr
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.5"
+
+      - name: Test setup-dns.sh adds a resolver for .test
+        run: |
+          scripts/setup-dns.sh
+          # macOS picks up new resolver files after a moment
+          for i in $(seq 1 10); do
+            scutil --dns | grep -qE 'domain *: test$' && break
+            sleep 1
+          done
+          scutil --dns | grep -A5 -E 'domain *: test$' | tee resolver.txt
+          grep -qE 'nameserver\[0\] *: 127\.0\.0\.1' resolver.txt
+          grep -qE 'port *: 5354' resolver.txt
+
+      - name: Test setup-dns.sh --remove undoes it
+        run: |
+          scripts/setup-dns.sh --remove
+          if scutil --dns | grep -qE 'domain *: test$'; then
+            echo "The .test resolver is still there after --remove"
+            exit 1
+          fi
+
+      - name: Test reading LOCAL_DOMAIN from .env
+        run: |
+          printf 'X=1\r\nexport LOCAL_DOMAIN="mac.test" # a comment\r\n' > .env
+          . scripts/env.sh
+          [ "$DEFAULT_SITE_URL" = "http://mac.test" ] || { echo "Got '$DEFAULT_SITE_URL'"; exit 1; }
+          rm .env
+
+      - name: Test start.sh's help and the rename script
+        run: |
+          ./start.sh --help | grep -q "Usage: ./start.sh"
+          cp .env.example .env
+          php scripts/rename-project.php mac-project
+          [ -d web/app/themes/mac-project ]
+          grep -q 'LOCAL_DOMAIN=mac-project.test' .env

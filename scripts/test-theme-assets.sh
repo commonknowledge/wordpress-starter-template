@@ -9,7 +9,7 @@
 #
 # Usage: scripts/test-theme-assets.sh [base-url]
 
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/.." || exit 1
 . scripts/env.sh
 
 BASE_URL="${1:-${DEFAULT_SITE_URL:?Pass a base URL or set LOCAL_DOMAIN in .env}}"

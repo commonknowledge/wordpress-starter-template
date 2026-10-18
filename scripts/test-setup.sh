@@ -5,7 +5,7 @@
 #
 # Usage: scripts/test-setup.sh [site-url] [site-title]
 
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/.." || exit 1
 . scripts/env.sh
 
 SITE_URL="${1:-${DEFAULT_SITE_URL:?Pass a site URL or set LOCAL_DOMAIN in .env}}"
@@ -58,6 +58,7 @@ fi
 # Two root pages with the fixture's slug can only come from direct database
 # edits, but setup must refuse to guess which one to update
 original=$(root_blocks_ids)
+# shellcheck disable=SC2016 # PHP code, run by wp eval
 duplicate=$(wp eval '
     global $wpdb;
     $wpdb->insert($wpdb->posts, [

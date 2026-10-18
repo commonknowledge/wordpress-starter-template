@@ -69,7 +69,14 @@ Run the smoke test with the site title and URL. Extra `path=text` arguments chec
 scripts/smoke-test.sh "WordPress Starter Template" "" "/blocks/=wp-block-wordpress-starter-template-example"
 ```
 
-CI builds the theme, runs `setup.sh` and runs the smoke test against a fresh install.
+CI tests the local setup the way engineers use it, on every pull request, on `main`, and nightly to catch changes upstream:
+
+- `./start.sh --yes` brings up a fresh install, which must pass the smoke, theme asset and setup tests
+- re-running `start.sh` must skip what's done and keep an edited page as it is
+- `scripts/setup-dns.sh` must make any `*.test` name resolve, without breaking other lookups even when the proxy's DNS server is down, and `--remove` must undo it
+- a new project, made by answering `start.sh`'s questions, must come up alongside the template at its own domain, with valid Composer files and passing tests
+- on macOS, `setup-dns.sh` must add and remove the `.test` resolver, and `.env` parsing and the rename must work with macOS's tools
+- ShellCheck lints every shell script
 
 ## Development Documentation
 

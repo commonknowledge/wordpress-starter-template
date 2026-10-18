@@ -9,7 +9,7 @@
 # contains text, e.g. "/blocks/=wp-block-wordpress-starter-template-example".
 # The base URL defaults to LOCAL_DOMAIN in .env.
 
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/.." || exit 1
 . scripts/env.sh
 
 SITE_TITLE="$1"

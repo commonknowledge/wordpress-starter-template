@@ -45,7 +45,7 @@ for fixture in scripts/fixtures/*.html; do
     ids=$(wp post list --post_type=page --name="$slug" --post_parent=0 --post_status=any --field=ID 2>/dev/null)
     count=$(printf '%s\n' "$ids" | grep -c . || true)
     if [ "$count" -gt 1 ]; then
-        echo "Error: several root pages have the slug '$slug' (IDs $(echo $ids)), so the fixture was not loaded"
+        echo "Error: several root pages have the slug '$slug' (IDs $(printf '%s' "$ids" | tr '\n' ' ')), so the fixture was not loaded"
         exit 1
     elif [ "$count" -eq 1 ]; then
         wp post update "$ids" "$path"
