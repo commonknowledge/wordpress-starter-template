@@ -91,6 +91,18 @@ jobs:
           content=$(wp post get "$id" --field=post_content)
           [ "$content" = "Edited by an engineer" ] || { echo "start.sh overwrote an edited page: '$content'"; exit 1; }
 
+      - name: Show containers, logs and DNS settings
+        if: failure()
+        run: |
+          docker ps -a
+          for project in template; do
+            echo "::group::$project"
+            (cd "$GITHUB_WORKSPACE" && docker compose ps -a && docker compose logs --tail 40) || true
+            echo "::endgroup::"
+          done
+          echo "::group::proxy"; docker logs --tail 40 local-proxy-traefik || true; docker logs --tail 40 local-proxy-dns || true; echo "::endgroup::"
+          echo "::group::DNS"; resolvectl status || true; cat /etc/hosts; echo "::endgroup::"
+
   prompts:
     # How start.sh and uninstall.sh answer people, separate from running sites
     runs-on: ubuntu-latest
@@ -240,6 +252,18 @@ jobs:
           [ -z "$(docker images -q traefik)$(docker images -q coredns/coredns)" ] || { echo "The proxy's images are still there"; exit 1; }
           [ ! -e /etc/systemd/resolved.conf.d/test.conf ] || { echo "The *.test DNS setup is still there"; exit 1; }
           if getent hosts after-uninstall.test; then echo "*.test still resolves"; exit 1; fi
+
+      - name: Show containers, logs and DNS settings
+        if: failure()
+        run: |
+          docker ps -a
+          for project in $PROJECTS; do
+            echo "::group::$project"
+            (cd "$RUNNER_TEMP/$project" && docker compose ps -a && docker compose logs --tail 40) || true
+            echo "::endgroup::"
+          done
+          echo "::group::proxy"; docker logs --tail 40 local-proxy-traefik || true; docker logs --tail 40 local-proxy-dns || true; echo "::endgroup::"
+          echo "::group::DNS"; resolvectl status || true; cat /etc/hosts; echo "::endgroup::"
 
   macos:
     # Docker isn't available on GitHub's macOS runners, so this covers the
