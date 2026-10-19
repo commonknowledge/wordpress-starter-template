@@ -37,4 +37,4 @@ Conventions for sites built from this template. See README.md for setup.
 ## Finishing work
 
 - Always open a pull request for your branch once the work is pushed, without waiting to be asked. CI only runs on pull requests and `main`, so work without one is unchecked, and in Claude Code cloud sessions a branch with no pull request is incomplete.
-- Then watch the pull request (in cloud sessions, subscribe to its activity) and fix CI whenever it fails, until it is green. Don't hand a pull request with failing CI to a person to review unless the failure can't be fixed from the branch, and then say exactly what is failing and why.
+- Then watch the pull request (in cloud sessions, subscribe to its activity) and fix CI when it fails, so a person isn't handed a pull request with failing CI. Make at most three attempts: fix, push, wait for CI, and repeat. If CI is still failing after the third, stop and tell a person, in a comment on the pull request, what is failing, what each attempt tried and what you think is wrong. Stop sooner, and say so, if the failure can't be fixed from the branch.
