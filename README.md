@@ -45,6 +45,8 @@ CI builds the theme, runs `setup.sh` and runs the smoke test against a fresh ins
 - the browser tests (`npm run test:e2e` from the theme folder, see [Theme](#theme)) load the front end, the block editor and the Site Editor with every plugin active, and fail on JavaScript errors, failed requests, PHP error output and blocks the editor can't load
 - `scripts/check-php-log.sh` fails if PHP logged any errors or warnings along the way
 
+A second job, `.github/workflows/production.yml`, installs the site the way `deploy.yml` deploys it: Composer without dev packages, the production theme build, `WP_ENV=production` and every plugin active, including Wordfence. It then runs the plugin, smoke, browser and PHP log checks against that.
+
 These cover what a dependency bump can break, so a Renovate pull request that passes CI can be merged with confidence. See [What CI checks for dependency updates](#what-ci-checks-for-dependency-updates).
 
 ## Development Documentation
@@ -58,7 +60,7 @@ The theme in `web/app/themes/wordpress-starter-template` is built with webpack, 
 - `npm run build` builds assets to `build/` for other environments
 - `npm run typecheck` type-checks with TypeScript 7
 - `npm test` builds the theme into temporary folders and checks the output: every file each `block.json` loads, WordPress packages left to WordPress, and TypeScript, Sass and PostCSS compiled as configured
-- `npm run test:e2e` runs the browser tests against the site at `SITE_URL` (default `http://localhost:8082`), starting the dev server if it isn't running. Run `npx playwright install chromium` once first. They log in as `admin` / `admin`, so run them against the local site after `scripts/setup.sh`.
+- `npm run test:e2e` runs the browser tests against the site at `SITE_URL` (default `http://localhost:8082`), starting the dev server if it isn't running. Set `E2E_DEV_SERVER=false` for a site that isn't in development, which loads the production build instead. Run `npx playwright install chromium` once first. They log in as `admin` / `admin`, so run them against the local site after `scripts/setup.sh`.
 - `npm run lint` fixes lint and formatting issues
 
 TypeScript 7 does not yet have a compiler API, which `ts-loader` and `typescript-eslint` need. As recommended in the [TypeScript 7 release notes](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-6.0), the `typescript` package is aliased to `@typescript/typescript6` for those tools, and TypeScript 7 is installed as `@typescript/native`, which provides `tsc`. Once TypeScript 7.1 ships an API and those tools support it, the alias can be removed.
@@ -101,8 +103,8 @@ Renovate opens pull requests for Composer, npm, Docker and GitHub Actions update
 
 | Update | Checked by |
 | --- | --- |
-| WordPress (`roots/wordpress`) | Smoke test, browser tests of the front end, block editor and Site Editor, PHP log |
-| Plugins (`wp-plugin/*`) | `test-plugins.sh`, browser tests with every plugin active, PHP log. Wordfence can't run in development, so isn't covered |
+| WordPress (`roots/wordpress`) | Smoke test, browser tests of the front end, block editor and Site Editor, PHP log, in development and production |
+| Plugins (`wp-plugin/*`) | `test-plugins.sh`, browser tests with every plugin active, PHP log. Wordfence only runs in the production job, as development turns it off |
 | PHP libraries (`vlucas/phpdotenv`, `htmlburger/carbon-fields`, …) | Smoke test, browser tests, PHP log |
 | Pest, Pint | The CI workflow runs them |
 | Build tools (webpack and its loaders and plugins, Sass, PostCSS, `postcss-preset-env`, `ts-loader`) | `npm test`, browser tests |
