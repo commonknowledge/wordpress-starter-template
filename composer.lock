@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f3ed29e7b33102ca3294747a3b3beacb",
+    "content-hash": "9dff0fa8a4b2f86d40036494ac80a0ca",
     "packages": [
         {
             "name": "composer/installers",
@@ -353,6 +353,82 @@
                 "source": "https://github.com/htmlburger/carbon-fields"
             },
             "time": "2026-08-27T06:31:08+00:00"
+        },
+        {
+            "name": "mnsami/composer-custom-directory-installer",
+            "version": "2.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mnsami/composer-custom-directory-installer.git",
+                "reference": "66df9d4430c32f191ff12476ddbaea68915f2999"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mnsami/composer-custom-directory-installer/zipball/66df9d4430c32f191ff12476ddbaea68915f2999",
+                "reference": "66df9d4430c32f191ff12476ddbaea68915f2999",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^2.3",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "composer/composer": "^2.0",
+                "composer/installers": "^2.3",
+                "friendsofphp/php-cs-fixer": "^3.75",
+                "phpstan/phpstan": "^2.3",
+                "phpunit/phpunit": "^10.5"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": [
+                    "Composer\\CustomDirectoryInstaller\\LibraryPlugin",
+                    "Composer\\CustomDirectoryInstaller\\PluginPlugin"
+                ],
+                "branch-alias": {
+                    "dev-master": "2.3.x-dev"
+                },
+                "plugin-modifies-install-path": true
+            },
+            "autoload": {
+                "psr-4": {
+                    "Composer\\CustomDirectoryInstaller\\": "src/Composer/CustomDirectoryInstaller"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mina Nabil Sami",
+                    "email": "mina.nsami@gmail.com"
+                }
+            ],
+            "description": "A composer plugin, to help install packages of different types in custom paths.",
+            "homepage": "https://github.com/mnsami/composer-custom-directory-installer",
+            "keywords": [
+                "composer",
+                "composer-installer",
+                "composer-plugin",
+                "custom-path",
+                "drupal",
+                "installer-paths",
+                "monorepo",
+                "wordpress"
+            ],
+            "support": {
+                "issues": "https://github.com/mnsami/composer-custom-directory-installer/issues",
+                "security": "https://github.com/mnsami/composer-custom-directory-installer/security/policy",
+                "source": "https://github.com/mnsami/composer-custom-directory-installer"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/mnsami",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-10-13T23:16:14+00:00"
         },
         {
             "name": "oscarotero/env",
@@ -1705,82 +1781,6 @@
                 "source": "https://github.com/laravel/pint"
             },
             "time": "2026-09-10T10:47:55+00:00"
-        },
-        {
-            "name": "mnsami/composer-custom-directory-installer",
-            "version": "2.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mnsami/composer-custom-directory-installer.git",
-                "reference": "66df9d4430c32f191ff12476ddbaea68915f2999"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mnsami/composer-custom-directory-installer/zipball/66df9d4430c32f191ff12476ddbaea68915f2999",
-                "reference": "66df9d4430c32f191ff12476ddbaea68915f2999",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^2.3",
-                "php": ">=8.1"
-            },
-            "require-dev": {
-                "composer/composer": "^2.0",
-                "composer/installers": "^2.3",
-                "friendsofphp/php-cs-fixer": "^3.75",
-                "phpstan/phpstan": "^2.3",
-                "phpunit/phpunit": "^10.5"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": [
-                    "Composer\\CustomDirectoryInstaller\\LibraryPlugin",
-                    "Composer\\CustomDirectoryInstaller\\PluginPlugin"
-                ],
-                "branch-alias": {
-                    "dev-master": "2.3.x-dev"
-                },
-                "plugin-modifies-install-path": true
-            },
-            "autoload": {
-                "psr-4": {
-                    "Composer\\CustomDirectoryInstaller\\": "src/Composer/CustomDirectoryInstaller"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Mina Nabil Sami",
-                    "email": "mina.nsami@gmail.com"
-                }
-            ],
-            "description": "A composer plugin, to help install packages of different types in custom paths.",
-            "homepage": "https://github.com/mnsami/composer-custom-directory-installer",
-            "keywords": [
-                "composer",
-                "composer-installer",
-                "composer-plugin",
-                "custom-path",
-                "drupal",
-                "installer-paths",
-                "monorepo",
-                "wordpress"
-            ],
-            "support": {
-                "issues": "https://github.com/mnsami/composer-custom-directory-installer/issues",
-                "security": "https://github.com/mnsami/composer-custom-directory-installer/security/policy",
-                "source": "https://github.com/mnsami/composer-custom-directory-installer"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/sponsors/mnsami",
-                    "type": "github"
-                }
-            ],
-            "time": "2026-10-13T23:16:14+00:00"
         },
         {
             "name": "myclabs/deep-copy",
