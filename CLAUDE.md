@@ -32,7 +32,7 @@ Conventions for sites built from this template. See README.md for setup.
 
 - `scripts/setup.sh` installs WordPress, activates the theme and loads the page fixtures. `scripts/smoke-test.sh` checks the site, and CI runs both against a fresh install.
 - PHP: `composer lint` (Pint) and `composer test` (Pest). Theme: `npm run build`, `npm run typecheck`, `npm test` (build output) and `npx eslint .` from the theme folder.
-- After `setup.sh`, `scripts/test-plugins.sh`, `npm run test:e2e` (Playwright: front end, block editor, Site Editor) and `scripts/check-php-log.sh` check the running site. CI runs them all, so that a Renovate pull request that passes can be merged with confidence. When adding to the theme, keep these tests covering it: they read block folders and `block.json` files, so new blocks are covered once they are in `scripts/fixtures/blocks.html`.
+- After `setup.sh`, `scripts/test-plugins.sh`, `npm run test:e2e` (Playwright: front end, block editor, Site Editor) and `scripts/check-php-log.sh` check the running site. CI runs them all, in development and again in a production install (`.github/workflows/production.yml`), so that a Renovate pull request that passes can be merged with confidence. When adding to the theme, keep these tests covering it: they read block folders and `block.json` files, so new blocks are covered once they are in `scripts/fixtures/blocks.html`.
 
 ## Finishing work
 

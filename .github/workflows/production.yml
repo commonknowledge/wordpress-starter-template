@@ -1,0 +1,92 @@
+name: Check a production install
+
+# Installs the site the way .github/workflows/deploy.yml deploys it, without
+# Composer's dev packages, with the production theme build, WP_ENV=production
+# and every plugin active, including Wordfence, which development turns off.
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  production:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.5"
+
+      # As the deploy runs it
+      - name: Install Composer dependencies without dev packages
+        run: composer install --no-dev --no-scripts --prefer-dist --optimize-autoloader --no-progress
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: web/app/themes/wordpress-starter-template/.nvmrc
+          cache: npm
+          cache-dependency-path: web/app/themes/wordpress-starter-template/package-lock.json
+
+      - name: Build theme assets
+        working-directory: web/app/themes/wordpress-starter-template
+        run: npm ci && npm run build
+
+      - name: Setup environment file for production
+        run: |
+          cp .env.example .env
+          sed -i "s/^WP_ENV=.*/WP_ENV='production'/" .env
+
+      - name: Build the stack
+        run: docker compose up -d --build
+
+      - name: Install WordPress, activate the theme and load page fixtures
+        run: scripts/setup.sh http://localhost:8082 "WordPress Starter"
+
+      # On a host, PHP owns the site's files. Here the checkout belongs to the
+      # runner, so PHP-FPM can't create the folder Wordfence's firewall uses.
+      - name: Let PHP-FPM write Wordfence's firewall folder
+        run: docker compose exec -T wordpress sh -c 'mkdir -p web/app/wflogs && chown www-data:www-data web/app/wflogs'
+
+      # The deploy runs `wp plugin activate --all`
+      - name: Test every plugin activates
+        run: scripts/test-plugins.sh http://localhost:8082
+
+      - name: Test WordPress is running successfully
+        run: >
+          scripts/smoke-test.sh "WordPress Starter" http://localhost:8082
+          "/blocks/=wp-block-wordpress-starter-template-example"
+          "/blocks/=Hello from a custom block"
+
+      - name: Install the browser for browser tests
+        working-directory: web/app/themes/wordpress-starter-template
+        run: npx playwright install --with-deps chromium
+
+      # Production loads theme assets from build/, so no dev server
+      - name: Test the front end, block editor and Site Editor in a browser
+        working-directory: web/app/themes/wordpress-starter-template
+        run: npm run test:e2e
+        env:
+          SITE_URL: http://localhost:8082
+          E2E_DEV_SERVER: "false"
+
+      - name: Upload the browser test report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-production
+          path: |
+            web/app/themes/wordpress-starter-template/playwright-report/
+            web/app/themes/wordpress-starter-template/test-results/
+          retention-days: 7
+
+      # Production doesn't write WordPress's debug log, so PHP logs to the
+      # container's output, which this checks
+      - name: Check PHP logged no errors
+        if: success() || failure()
+        run: scripts/check-php-log.sh
