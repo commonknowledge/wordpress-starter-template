@@ -16,6 +16,11 @@
       "@/*": ["./assets/*"]
     }
   },
-  "exclude": ["build", "node_modules"],
+  "exclude": [
+    "build",
+    "node_modules",
+    "playwright.config.ts",
+    "tests/e2e"
+  ] /* Run in Node rather than the browser, so type-checked by tsconfig.node.json. */,
   "include": ["eslint.module.mjs", "webpack.config.js", "**/*.ts", "**/*.tsx"]
 }

@@ -30,3 +30,9 @@ jobs:
 
       - name: Type-check theme
         run: npm run typecheck
+
+      - name: Test the build output
+        run: npm test
+
+      - name: Lint theme scripts
+        run: npx eslint .

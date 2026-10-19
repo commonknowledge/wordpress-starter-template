@@ -68,6 +68,12 @@ export default defineConfig(
     },
   },
   {
-    ignores: ["build"],
+    files: ["playwright.config.ts", "tests/build/**", "tests/e2e/**"],
+    languageOptions: {
+      globals: { ...globals.node },
+    },
+  },
+  {
+    ignores: ["build", "playwright-report", "test-results"],
   },
 );
