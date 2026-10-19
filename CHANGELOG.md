@@ -1,3 +1,11 @@
+### Tests for dependency updates: 2026-10-19
+* Test the theme build's output (`npm test`): the files each `block.json` loads, WordPress dependency extraction, and TypeScript, Sass and `postcss-preset-env` output
+* Add Playwright browser tests of the front end, block editor and Site Editor (`npm run test:e2e`), run in CI with every plugin active and the webpack dev server
+* Add `scripts/test-plugins.sh`, which activates every plugin and checks the site still works, and `scripts/check-php-log.sh`, which fails CI if PHP logged errors
+* Lint the theme's scripts with ESLint in CI
+* Fix a flaky theme asset test: PHP's opcache could serve a rebuilt `main.asset.php` for up to 2 seconds after it changed. Development now checks for changed files on every request
+* Let PHP-FPM write the debug log in development. WP-CLI created it as root, so errors from web requests were lost
+
 ### Bedrock upstream sync and dependency upgrade: 2026-10-15
 * Realign with Roots Bedrock 1.31.7: `roots/wordpress` 7.1.3, `actions/checkout` v7, `actions/cache` v6, LICENSE and Bedrock Autoloader header
 * Remove `.devcontainer/` in favour of Docker Compose, and the committed `twentytwentyfour` theme

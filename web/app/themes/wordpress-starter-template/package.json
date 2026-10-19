@@ -6,7 +6,9 @@
     "lint": "eslint --fix . && prettier --write .",
     "dev": "cross-env DEBUG=true webpack serve",
     "build": "cross-env DEBUG=false webpack",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json",
+    "test": "node --test \"tests/build/*.test.mjs\"",
+    "test:e2e": "playwright test"
   },
   "husky": {
     "hooks": {
@@ -28,6 +30,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^24.19.2",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
     "@types/webpack-env": "^1.18.8",

@@ -39,7 +39,13 @@ Run the smoke test with the site title and URL. Extra `path=text` arguments chec
 scripts/smoke-test.sh "WordPress Starter Template" http://localhost:8082 "/blocks/=wp-block-wordpress-starter-template-example"
 ```
 
-CI builds the theme, runs `setup.sh` and runs the smoke test against a fresh install.
+CI builds the theme, runs `setup.sh` and runs the smoke test against a fresh install, then:
+
+- `scripts/test-plugins.sh` activates every plugin and checks the site still works
+- the browser tests (`npm run test:e2e` from the theme folder, see [Theme](#theme)) load the front end, the block editor and the Site Editor with every plugin active, and fail on JavaScript errors, failed requests, PHP error output and blocks the editor can't load
+- `scripts/check-php-log.sh` fails if PHP logged any errors or warnings along the way
+
+These cover what a dependency bump can break, so a Renovate pull request that passes CI can be merged with confidence. See [What CI checks for dependency updates](#what-ci-checks-for-dependency-updates).
 
 ## Development Documentation
 
@@ -51,6 +57,8 @@ The theme in `web/app/themes/wordpress-starter-template` is built with webpack, 
 - `npm run dev` starts the webpack dev server on port 9000, which the theme loads assets from when `WP_ENV` is `development`. It also writes to `build/`, where blocks load their scripts and styles from.
 - `npm run build` builds assets to `build/` for other environments
 - `npm run typecheck` type-checks with TypeScript 7
+- `npm test` builds the theme into temporary folders and checks the output: every file each `block.json` loads, WordPress packages left to WordPress, and TypeScript, Sass and PostCSS compiled as configured
+- `npm run test:e2e` runs the browser tests against the site at `SITE_URL` (default `http://localhost:8082`), starting the dev server if it isn't running. Run `npx playwright install chromium` once first. They log in as `admin` / `admin`, so run them against the local site after `scripts/setup.sh`.
 - `npm run lint` fixes lint and formatting issues
 
 TypeScript 7 does not yet have a compiler API, which `ts-loader` and `typescript-eslint` need. As recommended in the [TypeScript 7 release notes](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-6.0), the `typescript` package is aliased to `@typescript/typescript6` for those tools, and TypeScript 7 is installed as `@typescript/native`, which provides `tsc`. Once TypeScript 7.1 ships an API and those tools support it, the alias can be removed.
@@ -86,6 +94,22 @@ Generate a lot of dummy content to see how the website looks and feels with full
 #### [Yoast Duplicate Posts](https://wordpress.org/plugins/duplicate-post/)
 
 Again for creating dummy data, this allows quick duplication of posts to fill things out.
+
+### What CI checks for dependency updates
+
+Renovate opens pull requests for Composer, npm, Docker and GitHub Actions updates. Each kind is covered by these checks:
+
+| Update | Checked by |
+| --- | --- |
+| WordPress (`roots/wordpress`) | Smoke test, browser tests of the front end, block editor and Site Editor, PHP log |
+| Plugins (`wp-plugin/*`) | `test-plugins.sh`, browser tests with every plugin active, PHP log. Wordfence can't run in development, so isn't covered |
+| PHP libraries (`vlucas/phpdotenv`, `htmlburger/carbon-fields`, …) | Smoke test, browser tests, PHP log |
+| Pest, Pint | The CI workflow runs them |
+| Build tools (webpack and its loaders and plugins, Sass, PostCSS, `postcss-preset-env`, `ts-loader`) | `npm test`, browser tests |
+| webpack-dev-server | Browser tests, which load theme assets from it |
+| TypeScript, React and type packages | `npm run typecheck`, build, browser tests |
+| ESLint, typescript-eslint and their plugins | `npx eslint .` |
+| Docker images, GitHub Actions | The workflows themselves |
 
 ### Updating WordPress and other dependencies
 
