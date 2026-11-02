@@ -6,6 +6,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { type Page, expect, test } from "@playwright/test";
+import { adminSession } from "./session";
 
 const blocksDir = path.resolve(__dirname, "../../blocks");
 
@@ -104,15 +105,6 @@ async function settle(page: Page) {
   await page.waitForTimeout(2_000);
 }
 
-async function logIn(page: Page) {
-  await page.goto("/wp/wp-login.php");
-  await page.fill("#user_login", "admin");
-  await page.fill("#user_pass", "admin");
-  await page.click("#wp-submit");
-  // The first login on a fresh site can take a while
-  await expect(page.locator("#wpadminbar")).toBeVisible({ timeout: 20_000 });
-}
-
 test.describe("front end", () => {
   for (const url of ["/", "/blocks/"]) {
     test(`${url} loads with no errors`, async ({ page }) => {
@@ -153,9 +145,7 @@ test.describe("front end", () => {
 });
 
 test.describe("editor", () => {
-  test.beforeEach(async ({ page }) => {
-    await logIn(page);
-  });
+  test.use({ storageState: adminSession });
 
   test("the dashboard loads with no errors", async ({ page }) => {
     const errors = watchForErrors(page);

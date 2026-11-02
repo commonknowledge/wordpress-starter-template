@@ -13,8 +13,18 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   projects: [
+    // Logs in once and saves the session for the editor tests
+    {
+      name: "log-in",
+      testMatch: /log-in\.setup\.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+        launchOptions: { executablePath: process.env.CHROMIUM_PATH },
+      },
+    },
     {
       name: "chromium",
+      dependencies: ["log-in"],
       use: {
         ...devices["Desktop Chrome"],
         // For a Chromium installed outside Playwright's own browser folder
@@ -23,11 +33,16 @@ export default defineConfig({
     },
   ],
   // In development the site loads main.js and main.css from the dev server,
-  // and blocks load their files from the build/ it writes
-  webServer: {
-    command: "npm run dev",
-    url: "http://localhost:9000/main.js",
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-  },
+  // and blocks load their files from the build/ it writes. Other environments
+  // load the production build in build/, which the dev server would replace,
+  // so set E2E_DEV_SERVER=false for them.
+  webServer:
+    process.env.E2E_DEV_SERVER === "false"
+      ? undefined
+      : {
+          command: "npm run dev",
+          url: "http://localhost:9000/main.js",
+          reuseExistingServer: !process.env.CI,
+          timeout: 120_000,
+        },
 });
