@@ -16,7 +16,7 @@ pass() { echo "PASS  $1"; }
 fail() { echo "FAIL  $1"; failures=$((failures + 1)); }
 
 wp() {
-    docker compose exec -T wordpress php -d display_errors=stderr /bin/wp "$@" 2>/dev/null
+    docker compose exec -T wordpress php -d display_errors=stderr /bin/wp "$@"
 }
 
 # check_page <path> <first-character>: returns 200 and starts with the
@@ -28,8 +28,14 @@ check_page() {
     [ "$status" = "200" ] && [ "$first" = "$2" ]
 }
 
-env=$(wp eval 'echo WP_ENV;')
-plugins=$(wp plugin list --field=name --status=inactive --skip-update-check)
+if ! env=$(wp eval 'echo WP_ENV;'); then
+    fail "Could not read the WordPress environment"
+    exit 1
+fi
+if ! plugins=$(wp plugin list --field=name --status=inactive --skip-update-check); then
+    fail "Could not list inactive plugins"
+    exit 1
+fi
 [ -n "$plugins" ] || echo "No inactive plugins to test"
 
 for plugin in $plugins; do
