@@ -47,3 +47,32 @@ jobs:
 
       - name: Test the setup script
         run: scripts/test-setup.sh http://localhost:8082 "WordPress Starter"
+
+      - name: Test every plugin activates
+        run: scripts/test-plugins.sh http://localhost:8082
+
+      - name: Install the browser for browser tests
+        working-directory: web/app/themes/wordpress-starter-template
+        run: npx playwright install --with-deps chromium
+
+      # Runs with every plugin active, after the plugin test
+      - name: Test the front end, block editor and Site Editor in a browser
+        working-directory: web/app/themes/wordpress-starter-template
+        run: npm run test:e2e
+        env:
+          SITE_URL: http://localhost:8082
+
+      - name: Upload the browser test report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            web/app/themes/wordpress-starter-template/playwright-report/
+            web/app/themes/wordpress-starter-template/test-results/
+          retention-days: 7
+
+      # Covers every page the tests above loaded, so it runs even if one failed
+      - name: Check PHP logged no errors
+        if: success() || failure()
+        run: scripts/check-php-log.sh

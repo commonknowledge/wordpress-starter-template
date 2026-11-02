@@ -31,6 +31,13 @@ if ! wp core is-installed 2>/dev/null; then
         --admin_user=admin --admin_password=admin --admin_email=admin@example.test --skip-email
 fi
 
+# WP-CLI runs as root, so a debug log it creates can't be written by PHP-FPM,
+# which then loses the errors from web requests. Let PHP-FPM write it.
+log=$(wp eval 'echo is_string(WP_DEBUG_LOG) ? WP_DEBUG_LOG : "";' 2>/dev/null)
+if [ -n "$log" ]; then
+    docker compose exec -T wordpress sh -c "touch '$log' && chown www-data:www-data '$log'"
+fi
+
 wp theme activate wordpress-starter-template
 wp rewrite structure '/%postname%/'
 
