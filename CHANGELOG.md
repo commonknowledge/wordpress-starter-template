@@ -1,3 +1,10 @@
+### Starter cleanup from PR #287: 2026-10-18
+* Remove Carbon Fields and `mnsami/composer-custom-directory-installer`
+* Add a Theme Options page built on the WordPress Settings API (`src/ThemeOptions.php`)
+* Stop loading jQuery with the theme script
+* Lint the theme with ESLint and Prettier in CI; `npm run lint` now checks and `npm run lint:fix` fixes
+* Remove the unused husky and lint-staged config, and set the theme's `Requires PHP` to 8.5
+
 ### Local domains: 2026-10-16
 * Serve sites at `http://<project>.test` through a shared Traefik proxy (`docker/proxy`, started with `scripts/proxy.sh`) instead of host ports, so projects can run side by side
 * Add `start.sh`, which takes a project from a fresh clone to a running site: it renames the project, creates `.env`, starts the proxy, sets up DNS, installs dependencies, builds the theme and installs WordPress, skipping whatever is already done. CI uses it too

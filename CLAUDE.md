@@ -6,7 +6,8 @@ Conventions for sites built from this template. See README.md for setup.
 
 - Bedrock (Composer-managed WordPress in `web/wp`, config in `config/` and `.env`), run locally with Docker Compose.
 - A block (Full Site Editor) theme in `web/app/themes/wordpress-starter-template`: templates, parts and patterns are block markup, and design tokens live in `theme.json`.
-- Custom code lives in the theme: post types, taxonomies, fields (Carbon Fields) and blocks.
+- Custom code lives in the theme: post types, taxonomies, settings and blocks. Theme classes go in the theme's `src/` and are autoloaded by Composer.
+- Site-wide settings go on the Theme Options page (`src/ThemeOptions.php`, built on the WordPress Settings API). Read them with `ThemeOptions::get()`.
 
 ## Building the theme
 
@@ -51,4 +52,4 @@ When you change a setup script, update the test for the behaviour you changed, a
 ## Checking work
 
 - `./start.sh --yes` brings the site up without questions, and `scripts/smoke-test.sh` checks it. Shell scripts: `shellcheck -s sh start.sh scripts/*.sh`.
-- PHP: `composer lint` (Pint) and `composer test` (Pest). Theme: `npm run build`, `npm run typecheck` and `npx eslint .` from the theme folder.
+- PHP: `composer lint` (Pint) and `composer test` (Pest). Theme: `npm run build`, `npm run typecheck` and `npm run lint` from the theme folder.
