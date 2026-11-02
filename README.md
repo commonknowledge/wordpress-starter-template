@@ -51,7 +51,7 @@ The theme in `web/app/themes/wordpress-starter-template` is built with webpack, 
 - `npm run dev` starts the webpack dev server on port 9000, which the theme loads assets from when `WP_ENV` is `development`. It also writes to `build/`, where blocks load their scripts and styles from.
 - `npm run build` builds assets to `build/` for other environments
 - `npm run typecheck` type-checks with TypeScript 7
-- `npm run lint` fixes lint and formatting issues
+- `npm run lint` checks lint and formatting with ESLint and Prettier, as CI does, and `npm run lint:fix` fixes what it can
 
 TypeScript 7 does not yet have a compiler API, which `ts-loader` and `typescript-eslint` need. As recommended in the [TypeScript 7 release notes](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-6.0), the `typescript` package is aliased to `@typescript/typescript6` for those tools, and TypeScript 7 is installed as `@typescript/native`, which provides `tsc`. Once TypeScript 7.1 ships an API and those tools support it, the alias can be removed.
 
