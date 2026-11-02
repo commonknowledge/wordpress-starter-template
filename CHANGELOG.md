@@ -1,7 +1,7 @@
 ### Production install check: 2026-10-19
 * Add a CI job that installs the site as the deploy does (no Composer dev packages, production theme build, `WP_ENV=production`, every plugin active including Wordfence) and runs the plugin, smoke, browser and PHP log checks
-* Fix Carbon Fields in production: `mnsami/composer-custom-directory-installer` was a dev dependency, so `composer install --no-dev` put Carbon Fields outside the web root and its admin scripts and styles returned 404
 * Log PHP errors to the wordpress container's output, and check it in `scripts/check-php-log.sh`, for environments without WordPress's debug log
+* Fail the PHP log check if container logs cannot be read, preserving Docker's error output, with regression tests for failed reads, clean logs and PHP warnings
 * Browser tests log in once and share the session, and can run without the dev server (`E2E_DEV_SERVER=false`)
 
 ### Tests for dependency updates: 2026-10-19

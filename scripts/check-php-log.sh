@@ -18,11 +18,15 @@ if [ -s "$LOG" ]; then
     failures=1
 fi
 
-container=$(docker compose logs --no-color wordpress 2>/dev/null |
+if ! container=$(docker compose logs --no-color wordpress); then
+    echo "FAIL  Could not read the wordpress container logs"
+    exit 1
+fi
+errors=$(printf '%s\n' "$container" |
     grep -E 'PHP (Fatal error|Parse error|Warning|Notice|Deprecated)')
-if [ -n "$container" ]; then
+if [ -n "$errors" ]; then
     echo "FAIL  PHP logged errors in the wordpress container's output:"
-    printf '%s\n' "$container"
+    printf '%s\n' "$errors"
     failures=1
 fi
 

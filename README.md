@@ -105,12 +105,12 @@ Renovate opens pull requests for Composer, npm, Docker and GitHub Actions update
 | --- | --- |
 | WordPress (`roots/wordpress`) | Smoke test, browser tests of the front end, block editor and Site Editor, PHP log, in development and production |
 | Plugins (`wp-plugin/*`) | `test-plugins.sh`, browser tests with every plugin active, PHP log. Wordfence only runs in the production job, as development turns it off |
-| PHP libraries (`vlucas/phpdotenv`, `htmlburger/carbon-fields`, …) | Smoke test, browser tests, PHP log |
+| PHP libraries (`vlucas/phpdotenv`, `roots/wp-config`, …) | Smoke test, browser tests, PHP log |
 | Pest, Pint | The CI workflow runs them |
 | Build tools (webpack and its loaders and plugins, Sass, PostCSS, `postcss-preset-env`, `ts-loader`) | `npm test`, browser tests |
 | webpack-dev-server | Browser tests, which load theme assets from it |
 | TypeScript, React and type packages | `npm run typecheck`, build, browser tests |
-| ESLint, typescript-eslint and their plugins | `npx eslint .` |
+| ESLint, typescript-eslint and their plugins | `npm run lint` (also checks formatting with Prettier) |
 | Docker images, GitHub Actions | The workflows themselves |
 
 ### Updating WordPress and other dependencies
