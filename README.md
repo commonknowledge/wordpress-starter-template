@@ -59,7 +59,7 @@ The theme in `web/app/themes/wordpress-starter-template` is built with webpack, 
 - `npm run typecheck` type-checks with TypeScript 7
 - `npm test` builds the theme into temporary folders and checks the output: every file each `block.json` loads, WordPress packages left to WordPress, and TypeScript, Sass and PostCSS compiled as configured
 - `npm run test:e2e` runs the browser tests against the site at `SITE_URL` (default `http://localhost:8082`), starting the dev server if it isn't running. Run `npx playwright install chromium` once first. They log in as `admin` / `admin`, so run them against the local site after `scripts/setup.sh`.
-- `npm run lint` fixes lint and formatting issues
+- `npm run lint` checks lint and formatting with ESLint and Prettier, as CI does, and `npm run lint:fix` fixes what it can
 
 TypeScript 7 does not yet have a compiler API, which `ts-loader` and `typescript-eslint` need. As recommended in the [TypeScript 7 release notes](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-6.0), the `typescript` package is aliased to `@typescript/typescript6` for those tools, and TypeScript 7 is installed as `@typescript/native`, which provides `tsc`. Once TypeScript 7.1 ships an API and those tools support it, the alias can be removed.
 

@@ -6,6 +6,13 @@
 * Fix a flaky theme asset test: PHP's opcache could serve a rebuilt `main.asset.php` for up to 2 seconds after it changed. Development now checks for changed files on every request
 * Let PHP-FPM write the debug log in development. WP-CLI created it as root, so errors from web requests were lost
 
+### Starter cleanup from PR #287: 2026-10-18
+* Remove Carbon Fields and `mnsami/composer-custom-directory-installer`
+* Add a Theme Options page built on the WordPress Settings API (`src/ThemeOptions.php`)
+* Stop loading jQuery with the theme script
+* Lint the theme with ESLint and Prettier in CI; `npm run lint` now checks and `npm run lint:fix` fixes
+* Remove the unused husky and lint-staged config, and set the theme's `Requires PHP` to 8.5
+
 ### Bedrock upstream sync and dependency upgrade: 2026-10-15
 * Realign with Roots Bedrock 1.31.7: `roots/wordpress` 7.1.3, `actions/checkout` v7, `actions/cache` v6, LICENSE and Bedrock Autoloader header
 * Remove `.devcontainer/` in favour of Docker Compose, and the committed `twentytwentyfour` theme
