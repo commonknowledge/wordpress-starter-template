@@ -34,5 +34,5 @@ jobs:
       - name: Test the build output
         run: npm test
 
-      - name: Lint theme scripts
-        run: npx eslint .
+      - name: Lint theme
+        run: npm run lint

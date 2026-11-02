@@ -1,0 +1,8 @@
+# Built by webpack
+build/
+
+# Written by the Site Editor and Create Block Theme in WordPress's own format
+parts/
+patterns/
+templates/
+theme.json
