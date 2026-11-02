@@ -6,40 +6,78 @@ This folder structure uses the [Bedrock](https://roots.io/bedrock/) pattern, a m
 
 ## Requirements
 
-- Docker [installed](https://docs.docker.com/install/)
-- PHP and Composer installed locally. If not, you can use them in containers provided, prefixing all Composer commands below with `docker compose run composer <command>`
+- Docker [installed](https://docs.docker.com/install/) and running
+- Node 24 (see the theme's `.nvmrc`) to build the theme
+- PHP and Composer are optional: without them, the scripts run them in containers
 
 ## Run locally
 
-1. [Clone This Repository](https://github.com/commonknowledge/wordpress-starter-template)
-2. Search and replace all instances of `wordpress-starter-template` and `WordpressStarterTemplate` with the name of the new project, in kebab and camel case respectfully. Also rename the theme folder `web/app/themes/wordpress-starter-template` to the name of the new project.
-2. If you have PHP and Composer installed locally you can run from this directory `composer install`. Otherwise run `composer install` via Docker with `docker compose run composer install`.
-3. Copy `.env.example` to `.env`, running `cp .env.example .env`. The example file contains variables required for this Docker Compose setup but modify details appropriately [as per the Bedrock documentation](https://roots.io/bedrock/docs/environment-variables/) as required.
-4. Start up all containers with:
+### Start a new project
+
+1. Create a repository from this template on GitHub ("Use this template"), and clone it.
+2. From the project folder, run:
 
 ```
-docker compose up
+./start.sh
 ```
 
-5. Build the theme (see [Theme](#theme)), then install WordPress, activate the theme and load the page fixtures in `scripts/fixtures`:
+3. When it asks, give the project's name in kebab-case: lowercase words joined by hyphens, such as `tenants-union`. Press Enter to accept every other question.
+
+The site is then at `http://tenants-union.test`, and the admin login is `admin` / `admin`.
+
+The first time you run `start.sh` on a computer, it asks for your password once, to make `.test` domains work.
+
+### Day to day
+
+Run `./start.sh` whenever you want the site up: after cloning an existing project, pulling changes or restarting your computer. It skips whatever is already done and never overwrites your content. `docker compose stop` stops the site and keeps its database.
+
+You can run several projects at once. Each has its own domain, containers and database, and they share one proxy.
+
+### Removing a project
 
 ```
-scripts/setup.sh http://localhost:8082 "WordPress Starter Template"
+scripts/uninstall.sh
 ```
 
-6. You can access the site at [http://localhost:8082](http://localhost:8082), and log in with `admin` / `admin`.
+This deletes the project's containers and database, after asking, and leaves its files. `./start.sh` brings it back with a fresh database. Add `--all` when removing the last project on your computer, to also remove the shared proxy and the `.test` domain setup. If other projects still use the proxy, `--all` leaves it running.
 
-If ports 8082 or 3308 are already in use by another project, set `WEB_HOST_PORT` and `DB_HOST_PORT` in `.env`, and update the port in `WP_HOME` to match.
+### What `start.sh` does
+
+It checks each step, skips the ones already done, and asks before anything that changes the project or needs `sudo`. `./start.sh --yes` accepts every default without asking, and `./start.sh --name tenants-union` names a new project up front. Each step is also a command you can run yourself:
+
+| Step | Command |
+| --- | --- |
+| Rename a new project, its theme, namespace (`TenantsUnion`) and domain | `php scripts/rename-project.php tenants-union` |
+| Create `.env`, where `LOCAL_DOMAIN` sets the domain | `cp .env.example .env` |
+| Start the shared proxy | `scripts/proxy.sh` |
+| Point `*.test` at the proxy, once per computer | `scripts/setup-dns.sh` |
+| Install Composer dependencies | `composer install`, or `docker compose run --rm composer install` |
+| Build the theme (see [Theme](#theme)) | `npm ci && npm run build` in the theme folder |
+| Start the containers | `docker compose up -d` |
+| Install WordPress and load the page fixtures | `scripts/setup.sh "" "Site Title"` |
+
+Change other `.env` settings [as per the Bedrock documentation](https://roots.io/bedrock/docs/environment-variables/).
+
+### Local domains
+
+Sites are served at `http://<project>.test` instead of on a host port, so projects don't clash. A shared [Traefik](https://traefik.io/traefik/) proxy listens on port 80 and sends each domain to the project that claims it in its `.env`. To change a project's domain, change `LOCAL_DOMAIN` and run `./start.sh` again. The proxy's dashboard is at [http://traefik.test](http://traefik.test).
+
+If something doesn't load:
+
+- Port 80 must be free, so stop anything else that uses it, such as a local Apache or Laravel Valet.
+- A browser using DNS over HTTPS may skip your computer's settings for `.test` names. Turn it off, or add `127.0.0.1 tenants-union.test` to `/etc/hosts`.
+- On Linux without systemd-resolved, add each project's domain to `/etc/hosts` the same way.
+- To reach the database from your computer, `docker compose port mysql 3306` shows its port. Set `DB_HOST_PORT` in `.env` for a fixed one.
 
 ### Checking the environment works
 
-Run the smoke test with the site title and URL. Extra `path=text` arguments check a page contains some text:
+The smoke test checks the site is up. Extra `path=text` arguments check that a page contains some text:
 
 ```
-scripts/smoke-test.sh "WordPress Starter Template" http://localhost:8082 "/blocks/=wp-block-wordpress-starter-template-example"
+scripts/smoke-test.sh "WordPress Starter" "" "/blocks/=wp-block-wordpress-starter-template-example"
 ```
 
-CI builds the theme, runs `setup.sh` and runs the smoke test against a fresh install.
+CI tests this whole setup on every change and nightly, including several projects running side by side and uninstalling them.
 
 ## Development Documentation
 

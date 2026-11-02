@@ -5,13 +5,15 @@
 # re-run: existing fixture pages are updated.
 #
 # Usage: scripts/setup.sh [site-url] [site-title]
-#   e.g. scripts/setup.sh http://localhost:8082 "WordPress Starter"
+#   e.g. scripts/setup.sh http://wordpress-starter-template.test "WordPress Starter"
+# The site URL defaults to LOCAL_DOMAIN in .env.
 # Run `docker compose up -d` first. The admin login is admin / admin (local only).
 
 set -eu
 cd "$(dirname "$0")/.."
+. scripts/env.sh
 
-SITE_URL="${1:-http://localhost:8082}"
+SITE_URL="${1:-${DEFAULT_SITE_URL:?Pass a site URL or set LOCAL_DOMAIN in .env}}"
 SITE_TITLE="${2:-WordPress Starter}"
 
 # Send PHP notices to stderr so they don't end up in captured output
@@ -43,7 +45,7 @@ for fixture in scripts/fixtures/*.html; do
     ids=$(wp post list --post_type=page --name="$slug" --post_parent=0 --post_status=any --field=ID 2>/dev/null)
     count=$(printf '%s\n' "$ids" | grep -c . || true)
     if [ "$count" -gt 1 ]; then
-        echo "Error: several root pages have the slug '$slug' (IDs $(echo $ids)), so the fixture was not loaded"
+        echo "Error: several root pages have the slug '$slug' (IDs $(printf '%s' "$ids" | tr '\n' ' ')), so the fixture was not loaded"
         exit 1
     elif [ "$count" -eq 1 ]; then
         wp post update "$ids" "$path"
