@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ad294aae0f9b8027fa2c74d33c8bdbdf",
+    "content-hash": "c26f1ea62f7cf5e9b0e3b37f8c2e29d5",
     "packages": [
         {
             "name": "composer/installers",
@@ -480,7 +480,7 @@
         },
         {
             "name": "roots/wordpress",
-            "version": "7.1.3",
+            "version": "7.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/roots/wordpress.git",
@@ -511,7 +511,7 @@
             ],
             "support": {
                 "issues": "https://github.com/roots/wordpress/issues",
-                "source": "https://github.com/roots/wordpress/tree/7.1.3"
+                "source": "https://github.com/roots/wordpress/tree/7.1.4"
             },
             "funding": [
                 {
@@ -519,7 +519,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-22T13:26:54+00:00"
+            "time": "2026-03-22T13:26:54+00:00",
+            "published-time": "2026-10-28T17:16:37+00:00"
         },
         {
             "name": "roots/wordpress-core-installer",
@@ -586,27 +587,28 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-22T03:17:23+00:00"
+            "time": "2026-03-22T03:17:23+00:00",
+            "published-time": "2026-03-22T03:22:05+00:00"
         },
         {
             "name": "roots/wordpress-no-content",
-            "version": "7.1.3",
+            "version": "7.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/WordPress/WordPress.git",
-                "reference": "7.1.3"
+                "reference": "7.1.4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/release/wordpress-7.1.3-no-content.zip",
-                "reference": "7.1.3",
-                "shasum": "6c6f1135c8fd1e6f63c4d511e8be9e952d0b3433"
+                "url": "https://downloads.w.org/release/wordpress-7.1.4-no-content.zip",
+                "reference": "7.1.4",
+                "shasum": "1dd4bfa7b13dec725c0062a3fb62ba0536cb8699"
             },
             "require": {
                 "php": ">= 7.4"
             },
             "provide": {
-                "wordpress/core-implementation": "7.1.3"
+                "wordpress/core-implementation": "7.1.4"
             },
             "suggest": {
                 "ext-curl": "Performs remote request operations.",
@@ -657,7 +659,8 @@
                     "type": "other"
                 }
             ],
-            "time": "2026-10-06T16:28:51+00:00"
+            "time": "2026-10-28T17:15:58+00:00",
+            "published-time": "2026-10-28T17:16:09+00:00"
         },
         {
             "name": "roots/wp-config",
@@ -5441,5 +5444,5 @@
     "platform-overrides": {
         "php": "8.5"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.11.0"
 }
