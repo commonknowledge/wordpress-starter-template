@@ -1,0 +1,46 @@
+# A local reverse proxy shared by every project on this machine. It routes
+# http://<name>.test to the project that claims that name, so projects don't
+# compete for host ports. CoreDNS answers *.test with 127.0.0.1 for the
+# host's resolver, which scripts/setup-dns.sh points at it.
+#
+# The fixed project name means every project's copy of this file manages the
+# same stack, so it runs once, whichever project starts it. Start it with
+# scripts/proxy.sh.
+name: local-proxy
+
+services:
+  traefik:
+    image: traefik:v3.7
+    container_name: local-proxy-traefik
+    restart: unless-stopped
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedByDefault=false
+      - --providers.docker.network=local-proxy
+      - --entryPoints.web.address=:80
+      - --api.dashboard=true
+      - --log.level=WARN
+    ports:
+      - "127.0.0.1:80:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.local-proxy-dashboard.rule=Host(`traefik.test`)
+      - traefik.http.routers.local-proxy-dashboard.entrypoints=web
+      - traefik.http.routers.local-proxy-dashboard.service=api@internal
+
+  dns:
+    image: coredns/coredns:1.14.0
+    container_name: local-proxy-dns
+    restart: unless-stopped
+    command: -conf /etc/coredns/Corefile
+    volumes:
+      - ./Corefile:/etc/coredns/Corefile:ro
+    ports:
+      - "127.0.0.1:5354:53/udp"
+      - "127.0.0.1:5354:53/tcp"
+
+networks:
+  default:
+    name: local-proxy

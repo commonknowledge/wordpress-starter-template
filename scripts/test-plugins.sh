@@ -6,10 +6,12 @@
 # firewall prints warnings that break the login page.
 #
 # Usage: scripts/test-plugins.sh [base-url]
+# The base URL defaults to LOCAL_DOMAIN in .env.
 
 cd "$(dirname "$0")/.." || exit 1
+. scripts/env.sh
 
-BASE_URL="${1:-http://localhost:8082}"
+BASE_URL="${1:-${DEFAULT_SITE_URL:?Pass a base URL or set LOCAL_DOMAIN in .env}}"
 failures=0
 
 pass() { echo "PASS  $1"; }

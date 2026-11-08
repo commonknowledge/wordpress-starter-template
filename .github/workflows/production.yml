@@ -42,11 +42,22 @@ jobs:
           cp .env.example .env
           sed -i "s/^WP_ENV=.*/WP_ENV='production'/" .env
 
+      - name: Map the site's domain in /etc/hosts
+        run: |
+          . scripts/env.sh
+          echo "127.0.0.1 $LOCAL_DOMAIN" | sudo tee -a /etc/hosts
+          echo "SITE_URL=$DEFAULT_SITE_URL" >> "$GITHUB_ENV"
+
+      # The proxy serves the site at its .test domain, and its network must
+      # exist before the stack starts
+      - name: Start the local proxy
+        run: scripts/proxy.sh
+
       - name: Build the stack
         run: docker compose up -d --build
 
       - name: Install WordPress, activate the theme and load page fixtures
-        run: scripts/setup.sh http://localhost:8082 "WordPress Starter"
+        run: scripts/setup.sh "$SITE_URL" "WordPress Starter"
 
       # On a host, PHP owns the site's files. Here the checkout belongs to the
       # runner, so PHP-FPM can't create the folder Wordfence's firewall uses.
@@ -55,11 +66,11 @@ jobs:
 
       # The deploy runs `wp plugin activate --all`
       - name: Test every plugin activates
-        run: scripts/test-plugins.sh http://localhost:8082
+        run: scripts/test-plugins.sh "$SITE_URL"
 
       - name: Test WordPress is running successfully
         run: >
-          scripts/smoke-test.sh "WordPress Starter" http://localhost:8082
+          scripts/smoke-test.sh "WordPress Starter" "$SITE_URL"
           "/blocks/=wp-block-wordpress-starter-template-example"
           "/blocks/=Hello from a custom block"
 
@@ -72,7 +83,7 @@ jobs:
         working-directory: web/app/themes/wordpress-starter-template
         run: npm run test:e2e
         env:
-          SITE_URL: http://localhost:8082
+          SITE_URL: ${{ env.SITE_URL }}
           E2E_DEV_SERVER: "false"
 
       - name: Upload the browser test report

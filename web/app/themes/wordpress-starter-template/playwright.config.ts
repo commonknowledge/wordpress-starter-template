@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { siteUrl } from "./tests/e2e/site-url";
 
 // Browser tests against a running site, e.g. the Docker Compose one after
 // scripts/setup.sh. Run with `npm run test:e2e` from the theme folder.
@@ -9,7 +10,7 @@ export default defineConfig({
   workers: 1,
   reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
   use: {
-    baseURL: process.env.SITE_URL ?? "http://localhost:8082",
+    baseURL: siteUrl,
     trace: "retain-on-failure",
   },
   projects: [

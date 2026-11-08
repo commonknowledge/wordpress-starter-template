@@ -7,6 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { type Page, expect, test } from "@playwright/test";
 import { adminSession } from "./session";
+import { siteUrl } from "./site-url";
 
 const blocksDir = path.resolve(__dirname, "../../blocks");
 
@@ -28,10 +29,7 @@ const blockClass = (name: string) => `.wp-block-${name.replace("/", "-")}`;
 
 // The site and the webpack dev server it loads theme assets from. Requests
 // elsewhere, such as Gravatar or WordPress.org news, depend on the network.
-const ownOrigins = [
-  new URL(process.env.SITE_URL ?? "http://localhost:8082").origin,
-  "http://localhost:9000",
-];
+const ownOrigins = [new URL(siteUrl).origin, "http://localhost:9000"];
 
 function isOwnUrl(url: string): boolean {
   return ownOrigins.includes(new URL(url).origin);
