@@ -38,6 +38,8 @@ afterEach(function () {
 test('the plugin check fails when WP-CLI cannot read its inputs', function (string $scenario, string $message, string $error) {
     $process = new Process(['sh', 'scripts/test-plugins.sh'], dirname(__DIR__, 2), [
         'PATH' => $this->bin . PATH_SEPARATOR . getenv('PATH'),
+        // The site's domain, as start.sh sets it in .env
+        'LOCAL_DOMAIN' => 'plugin-check.test',
         'PLUGIN_CHECK_SCENARIO' => $scenario,
     ]);
     $process->run();
@@ -53,6 +55,8 @@ test('the plugin check fails when WP-CLI cannot read its inputs', function (stri
 test('the plugin check accepts a successfully retrieved empty plugin list', function () {
     $process = new Process(['sh', 'scripts/test-plugins.sh'], dirname(__DIR__, 2), [
         'PATH' => $this->bin . PATH_SEPARATOR . getenv('PATH'),
+        // The site's domain, as start.sh sets it in .env
+        'LOCAL_DOMAIN' => 'plugin-check.test',
         'PLUGIN_CHECK_SCENARIO' => 'no-inactive-plugins',
     ]);
     $process->run();
