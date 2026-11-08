@@ -77,7 +77,15 @@ The smoke test checks the site is up. Extra `path=text` arguments check that a p
 scripts/smoke-test.sh "WordPress Starter" "" "/blocks/=wp-block-wordpress-starter-template-example"
 ```
 
-CI tests this whole setup on every change and nightly, including several projects running side by side and uninstalling them.
+CI tests this whole setup on every change and nightly, including several projects running side by side and uninstalling them. For the site itself, it builds the theme, runs `setup.sh` and runs the smoke test against a fresh install, then:
+
+- `scripts/test-plugins.sh` activates every plugin and checks the site still works
+- the browser tests (`npm run test:e2e` from the theme folder, see [Theme](#theme)) load the front end, the block editor and the Site Editor with every plugin active, and fail on JavaScript errors, failed requests, PHP error output and blocks the editor can't load
+- `scripts/check-php-log.sh` fails if PHP logged any errors or warnings along the way
+
+A second job, `.github/workflows/production.yml`, installs the site the way `deploy.yml` deploys it: Composer without dev packages, the production theme build, `WP_ENV=production` and every plugin active, including Wordfence. It then runs the plugin, smoke, browser and PHP log checks against that.
+
+These cover what a dependency bump can break, so a Renovate pull request that passes CI can be merged with confidence. See [What CI checks for dependency updates](#what-ci-checks-for-dependency-updates).
 
 ## Development Documentation
 
@@ -89,6 +97,8 @@ The theme in `web/app/themes/wordpress-starter-template` is built with webpack, 
 - `npm run dev` starts the webpack dev server on port 9000, which the theme loads assets from when `WP_ENV` is `development`. It also writes to `build/`, where blocks load their scripts and styles from.
 - `npm run build` builds assets to `build/` for other environments
 - `npm run typecheck` type-checks with TypeScript 7
+- `npm test` builds the theme into temporary folders and checks the output: every file each `block.json` loads, WordPress packages left to WordPress, and TypeScript, Sass and PostCSS compiled as configured
+- `npm run test:e2e` runs the browser tests against the site at `SITE_URL` (default `http://` plus `LOCAL_DOMAIN`), starting the dev server if it isn't running. Set `E2E_DEV_SERVER=false` for a site that isn't in development, which loads the production build instead. Run `npx playwright install chromium` once first. They log in as `admin` / `admin`, so run them against the local site after `scripts/setup.sh`.
 - `npm run lint` checks lint and formatting with ESLint and Prettier, as CI does, and `npm run lint:fix` fixes what it can
 
 TypeScript 7 does not yet have a compiler API, which `ts-loader` and `typescript-eslint` need. As recommended in the [TypeScript 7 release notes](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-6.0), the `typescript` package is aliased to `@typescript/typescript6` for those tools, and TypeScript 7 is installed as `@typescript/native`, which provides `tsc`. Once TypeScript 7.1 ships an API and those tools support it, the alias can be removed.
@@ -124,6 +134,22 @@ Generate a lot of dummy content to see how the website looks and feels with full
 #### [Yoast Duplicate Posts](https://wordpress.org/plugins/duplicate-post/)
 
 Again for creating dummy data, this allows quick duplication of posts to fill things out.
+
+### What CI checks for dependency updates
+
+Renovate opens pull requests for Composer, npm, Docker and GitHub Actions updates. Each kind is covered by these checks:
+
+| Update | Checked by |
+| --- | --- |
+| WordPress (`roots/wordpress`) | Smoke test, browser tests of the front end, block editor and Site Editor, PHP log, in development and production |
+| Plugins (`wp-plugin/*`) | `test-plugins.sh`, browser tests with every plugin active, PHP log. Wordfence only runs in the production job, as development turns it off |
+| PHP libraries (`vlucas/phpdotenv`, `roots/wp-config`, …) | Smoke test, browser tests, PHP log |
+| Pest, Pint | The CI workflow runs them |
+| Build tools (webpack and its loaders and plugins, Sass, PostCSS, `postcss-preset-env`, `ts-loader`) | `npm test`, browser tests |
+| webpack-dev-server | Browser tests, which load theme assets from it |
+| TypeScript, React and type packages | `npm run typecheck`, build, browser tests |
+| ESLint, typescript-eslint and their plugins | `npm run lint` (also checks formatting with Prettier) |
+| Docker images, GitHub Actions | The workflows themselves |
 
 ### Updating WordPress and other dependencies
 

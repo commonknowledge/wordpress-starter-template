@@ -1,0 +1,10 @@
+// Sass features that sass-loader must compile
+@use "sass:math";
+
+$base: 40px;
+
+.fixture-sass {
+  .fixture-sass-child {
+    width: math.div($base, 2);
+  }
+}

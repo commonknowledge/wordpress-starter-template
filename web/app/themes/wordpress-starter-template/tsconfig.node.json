@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"] /* The browser tests and their config run in Node. */
+  },
+  "exclude": ["build", "node_modules"],
+  "include": ["playwright.config.ts", "tests/e2e/**/*.ts"]
+}
