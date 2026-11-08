@@ -41,6 +41,10 @@ module.exports = [
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
+      // Sites are served at their .test domain, so their pages request assets
+      // from localhost:9000 cross-site, which the dev server blocks with a 403
+      // unless the request's own host, localhost, is allowed
+      allowedHosts: ["localhost"],
       port: 9000,
     },
     devtool: DEBUG ? "eval-source-map" : false,
